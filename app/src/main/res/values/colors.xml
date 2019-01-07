@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="button_bg">#4c95</color>
+    <color name="gray">#CDCDCD</color>
+    <color name="colorBtnClick">#90DBDBDB</color>
+    <color name="bottom_bg">#f4f4f4</color>
+    <color name="colorLine">#D9D8DB</color>
+    <color name="blue">#4578e6</color>
+    <color name="title_color">#2b4e99</color>
+    <color name="gray_normal">#666666</color>
+    <color name="gray_light">#999999</color>
+    <color name="gray_dark">#333333</color>
+    <color name="text_normal">#333333</color>
+    <color name="line_color">#BBBBBB</color>
+    <color name="text_select_color">#199aff</color>
+    <color name="gray_thumb">#dddddd</color>
+    <color name="blue_thumb">#43a2fb</color>
+    <color name="text_bg">#f5f5f5</color>
+    <color name="text_color">#4578e6</color>
+    <color name="button_color">#335fbd</color>
+    <color name="button_otp">#5188ff</color>
+    <color name="saffon_yellow">#f28c29</color>
+</resources>

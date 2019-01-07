@@ -1,0 +1,243 @@
+package com.example.rico.customerview.view;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.support.annotation.Nullable;
+import android.util.AttributeSet;
+import android.view.View;
+
+import java.util.ArrayList;
+
+/**
+ * Created by Tmp on 2018/12/19.
+ * 六边形雷达图
+ */
+public class HexagonPathView extends View {
+    Paint textPaint, coverPaint, borderPaint;
+    int allRadius;
+
+    public HexagonPathView(Context context) {
+        super(context);
+        init();
+    }
+
+    public HexagonPathView(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    private void init() {
+        textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        textPaint.setStyle(Paint.Style.STROKE);
+        textPaint.setColor(Color.parseColor("#3e3a39"));
+        textPaint.setTextSize(spTopx(14));
+        Paint.FontMetrics metrics = textPaint.getFontMetrics();
+        textH = metrics.descent - metrics.ascent;
+
+        coverPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        coverPaint.setStyle(Paint.Style.FILL);
+        coverPaint.setColor(Color.parseColor("#7014a4f4"));
+
+        borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        borderPaint.setStyle(Paint.Style.STROKE);
+        borderPaint.setColor(Color.parseColor("#f6564d"));
+    }
+
+    //    宽度、高度、绘制区域宽高、多边形的层级
+    int width, heigth, standwidth, levelCount = 5;
+    //    文字高度
+    float textH;
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        width = w;
+        heigth = h;
+        standwidth = w > h ? h : w;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (datas.size() == 0) {
+            return;
+        }
+        allRadius = (int) (standwidth / 2 - dpTopx(20) - maxTextLength);
+        canvas.translate(width / 2, heigth / 2);
+        int count = datas.size();
+        int fullAngle = 360;
+        double avag = fullAngle / count;
+        int everyLess = allRadius / levelCount;
+        //        画多边形
+
+        //       角度旋转时候精度丢失的总共角度
+        float lackAngle = fullAngle - (float) avag * count;
+        //        修正后的角度
+        avag = (float) avag + lackAngle / count;
+        //        画多边形
+        for (int k = 0; k <= allRadius; k += everyLess) {
+            canvas.save();
+            int radius = allRadius - k;
+            double sideLength = (radius * Math.sin(Math.toRadians(avag / 2)) * 2 + 0.5);
+            int y = (int) (radius * Math.cos(Math.toRadians(avag / 2)) + 0.5);
+            for (int i = 0; i < count; i++) {
+                canvas.drawLine((int) (-sideLength / 2 + 0.5), y, (int) (sideLength / 2 + 0.5), y, borderPaint);
+                canvas.rotate((float) avag);
+
+            }
+            canvas.restore();
+        }
+        canvas.save();
+        //        划连接线，旋转角度，然后画一条线
+        for (int i = 0; i < count; i++) {
+
+            if (i == 0) {
+                canvas.rotate((float) (90 + avag / 2));
+            } else {
+                canvas.rotate((float) avag);
+            }
+            canvas.drawLine(everyLess, 0, allRadius, 0, borderPaint);
+
+        }
+        canvas.restore();
+
+        //        画覆盖色
+        Path path = new Path();
+        int firstX = 0, firstY = 0;
+        for (int i = 0; i < count; i++) {
+            double currentLength = allRadius * datas.get(i).percent;
+            double sin = Math.sin(Math.toRadians(avag / 2 + avag * i));
+            double cos = Math.cos(Math.toRadians(avag / 2 + avag * i));
+            int x = (int) (currentLength * sin + 0.5);
+            int y = (int) (currentLength * cos + 0.5);
+            int textX = (int) ((allRadius + dpTopx(10)) * sin + 0.5);
+            int textY = (int) ((allRadius + dpTopx(10)) * cos + 0.5);
+            //            画文字，有8种情况
+            drawText(canvas, -textX, textY, datas.get(i).text);
+            if (i == 0) {
+                firstX = -x;
+                firstY = y;
+            }
+            path.lineTo(-x, y);
+        }
+        path.lineTo(firstX, firstY);
+        canvas.drawPath(path, coverPaint);
+    }
+
+
+    private int dpTopx(float dp) {
+        float px = (int) (getResources().getDisplayMetrics().density * dp);
+        return (int) px;
+    }
+
+    private int spTopx(int sp) {
+        int px = (int) (getResources().getDisplayMetrics().scaledDensity * sp);
+        return px;
+    }
+
+    private void drawText(Canvas canvas, int x, int y, String s) {
+//        坐标都不为0，坐标系一二三四象限
+        float textLength = textPaint.measureText(s);
+        if (x != 0 && y != 0) {
+//            第一象限
+            if (x > 0 && y < 0) {
+                canvas.drawText(s, x, y + textH / 2, textPaint);
+            }
+//            第二象限
+            else if (x > 0 && y > 0) {
+                canvas.drawText(s, x, y + textH / 2, textPaint);
+            }
+//            第三象限
+            if (x < 0 && y > 0) {
+                canvas.drawText(s, x - textLength, y + textH / 2, textPaint);
+            }
+//            第四象限
+            else if (x < 0 && y < 0) {
+                canvas.drawText(s, x - textLength, y + textH / 2, textPaint);
+            }
+        } else if (x == 0 || y == 0) {
+//            正X轴
+            if (x > 0 && y == 0) {
+                canvas.drawText(s, x, y + textH / 2, textPaint);
+            }
+//            正Y轴 应该不存在这种情况 因为canvas是以正Y轴为起点旋转的
+            else if (x == 0 && y > 0) {
+                canvas.drawText(s, x - textLength / 2, y, textPaint);
+            }
+//            负X轴
+            else if (x < 0 && y == 0) {
+                canvas.drawText(s, x - textLength, y + textH / 2, textPaint);
+            }
+//            负Y轴
+            else if (x == 0 && y < 0) {
+                canvas.drawText(s, x - textLength / 2, y, textPaint);
+            }
+        }
+    }
+
+    ArrayList<Data> datas = new ArrayList<>();
+    float maxTextLength;
+
+    public HexagonPathView addData(String text, double percent) {
+        if (textPaint.measureText(text) > maxTextLength) {
+            maxTextLength = textPaint.measureText(text);
+        }
+        datas.add(new Data(text, percent));
+        return this;
+    }
+
+    public void clearData() {
+        datas.clear();
+        maxTextLength = 0;
+        invalidate();
+    }
+
+    //    设置网格层级
+    public void setLevelCount(int levelCount) {
+        this.levelCount = levelCount;
+        invalidate();
+    }
+
+    //    设置文字颜色
+    public void setTextColor(String color) {
+        textPaint.setColor(Color.parseColor(color));
+        invalidate();
+    }
+
+    //    设置文字大小
+    public void setTextSize(int size) {
+        textPaint.setTextSize(spTopx(size));
+        Paint.FontMetrics metrics = textPaint.getFontMetrics();
+        textH = metrics.descent - metrics.ascent;
+        invalidate();
+    }
+
+    //    设置雷达覆盖色
+    public void setCoverColor(String color) {
+        coverPaint.setColor(Color.parseColor(color));
+        invalidate();
+    }
+
+    //     设置网格颜色
+    public void setBorderColor(String color) {
+        borderPaint.setColor(Color.parseColor(color));
+        invalidate();
+    }
+
+    public void draw() {
+        invalidate();
+    }
+
+    public class Data {
+        public Data(String text, double percent) {
+            this.text = text;
+            this.percent = percent;
+        }
+
+        String text;
+        double percent;
+    }
+}
