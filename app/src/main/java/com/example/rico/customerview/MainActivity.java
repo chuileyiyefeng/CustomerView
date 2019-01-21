@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.example.rico.customerview.activity.AllViewActivity;
 import com.example.rico.customerview.activity.DrawBitmapActivity;
 import com.example.rico.customerview.activity.PieActivity;
 import com.example.rico.customerview.activity.RadarActivity;
@@ -31,25 +32,31 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         adapter.addItem("缩放旋转");
         adapter.addItem("drawBitmap 动画");
         adapter.addItem("雷达网图");
+        adapter.addItem("贝塞尔曲线");
         adapter.addItemClick(this);
     }
 
     @Override
     public void click(int position) {
+        Intent intent;
         switch (position) {
             case 0:
-                startActivity(new Intent(this, PieActivity.class));
+                intent = new Intent(this, PieActivity.class);
                 break;
             case 1:
-                startActivity(new Intent(this, ScalAndRoteActivity.class));
+                intent = new Intent(this, ScalAndRoteActivity.class);
                 break;
             case 2:
-                startActivity(new Intent(this, DrawBitmapActivity.class));
+                intent = new Intent(this, DrawBitmapActivity.class);
                 break;
             case 3:
-                startActivity(new Intent(this, RadarActivity.class));
+                intent = new Intent(this, RadarActivity.class);
+                break;
+            default:
+                intent = new Intent(this, AllViewActivity.class).putExtra("type", position);
                 break;
         }
+        startActivity(intent);
     }
 
 }

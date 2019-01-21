@@ -44,9 +44,9 @@ public class DrawBitmapView extends View {
         }
         int bitmapWidth = bitmap.getWidth();
         int bitmapHeight = bitmap.getHeight();
-        float widthdScale = (float) radius * 2 / bitmapWidth;
+        float widthScale = (float) radius * 2 / bitmapWidth;
         float heightScale = (float) radius * 2 / bitmapHeight;
-        float scale = widthdScale > heightScale ? heightScale : widthdScale;
+        float scale = widthScale > heightScale ? heightScale : widthScale;
         Matrix matrix = new Matrix();
         matrix.postScale(scale, scale);
         this.bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmapWidth, bitmapHeight, matrix, true);

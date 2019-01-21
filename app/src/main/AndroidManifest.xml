@@ -20,6 +20,7 @@
         <activity android:name=".activity.ScalAndRoteActivity" />
         <activity android:name=".activity.DrawBitmapActivity" />
         <activity android:name=".activity.RadarActivity" />
+        <activity android:name=".activity.AllViewActivity" />
     </application>
 
 </manifest>

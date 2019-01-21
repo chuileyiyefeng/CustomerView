@@ -17,6 +17,7 @@ import java.util.ArrayList;
  */
 public class HexagonPathView extends View {
     Paint textPaint, coverPaint, borderPaint;
+    Path path;
     int allRadius;
 
     public HexagonPathView(Context context) {
@@ -33,7 +34,7 @@ public class HexagonPathView extends View {
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textPaint.setStyle(Paint.Style.STROKE);
         textPaint.setColor(Color.parseColor("#3e3a39"));
-        textPaint.setTextSize(spTopx(14));
+        textPaint.setTextSize(spToPx(14));
         Paint.FontMetrics metrics = textPaint.getFontMetrics();
         textH = metrics.descent - metrics.ascent;
 
@@ -44,6 +45,7 @@ public class HexagonPathView extends View {
         borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setColor(Color.parseColor("#f6564d"));
+        path=new Path();
     }
 
     //    宽度、高度、绘制区域宽高、多边形的层级
@@ -62,12 +64,12 @@ public class HexagonPathView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (datas.size() == 0) {
+        if (dataList.size() == 0) {
             return;
         }
-        allRadius = (int) (standwidth / 2 - dpTopx(20) - maxTextLength);
+        allRadius = (int) (standwidth / 2 - dpToPx(20) - maxTextLength);
         canvas.translate(width / 2, heigth / 2);
-        int count = datas.size();
+        int count = dataList.size();
         int fullAngle = 360;
         double avag = fullAngle / count;
         int everyLess = allRadius / levelCount;
@@ -105,18 +107,19 @@ public class HexagonPathView extends View {
         canvas.restore();
 
         //        画覆盖色
-        Path path = new Path();
+        path.reset();
+        path.incReserve(count);
         int firstX = 0, firstY = 0;
         for (int i = 0; i < count; i++) {
-            double currentLength = allRadius * datas.get(i).percent;
+            double currentLength = allRadius * dataList.get(i).percent;
             double sin = Math.sin(Math.toRadians(avag / 2 + avag * i));
             double cos = Math.cos(Math.toRadians(avag / 2 + avag * i));
             int x = (int) (currentLength * sin + 0.5);
             int y = (int) (currentLength * cos + 0.5);
-            int textX = (int) ((allRadius + dpTopx(10)) * sin + 0.5);
-            int textY = (int) ((allRadius + dpTopx(10)) * cos + 0.5);
+            int textX = (int) ((allRadius + dpToPx(10)) * sin + 0.5);
+            int textY = (int) ((allRadius + dpToPx(10)) * cos + 0.5);
             //            画文字，有8种情况
-            drawText(canvas, -textX, textY, datas.get(i).text);
+            drawText(canvas, -textX, textY, dataList.get(i).text);
             if (i == 0) {
                 firstX = -x;
                 firstY = y;
@@ -128,14 +131,12 @@ public class HexagonPathView extends View {
     }
 
 
-    private int dpTopx(float dp) {
-        float px = (int) (getResources().getDisplayMetrics().density * dp);
-        return (int) px;
+    private int dpToPx(float dp) {
+        return (int) (getResources().getDisplayMetrics().density * dp);
     }
 
-    private int spTopx(int sp) {
-        int px = (int) (getResources().getDisplayMetrics().scaledDensity * sp);
-        return px;
+    private int spToPx(int sp) {
+        return (int) (getResources().getDisplayMetrics().scaledDensity * sp);
     }
 
     private void drawText(Canvas canvas, int x, int y, String s) {
@@ -158,9 +159,9 @@ public class HexagonPathView extends View {
             else if (x < 0 && y < 0) {
                 canvas.drawText(s, x - textLength, y + textH / 2, textPaint);
             }
-        } else if (x == 0 || y == 0) {
+        } else {
 //            正X轴
-            if (x > 0 && y == 0) {
+            if (x > 0 ) {
                 canvas.drawText(s, x, y + textH / 2, textPaint);
             }
 //            正Y轴 应该不存在这种情况 因为canvas是以正Y轴为起点旋转的
@@ -168,29 +169,28 @@ public class HexagonPathView extends View {
                 canvas.drawText(s, x - textLength / 2, y, textPaint);
             }
 //            负X轴
-            else if (x < 0 && y == 0) {
+            else if (x < 0) {
                 canvas.drawText(s, x - textLength, y + textH / 2, textPaint);
             }
 //            负Y轴
-            else if (x == 0 && y < 0) {
+            else if ( y < 0) {
                 canvas.drawText(s, x - textLength / 2, y, textPaint);
             }
         }
     }
 
-    ArrayList<Data> datas = new ArrayList<>();
+    ArrayList<Data> dataList = new ArrayList<>();
     float maxTextLength;
 
-    public HexagonPathView addData(String text, double percent) {
+    public void addData(String text, double percent) {
         if (textPaint.measureText(text) > maxTextLength) {
             maxTextLength = textPaint.measureText(text);
         }
-        datas.add(new Data(text, percent));
-        return this;
+        dataList.add(new Data(text, percent));
     }
 
     public void clearData() {
-        datas.clear();
+        dataList.clear();
         maxTextLength = 0;
         invalidate();
     }
@@ -209,7 +209,7 @@ public class HexagonPathView extends View {
 
     //    设置文字大小
     public void setTextSize(int size) {
-        textPaint.setTextSize(spTopx(size));
+        textPaint.setTextSize(spToPx(size));
         Paint.FontMetrics metrics = textPaint.getFontMetrics();
         textH = metrics.descent - metrics.ascent;
         invalidate();
@@ -231,7 +231,7 @@ public class HexagonPathView extends View {
         invalidate();
     }
 
-    public class Data {
+    private class Data {
         public Data(String text, double percent) {
             this.text = text;
             this.percent = percent;
