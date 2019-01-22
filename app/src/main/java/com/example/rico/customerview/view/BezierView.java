@@ -192,6 +192,7 @@ public class BezierView extends View {
                         } else if (originMove <= each * 4 && originMove > each * 3) {
                             thisMove = (int) (everyMove * 0.99F + 0.5);
                         }
+                        
                         view.stars[i].x = startX + thisMove;
                     }
                 }
