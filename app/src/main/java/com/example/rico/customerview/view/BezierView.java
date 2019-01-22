@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -41,7 +42,7 @@ public class BezierView extends View {
 
     private void init() {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStyle(Paint.Style.STROKE);
+        paint.setStyle(Paint.Style.FILL);
         paint.setColor(getResources().getColor(R.color.colorAccent));
         paint.setStrokeWidth(1);
         path = new Path();
@@ -55,7 +56,8 @@ public class BezierView extends View {
         height = h;
         radius = Math.min(width, height) / 10;
         int centerX = radius / 2 * 3, centerY = radius / 2 * 3;
-        int halfRadius = radius / 2;
+//        0.551915024494f 所需数值是这样，大概是个固定值
+        int halfRadius = (int) (radius *0.551915024494f+0.5);
         startP = new Point(centerX - radius, centerY);
         endP = new Point(centerX, centerY - radius);
         c1 = new Point(centerX - radius, centerY - halfRadius);
@@ -86,6 +88,7 @@ public class BezierView extends View {
         for (int i = 0; i < originControl.length; i++) {
             control[i] = new Point(originControl[i].x, originControl[i].y);
         }
+
     }
 
     boolean isMoving = false;
@@ -135,36 +138,39 @@ public class BezierView extends View {
         path.moveTo(stars[0].x, stars[0].y);
         for (int i = 0; i < 4; i++) {
             int k = 2 * i;
-            paint.setColor(getResources().getColor(R.color.colorAccent));
-            canvas.drawLine(stars[i].x, stars[i].y, control[k].x, control[k].y, paint);
-            canvas.drawLine(control[k].x, control[k].y, control[k + 1].x, control[k + 1].y, paint);
-            canvas.drawLine(control[k + 1].x, control[k + 1].y, stars[i + 1].x, stars[i + 1].y, paint);
-            paint.setColor(getResources().getColor(R.color.text_normal));
+//            画辅助线
+//            paint.setColor(getResources().getColor(R.color.colorAccent));
+//            canvas.drawLine(stars[i].x, stars[i].y, control[k].x, control[k].y, paint);
+//            canvas.drawLine(control[k].x, control[k].y, control[k + 1].x, control[k + 1].y, paint);
+//            canvas.drawLine(control[k + 1].x, control[k + 1].y, stars[i + 1].x, stars[i + 1].y, paint);
+//            paint.setColor(getResources().getColor(R.color.text_normal));
             path.cubicTo(control[k].x, control[k].y, control[k + 1].x, control[k + 1].y, stars[i + 1].x, stars[i + 1].y);
-
         }
         canvas.drawPath(path, paint);
     }
 
     private static class MyHandler extends Handler {
         WeakReference<BezierView> reference;
-        int everyMove,toEndEveryMove, moveDistance, endX, toEndMoveCount;
-
+        int everyMove, toEndEveryMove, moveDistance, endX;
+        BezierView view;
         public MyHandler(BezierView view) {
             reference = new WeakReference<>(view);
-            everyMove = 10;
-            toEndEveryMove=10;
         }
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            BezierView view = reference.get();
-            view.isMoving = true;
             if (null == view) {
-                return;
+                view = reference.get();
+                if (view==null) {
+                    return;
+                }else {
+                    view.isMoving = true;
+                    endX = view.radius * 9;
+                    everyMove = view.radius/3;
+                    toEndEveryMove = (int) (everyMove*0.5F+0.5);
+                }
             }
-            endX = view.radius * 9;
             int each = endX / 4;
             //                endX分为4段，做出一个平滑的效果,右边控制点每次移动的是固定距离
             if (view.stars[2].x <= endX) {
@@ -177,13 +183,14 @@ public class BezierView extends View {
                     int originMove = startX + thisMove;
                     if (i != 2) {
                         if (originMove <= each) {
-                            thisMove = (int) (everyMove * 0.8F + 0.5);
+                            thisMove = (int) (everyMove * 0.6F + 0.5);
                         } else if (originMove <= each * 2 && originMove > each) {
-                            thisMove = (int) (everyMove * 0.85F + 0.5);
+                            thisMove = (int) (everyMove * 0.8F + 0.5);
+//                            在滑动到一半的时候，最左边应该滑动的更少，拉长一点
                         } else if (originMove <= each * 3 && originMove > each * 2) {
-                            thisMove = (int) (everyMove * 0.9F + 0.5);
-                        } else if (originMove <= each * 4 && originMove > each * 3) {
                             thisMove = (int) (everyMove * 0.95F + 0.5);
+                        } else if (originMove <= each * 4 && originMove > each * 3) {
+                            thisMove = (int) (everyMove * 0.99F + 0.5);
                         }
                         view.stars[i].x = startX + thisMove;
                     }
@@ -194,39 +201,51 @@ public class BezierView extends View {
                     int originMove = startX + thisMove;
                     if (i != 3 && i != 4) {
                         if (originMove <= each) {
-                            thisMove = (int) (everyMove * 0.8F + 0.5);
+                            thisMove = (int) (everyMove * 0.6F + 0.5);
                         } else if (originMove <= each * 2 && originMove > each) {
-                            thisMove = (int) (everyMove * 0.85F + 0.5);
+                            thisMove = (int) (everyMove * 0.8F + 0.5);
                         } else if (originMove <= each * 3 && originMove > each * 2) {
-                            thisMove = (int) (everyMove * 0.9F + 0.5);
-                        } else if (originMove <= each * 4 && originMove > each * 3) {
                             thisMove = (int) (everyMove * 0.95F + 0.5);
+                        } else if (originMove <= each * 4 && originMove > each * 3) {
+                            thisMove = (int) (everyMove * 0.99F + 0.5);
                         }
                         view.control[i].x = startX + thisMove;
                     }
                 }
                 view.invalidate();
-                sendEmptyMessageDelayed(1, 10);
+                sendEmptyMessageDelayed(1, 16);
                 moveDistance += everyMove;
             } else {
                 //                右边控制点已经到终点，要缓慢滑动左边的点恢复图形原状
+                boolean isMoveEnd = false;
 
-//                最右边的点减去最左边的点的距离就是还需滑动的距离
-                int needMove = view.stars[2].x - view.stars[0].x;
-                if (toEndEveryMove * toEndMoveCount <= needMove) {
-                    for (int i = 0; i < view.originStars.length; i++) {
-                        if (i != 2) {
-                            view.stars[i].x = view.stars[i].x + toEndEveryMove;
+                for (int i = 0; i < view.originStars.length; i++) {
+                    if (i != 2) {
+                        int end = view.originStars[i].x + moveDistance;
+                        int result = view.stars[i].x + toEndEveryMove;
+                        if (result < end) {
+                            view.stars[i].x = result;
+                            isMoveEnd = false;
+                        } else {
+                            isMoveEnd = true;
                         }
                     }
-                    for (int i = 0; i < view.originControl.length; i++) {
-                        if (i != 3 && i != 4) {
-                            view.control[i].x = view.control[i].x + toEndEveryMove;
+                }
+                for (int i = 0; i < view.originControl.length; i++) {
+                    if (i != 3 && i != 4) {
+                        int end = view.originControl[i].x + moveDistance;
+                        int result = view.control[i].x + toEndEveryMove;
+                        if (result < end) {
+                            view.control[i].x = result;
+                            isMoveEnd = false;
+                        } else {
+                            isMoveEnd = true;
                         }
                     }
-                    toEndMoveCount++;
+                }
+                if (!isMoveEnd) {
                     view.invalidate();
-                    sendEmptyMessageDelayed(1, 10);
+                    sendEmptyMessageDelayed(1, 16);
                 } else {
                     //                最后完全还原
                     view.isMoving = false;
@@ -237,10 +256,9 @@ public class BezierView extends View {
                         view.control[i].x = view.originControl[i].x + moveDistance;
                     }
                     moveDistance = 0;
-                    toEndMoveCount=0;
+                    view.invalidate();
                 }
             }
-
         }
     }
 
