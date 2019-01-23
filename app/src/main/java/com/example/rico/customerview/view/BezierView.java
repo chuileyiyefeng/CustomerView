@@ -173,7 +173,7 @@ public class BezierView extends View {
                 } else {
                     view.isMoving = true;
                     endX = view.radius * 9;
-                    everyMove = view.radius / 10;
+                    everyMove = view.radius / 10 ;
                 }
             }
 //            每个阶段的距离
