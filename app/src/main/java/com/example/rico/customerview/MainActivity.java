@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         adapter.addItem("drawBitmap 动画");
         adapter.addItem("雷达网图");
         adapter.addItem("贝塞尔曲线");
+        adapter.addItem("path填充模式");
         adapter.addItemClick(this);
     }
 

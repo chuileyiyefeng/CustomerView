@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -57,7 +56,7 @@ public class BezierView extends View {
         radius = Math.min(width, height) / 10;
         int centerX = radius / 2 * 3, centerY = radius / 2 * 3;
 //        0.551915024494f 所需数值是这样，大概是个固定值
-        int halfRadius = (int) (radius *0.551915024494f+0.5);
+        int halfRadius = (int) (radius * 0.551915024494f + 0.5);
         startP = new Point(centerX - radius, centerY);
         endP = new Point(centerX, centerY - radius);
         c1 = new Point(centerX - radius, centerY - halfRadius);
@@ -136,9 +135,15 @@ public class BezierView extends View {
 //   下标点0 1对应控制点0 1  1 2对应 2 3  2 3对应 4 5  3 4对应 6 7
         path.reset();
         path.moveTo(stars[0].x, stars[0].y);
+//        4个阶段的辅助线
+        int each = radius * 9 / 4;
+        canvas.drawLine(each, 0, each, height, paint);
+        canvas.drawLine(each * 2, 0, each * 2, height, paint);
+        canvas.drawLine(each * 3, 0, each * 3, height, paint);
+        canvas.drawLine(each * 4, 0, each * 4, height, paint);
         for (int i = 0; i < 4; i++) {
             int k = 2 * i;
-//            画辅助线
+//            画控制点辅助线
 //            paint.setColor(getResources().getColor(R.color.colorAccent));
 //            canvas.drawLine(stars[i].x, stars[i].y, control[k].x, control[k].y, paint);
 //            canvas.drawLine(control[k].x, control[k].y, control[k + 1].x, control[k + 1].y, paint);
@@ -151,8 +156,9 @@ public class BezierView extends View {
 
     private static class MyHandler extends Handler {
         WeakReference<BezierView> reference;
-        int everyMove, toEndEveryMove, moveDistance, endX;
+        int everyMove, shouldMoved,leftMoved, moveDistance, endX;
         BezierView view;
+
         public MyHandler(BezierView view) {
             reference = new WeakReference<>(view);
         }
@@ -162,18 +168,18 @@ public class BezierView extends View {
             super.handleMessage(msg);
             if (null == view) {
                 view = reference.get();
-                if (view==null) {
+                if (view == null) {
                     return;
-                }else {
+                } else {
                     view.isMoving = true;
                     endX = view.radius * 9;
-                    everyMove = view.radius/3;
-                    toEndEveryMove = (int) (everyMove*0.5F+0.5);
+                    everyMove = view.radius / 10;
                 }
             }
+//            每个阶段的距离
             int each = endX / 4;
-            //                endX分为4段，做出一个平滑的效果,右边控制点每次移动的是固定距离
-            if (view.stars[2].x <= endX) {
+            //                endX分为4段，做出一个平滑的效果,到第三段的时候，处于收的阶段，右边控制点每次移动的是固定距离
+            if (view.stars[2].x <= each * 3) {
                 view.stars[2].x = view.stars[2].x + everyMove;
                 view.control[3].x = view.control[3].x + everyMove;
                 view.control[4].x = view.control[3].x;
@@ -183,16 +189,12 @@ public class BezierView extends View {
                     int originMove = startX + thisMove;
                     if (i != 2) {
                         if (originMove <= each) {
-                            thisMove = (int) (everyMove * 0.6F + 0.5);
+                            thisMove = (int) (everyMove * 0.7F + 0.5);
                         } else if (originMove <= each * 2 && originMove > each) {
-                            thisMove = (int) (everyMove * 0.8F + 0.5);
-//                            在滑动到一半的时候，最左边应该滑动的更少，拉长一点
+                            thisMove = (int) (everyMove * 0.9F + 0.5);
                         } else if (originMove <= each * 3 && originMove > each * 2) {
-                            thisMove = (int) (everyMove * 0.95F + 0.5);
-                        } else if (originMove <= each * 4 && originMove > each * 3) {
-                            thisMove = (int) (everyMove * 0.99F + 0.5);
+                            thisMove = (int) (everyMove * 0.8F + 0.5);
                         }
-                        
                         view.stars[i].x = startX + thisMove;
                     }
                 }
@@ -202,64 +204,92 @@ public class BezierView extends View {
                     int originMove = startX + thisMove;
                     if (i != 3 && i != 4) {
                         if (originMove <= each) {
-                            thisMove = (int) (everyMove * 0.6F + 0.5);
+                            thisMove = (int) (everyMove * 0.7F + 0.5);
                         } else if (originMove <= each * 2 && originMove > each) {
-                            thisMove = (int) (everyMove * 0.8F + 0.5);
+                            thisMove = (int) (everyMove * 0.9F + 0.5);
                         } else if (originMove <= each * 3 && originMove > each * 2) {
-                            thisMove = (int) (everyMove * 0.95F + 0.5);
-                        } else if (originMove <= each * 4 && originMove > each * 3) {
-                            thisMove = (int) (everyMove * 0.99F + 0.5);
+                            thisMove = (int) (everyMove * 0.8F + 0.5);
                         }
                         view.control[i].x = startX + thisMove;
                     }
                 }
                 view.invalidate();
-                sendEmptyMessageDelayed(1, 16);
+                view.isMoving = true;
+                sendEmptyMessageDelayed(1, 10);
                 moveDistance += everyMove;
             } else {
-                //                右边控制点已经到终点，要缓慢滑动左边的点恢复图形原状
-                boolean isMoveEnd = false;
-
+                //                右边控制点已经到第四阶段，要缓慢滑动左边的点恢复图形原状，并且整个平移到终点
+                if (shouldMoved == 0) {
+                    shouldMoved = view.stars[2].x - view.originStars[2].x - view.stars[0].x - view.originStars[0].x;
+                }
+                if (leftMoved>=shouldMoved) {
+                    leftMoved=0;
+                }
+                leftMoved=3;
                 for (int i = 0; i < view.originStars.length; i++) {
                     if (i != 2) {
-                        int end = view.originStars[i].x + moveDistance;
-                        int result = view.stars[i].x + toEndEveryMove;
+//                        view.stars[2].x-view.originStars[2].x为最右边滑动的距离，所有的滑动距离不能超过这个
+                        int end = view.originStars[i].x + view.stars[2].x - view.originStars[2].x;
+                        int result = view.stars[i].x + leftMoved;
                         if (result < end) {
                             view.stars[i].x = result;
-                            isMoveEnd = false;
-                        } else {
-                            isMoveEnd = true;
                         }
                     }
                 }
                 for (int i = 0; i < view.originControl.length; i++) {
                     if (i != 3 && i != 4) {
-                        int end = view.originControl[i].x + moveDistance;
-                        int result = view.control[i].x + toEndEveryMove;
+                        int end = view.originControl[i].x + view.control[3].x - view.originControl[3].x;
+                        int result = view.control[i].x + leftMoved;
                         if (result < end) {
                             view.control[i].x = result;
-                            isMoveEnd = false;
-                        } else {
-                            isMoveEnd = true;
                         }
                     }
                 }
-                if (!isMoveEnd) {
+//                这里说明左边还需要移动,移动速率不变，依旧是everyMove
+                if (!removeAll(each)) {
+                    view.isMoving = true;
                     view.invalidate();
-                    sendEmptyMessageDelayed(1, 16);
+//                    整体做一个平移,至终点，也就是endX
+                    sendEmptyMessageDelayed(1, 10);
                 } else {
                     //                最后完全还原
                     view.isMoving = false;
                     for (int i = 0; i < view.originStars.length; i++) {
-                        view.stars[i].x = view.originStars[i].x + moveDistance;
+                        view.stars[i].x = view.originStars[i].x + moveDistance + each;
                     }
                     for (int i = 0; i < view.originControl.length; i++) {
-                        view.control[i].x = view.originControl[i].x + moveDistance;
+                        view.control[i].x = view.originControl[i].x + moveDistance + each;
                     }
+                    shouldMoved = 0;
                     moveDistance = 0;
                     view.invalidate();
                 }
             }
+        }
+
+        private boolean removeAll(int each) {
+            boolean isMoveEnd = false;
+            for (int i = 0; i < view.originStars.length; i++) {
+                int end = view.originStars[i].x + moveDistance + each;
+                int result = view.stars[i].x + everyMove;
+                if (result < end) {
+                    view.stars[i].x = result;
+                    isMoveEnd = false;
+                } else {
+                    isMoveEnd = true;
+                }
+            }
+            for (int i = 0; i < view.originControl.length; i++) {
+                int end = view.originControl[i].x + moveDistance + each;
+                int result = view.control[i].x + everyMove;
+                if (result < end) {
+                    view.control[i].x = result;
+                    isMoveEnd = false;
+                } else {
+                    isMoveEnd = true;
+                }
+            }
+            return isMoveEnd;
         }
     }
 
