@@ -19,6 +19,7 @@
     <color name="gray_thumb">#dddddd</color>
     <color name="blue_thumb">#43a2fb</color>
     <color name="text_bg">#f5f5f5</color>
+    <color name="white">#ffffff</color>
     <color name="text_color">#4578e6</color>
     <color name="button_color">#335fbd</color>
     <color name="button_otp">#5188ff</color>

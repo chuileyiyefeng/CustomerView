@@ -6,6 +6,8 @@ import android.widget.LinearLayout;
 import com.example.rico.customerview.BaseActivity;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.BezierView;
+import com.example.rico.customerview.view.FillTypeView;
+import com.example.rico.customerview.view.RegionClickView;
 
 /**
  * Created by Tmp on 2019/1/8.
@@ -27,6 +29,12 @@ public class AllViewActivity extends BaseActivity {
         switch (type) {
             case 4:
                 view = new BezierView(this);
+                break;
+            case 5:
+                view = new FillTypeView(this);
+                break;
+            case 6:
+                view = new RegionClickView(this);
                 break;
             default:
                 view = new View(this);
