@@ -140,7 +140,7 @@ public class RegionClickView extends View {
         rgB.setPath(pB, globalRegion);
 //        左
         pL.addArc(rSmall, 180 - bigAngle / 2, 80);
-        pL.arcTo(rBig, 220, -bigAngle );
+        pL.arcTo(rBig, 220, -bigAngle);
         pL.close();
         rgL.setPath(pL, globalRegion);
     }
