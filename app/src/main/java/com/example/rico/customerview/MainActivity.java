@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         adapter.addItem("贝塞尔曲线");
         adapter.addItem("path填充模式(并不是)");
         adapter.addItem("不同区域点击");
+        adapter.addItem("写字板");
+        adapter.addItem("圆弧SeekBar");
         adapter.addItemClick(this);
     }
 

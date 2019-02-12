@@ -2,7 +2,6 @@ package com.example.rico.customerview.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -41,13 +40,12 @@ public class RegionClickView extends View {
     Point centerPoint;
     //    四个方向的Region  中间的
     Region rgL, rgT, rgR, rgB, rgC;
-    //    四个方向的path 中间的 改变颜色的path
+    //    四个方向的path 中间的 点击的path
     Path pL, pT, pR, pB, pC, pS;
 
     private void init() {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStyle(Paint.Style.FILL);
-        paint.setColor(getResources().getColor(R.color.colorAccent));
         pL = new Path();
         pT = new Path();
         pR = new Path();
@@ -86,11 +84,8 @@ public class RegionClickView extends View {
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
-                if (touchX - event.getX() <= 10 && touchY - event.getY() <= 10) {
-//                    这里有点击事件
-                    pS.reset();
-                    invalidate();
-                }
+                pS.reset();
+                invalidate();
                 break;
 
         }
@@ -106,6 +101,7 @@ public class RegionClickView extends View {
         radius = Math.min(width, height) / 3;
         centerPoint = new Point(width / 2, height / 2);
         int smallRadius = radius / 4;
+
         int inWidth = smallRadius * 2;
         Region globalRegion = new Region();
         globalRegion.set(0, 0, w, h);
@@ -119,27 +115,29 @@ public class RegionClickView extends View {
 //        添加路径 从270-40°C开始,大小圆弧要反着来
 
         int bigAngle = 80;
-        int disAngleLength = (int) (10 * Math.PI * (radius-inWidth) / 180 + 0.5);
-        int disAngle= (int) (disAngleLength/Math.PI * (radius-inWidth) / 360 + 0.5);
-
+        int spaceAngle=10;
+        int disAngleLength = (int) (spaceAngle * Math.PI * (radius-inWidth) / 180 + 0.5);
+        int disAngle= (int) (disAngleLength/Math.PI * inWidth / 180 + 0.5);
+//        里面的角度应当小的距离
+        int lessAngle= (int) (disAngle/2+0.5f);
 
 //        上
-        pT.addArc(rSmall, 270 - bigAngle / 2, 80);
+        pT.addArc(rSmall, 270 - bigAngle / 2+lessAngle, bigAngle-lessAngle);
         pT.arcTo(rBig, 310, -bigAngle);
         pT.close();
         rgT.setPath(pT, globalRegion);
 //         右
-        pR.addArc(rSmall, 0 - bigAngle / 2, 80);
+        pR.addArc(rSmall, 0 - bigAngle / 2+lessAngle, bigAngle-lessAngle);
         pR.arcTo(rBig, 40, -bigAngle);
         pR.close();
         rgR.setPath(pR, globalRegion);
 //        下
-        pB.addArc(rSmall, 90 - bigAngle / 2, 80);
+        pB.addArc(rSmall, 90 - bigAngle / 2+lessAngle, bigAngle-lessAngle);
         pB.arcTo(rBig, 130, -bigAngle);
         pB.close();
         rgB.setPath(pB, globalRegion);
 //        左
-        pL.addArc(rSmall, 180 - bigAngle / 2, 80);
+        pL.addArc(rSmall, 180 - bigAngle / 2+lessAngle, bigAngle-lessAngle);
         pL.arcTo(rBig, 220, -bigAngle);
         pL.close();
         rgL.setPath(pL, globalRegion);
@@ -148,14 +146,14 @@ public class RegionClickView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        paint.setColor(getResources().getColor(R.color.colorAccent));
+        paint.setColor(getResources().getColor(R.color.gray_thumb));
         canvas.drawPath(pC, paint);
         canvas.drawPath(pT, paint);
         canvas.drawPath(pR, paint);
         canvas.drawPath(pB, paint);
         canvas.drawPath(pL, paint);
 
-        paint.setColor(getResources().getColor(R.color.gray_thumb));
+        paint.setColor(getResources().getColor(R.color.gray_light));
         canvas.drawPath(pS, paint);
     }
 }

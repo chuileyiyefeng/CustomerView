@@ -83,6 +83,9 @@ public class HexagonPathView extends View {
         for (int k = 0; k <= allRadius; k += everyLess) {
             canvas.save();
             int radius = allRadius - k;
+            if (radius<everyLess) {
+                break;
+            }
             double sideLength = (radius * Math.sin(Math.toRadians(avag / 2)) * 2 + 0.5);
             int y = (int) (radius * Math.cos(Math.toRadians(avag / 2)) + 0.5);
             for (int i = 0; i < count; i++) {

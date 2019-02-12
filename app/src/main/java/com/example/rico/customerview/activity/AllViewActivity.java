@@ -5,8 +5,10 @@ import android.widget.LinearLayout;
 
 import com.example.rico.customerview.BaseActivity;
 import com.example.rico.customerview.R;
+import com.example.rico.customerview.view.ArcSeekBarView;
 import com.example.rico.customerview.view.BezierView;
 import com.example.rico.customerview.view.FillTypeView;
+import com.example.rico.customerview.view.HandWritingView;
 import com.example.rico.customerview.view.RegionClickView;
 
 /**
@@ -36,10 +38,16 @@ public class AllViewActivity extends BaseActivity {
             case 6:
                 view = new RegionClickView(this);
                 break;
+            case 7:
+                view=new HandWritingView(this);
+                break;
+            case 8:
+                view=new ArcSeekBarView(this);
+                break;
             default:
                 view = new View(this);
                 break;
         }
-        llALl.addView(view);
+            llALl.addView(view);
     }
 }

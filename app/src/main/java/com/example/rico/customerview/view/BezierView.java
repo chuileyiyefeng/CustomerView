@@ -19,6 +19,7 @@ import java.lang.ref.WeakReference;
 /**
  * Created by Tmp on 2019/1/8.
  * 贝塞尔曲线view ,用4个三阶贝塞尔曲线画一个圆
+ * 向右滑动，弹性效果
  */
 public class BezierView extends View {
     Paint paint;
