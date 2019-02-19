@@ -1,13 +1,16 @@
 package com.example.rico.customerview.activity;
 
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.example.rico.customerview.BaseActivity;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.ArcSeekBarView;
+import com.example.rico.customerview.view.BaseView;
 import com.example.rico.customerview.view.BezierView;
 import com.example.rico.customerview.view.FillTypeView;
+import com.example.rico.customerview.view.FlowView;
 import com.example.rico.customerview.view.HandWritingView;
 import com.example.rico.customerview.view.RegionClickView;
 
@@ -39,15 +42,23 @@ public class AllViewActivity extends BaseActivity {
                 view = new RegionClickView(this);
                 break;
             case 7:
-                view=new HandWritingView(this);
+                view = new HandWritingView(this);
                 break;
             case 8:
-                view=new ArcSeekBarView(this);
+                view = new ArcSeekBarView(this);
+                break;
+            case 9:
+                view = new BaseView(this);
                 break;
             default:
                 view = new View(this);
                 break;
         }
-            llALl.addView(view);
+        llALl.addView(view);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return super.dispatchTouchEvent(ev);
     }
 }

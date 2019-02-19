@@ -11,8 +11,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 
 import com.example.rico.customerview.R;
 
@@ -45,17 +47,17 @@ public class ArcSeekBarView extends View {
 
     public ArcSeekBarView(Context context) {
         super(context);
-        init();
+        init(context);
     }
 
     public ArcSeekBarView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context);
     }
 
     public ArcSeekBarView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context);
     }
 
     @Override
@@ -68,7 +70,7 @@ public class ArcSeekBarView extends View {
         mGradient = new SweepGradient(width / 2, height / 2, arcColors, null);
     }
 
-    private void init() {
+    private void init(Context context) {
         handler = new MyHandler(this);
         circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -156,6 +158,7 @@ public class ArcSeekBarView extends View {
         borderPaint.setStyle(Paint.Style.STROKE);
         boldPaint.setShader(mGradient);
         k++;
+
     }
 
     static class MyHandler extends Handler {

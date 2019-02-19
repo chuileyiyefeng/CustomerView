@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.example.rico.customerview.activity.AllViewActivity;
 import com.example.rico.customerview.activity.DrawBitmapActivity;
+import com.example.rico.customerview.activity.FlowActivity;
 import com.example.rico.customerview.activity.PieActivity;
 import com.example.rico.customerview.activity.RadarActivity;
 import com.example.rico.customerview.activity.ScalAndRoteActivity;
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         adapter.addItem("不同区域点击");
         adapter.addItem("写字板");
         adapter.addItem("圆弧SeekBar");
+        adapter.addItem("基础测试");
+        adapter.addItem("流式布局");
         adapter.addItemClick(this);
     }
 
@@ -55,6 +58,9 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
                 break;
             case 3:
                 intent = new Intent(this, RadarActivity.class);
+                break;
+            case 10:
+                intent = new Intent(this, FlowActivity.class);
                 break;
             default:
                 intent = new Intent(this, AllViewActivity.class).putExtra("type", position);

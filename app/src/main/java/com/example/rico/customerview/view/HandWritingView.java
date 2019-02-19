@@ -40,20 +40,22 @@ public class HandWritingView extends View {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(10);
         path = new Path();
-        effect=new CornerPathEffect(200);
+        effect = new CornerPathEffect(200);
         paint.setPathEffect(effect);
     }
-    public void reset(){
+
+    public void reset() {
         path.reset();
     }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                path.moveTo(event.getX(),event.getY());
+                path.moveTo(event.getX(), event.getY());
                 break;
             case MotionEvent.ACTION_MOVE:
-                path.lineTo(event.getX(),event.getY());
+                path.lineTo(event.getX(), event.getY());
                 break;
         }
         postInvalidate();
