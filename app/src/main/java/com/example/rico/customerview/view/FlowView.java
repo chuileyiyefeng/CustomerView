@@ -89,7 +89,7 @@ public class FlowView extends ViewGroup {
                 list.add(new ChildPos(left, top, right, bottom));
             } else {
                 realWidth = widthSize;
-                //                换行了，但是这一行占满了整行，要继续换行,也就是连续换行的情况
+                //               换行了，但是这一行占满了整行，要继续换行,也就是连续换行的情况
                 if (isChange) {
                     lineHeight = lastBottom;
                 }
