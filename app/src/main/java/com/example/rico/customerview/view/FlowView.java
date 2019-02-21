@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * Created by Tmp on 2019/2/19.
+ * 流式布局view
  */
 public class FlowView extends ViewGroup {
     private List<ChildPos> list;
