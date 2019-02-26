@@ -68,9 +68,12 @@ public class FlowView extends ViewGroup {
             measureChild(child, widthMeasureSpec, heightMeasureSpec);
             int childWidth = child.getMeasuredWidth();
             int childHeight = child.getMeasuredHeight();
-
 //            当前子控件不超过规定宽度
             int left, top, right, bottom;
+            if (child.getVisibility()!=VISIBLE) {
+                list.add(null);
+                continue;
+            }
             if (currentWidth + childWidth + horizontalDis * 2 <= widthSize) {
                 isChange = false;
                 left = currentWidth + horizontalDis;
@@ -122,7 +125,9 @@ public class FlowView extends ViewGroup {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-
+            if (child.getVisibility()!=VISIBLE) {
+                continue;
+            }
             //设置View的左边、上边、右边底边位置
             ChildPos pos = list.get(i);
             Log.e("position", "onLayout: " + pos.left + " " + " " + pos.top + "  " + pos.right + "  " + pos.bottom);

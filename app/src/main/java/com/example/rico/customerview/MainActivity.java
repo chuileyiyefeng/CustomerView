@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.rico.customerview.activity.AllViewActivity;
+import com.example.rico.customerview.activity.CircleLayoutActivity;
 import com.example.rico.customerview.activity.DrawBitmapActivity;
 import com.example.rico.customerview.activity.FlowActivity;
 import com.example.rico.customerview.activity.PieActivity;
@@ -38,8 +39,9 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         adapter.addItem("不同区域点击");
         adapter.addItem("写字板");
         adapter.addItem("圆弧SeekBar");
-        adapter.addItem("基础测试");
+        adapter.addItem("layout改变测试");
         adapter.addItem("流式布局");
+        adapter.addItem("循环滚动view");
         adapter.addItemClick(this);
     }
 
@@ -61,6 +63,9 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
                 break;
             case 10:
                 intent = new Intent(this, FlowActivity.class);
+                break;
+            case 11:
+                intent = new Intent(this, CircleLayoutActivity.class);
                 break;
             default:
                 intent = new Intent(this, AllViewActivity.class).putExtra("type", position);

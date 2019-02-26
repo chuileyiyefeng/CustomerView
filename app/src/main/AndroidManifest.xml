@@ -22,6 +22,7 @@
         <activity android:name=".activity.RadarActivity" />
         <activity android:name=".activity.AllViewActivity" />
         <activity android:name=".activity.FlowActivity" />
+        <activity android:name=".activity.CircleLayoutActivity" />
     </application>
 
 </manifest>

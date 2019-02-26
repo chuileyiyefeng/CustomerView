@@ -1,6 +1,6 @@
 package com.example.rico.customerview.activity;
 
-import android.graphics.Color;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.rico.customerview.BaseActivity;
@@ -34,21 +34,23 @@ public class FlowActivity extends BaseActivity {
             list.add("冰晶凤凰");
             list.add("德邦总管");
             list.add("野兽之灵乌迪尔");
-            list.add("赛恩");
+            list.add("塞恩");
             list.add("诡术妖姬");
             list.add("永恒梦魇");
             list.add("诺克萨斯之手");
         }
-
-
         flow = findViewById(R.id.flow);
         flow.setMargin(5, 5);
         for (int i = 0; i < list.size(); i++) {
+
             TextView view = new TextView(this);
             view.setPadding(10, 5, 10, 5);
             view.setText(list.get(i));
             view.setTextSize(20);
             view.setBackgroundColor(getResources().getColor(R.color.white));
+            if (list.get(i).equals("塞恩")) {
+                view.setVisibility(View.GONE);
+            }
             flow.addView(view);
         }
     }
