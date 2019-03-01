@@ -5,7 +5,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.Scroller;
 
 /**
@@ -13,6 +15,7 @@ import android.widget.Scroller;
  * 无限循环view
  */
 public class CircleLayoutView extends ViewGroup {
+    private static final String TAG = "CircleLayoutView";
     Scroller scroller;
 
     public CircleLayoutView(Context context) {
@@ -31,8 +34,12 @@ public class CircleLayoutView extends ViewGroup {
         initView(context);
     }
 
+    int mTouchSlop;
+
     private void initView(Context context) {
         scroller = new Scroller(context);
+        final ViewConfiguration configuration = ViewConfiguration.get(context);
+        mTouchSlop = configuration.getScaledTouchSlop();
     }
 
     int width, height;
@@ -54,6 +61,7 @@ public class CircleLayoutView extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+//        布局类似于Linear Layout的vertical模式
         int count = getChildCount();
         int top = 0;
         for (int i = 0; i < count; i++) {
@@ -69,50 +77,108 @@ public class CircleLayoutView extends ViewGroup {
         }
     }
 
-    float lastX, lastY;
+    float lastX, lastY, lastMoveY;
+    boolean isScrollFinish = true;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 lastX = event.getX();
                 lastY = event.getY();
+                lastMoveY = event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
+//                跟随手指滑动
+                moveFollow((int) (lastMoveY - event.getY()));
+                lastMoveY = event.getY();
                 break;
             case MotionEvent.ACTION_UP:
-                if (Math.abs(event.getX() - lastX) < 10 && Math.abs(event.getY() - lastY) < 10) {
-                    scrollLast();
+                float distance = event.getY() - lastY;
+                if (Math.abs(distance) > mTouchSlop) {
+                    goScroll(distance);
                 }
-                break;
         }
-        return true;
+        return isScrollFinish;
     }
 
-    int startY = 0;
 
-    boolean firstMove = true;
-
-    private void scrollLast() {
-        if (!firstMove) {
-            computePosition();
+    //    跟随手指的滑动
+    private void moveFollow(int moveOn) {
+        scrollBy(0, moveOn);
+//        当上面添加一个view时，当前显示的view会向下移动height的距离，这时候scroll 正height高度
+//        这样就形成了view没动，上面出现一个view的视觉效果
+        if (getScrollY() < 5) {
+            addLast();
+            scrollBy(0, height);
+//            这里调用了scrollBy方法，所以getScrollY的值变了，所以if的满足条件值满足一次，不会多次调用
         }
-        firstMove = false;
+        if (getScrollY() > (getChildCount() - 1) * height) {
+            addNext();
+            scrollBy(0, -height);
+        }
+    }
+
+    int duration = 300;
+
+    //    放手之后的滑动选项
+    private void goScroll(float distance) {
+//        因为有addLast和addNext方法存在，getScrollY范围会在 0-height*getChildCount 这个范围
+        int level = (getScrollY() % height);
+        int shouldScroll;
+        if (distance > 0) {
+            if (Math.abs(distance) % height >= height / 3) {
+                shouldScroll = -level;
+            } else {
+                shouldScroll = height - level;
+            }
+        } else {
+            if (Math.abs(distance) % height >= height / 3) {
+                shouldScroll = height - level;
+            } else {
+                shouldScroll = -level;
+            }
+        }
         scroller.startScroll(0,
-                startY,
+                getScrollY(),
                 0,
-                height, 1000);
-//        startY += height;
-        //通过重绘不断调用computeScroll
+                shouldScroll, duration);
         invalidate();
     }
 
-    private void computePosition() {
+    public void moveNext() {
+        addNext();
+        scroller.startScroll(0,
+                getScrollY()-height,
+                0,
+                height, duration);
+        invalidate();
+    }
+
+    public void moveLast() {
+        addLast();
+        scroller.startScroll(0,
+                getScrollY()+height,
+                0,
+                -height, duration);
+
+        invalidate();
+    }
+
+    //    移形换位，最上面的view挪到最底下
+    private void addNext() {
         int count = getChildCount();
         View v = getChildAt(0);
         removeViewAt(0);
         addView(v, count - 1);
+    }
+
+    //    移形换位，最底下的view挪到最上
+    private void addLast() {
+        int count = getChildCount();
+        View v = getChildAt(count - 1);
+        removeViewAt(count - 1);
+        addView(v, 0);
     }
 
     @Override
@@ -122,5 +188,6 @@ public class CircleLayoutView extends ViewGroup {
             scrollTo(scroller.getCurrX(), scroller.getCurrY());
             invalidate();
         }
+        isScrollFinish = scroller.isFinished();
     }
 }

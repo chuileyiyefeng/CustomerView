@@ -5,29 +5,62 @@
     android:orientation="vertical">
 
     <com.example.rico.customerview.view.CircleLayoutView
+        android:id="@+id/circle_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
+        android:layout_height="100dp"
+        android:layout_gravity="center">
 
         <TextView
+            android:id="@+id/tv_one"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/colorLine"
             android:gravity="center"
             android:text="这是第一项"
-            android:textSize="30sp" />
+            android:textSize="50sp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/colorAccent"
             android:gravity="center"
             android:text="这是第二项"
-            android:textSize="40dp" />
+            android:textSize="50dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/button_bg"
             android:gravity="center"
             android:text="这是第三项"
             android:textSize="50sp" />
     </com.example.rico.customerview.view.CircleLayoutView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_next"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@color/colorLine"
+            android:gravity="center"
+            android:text="向下"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_last"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@color/colorLine"
+            android:gravity="center"
+            android:text="向上"
+            android:textSize="14sp" />
+    </LinearLayout>
+
 </FrameLayout>
