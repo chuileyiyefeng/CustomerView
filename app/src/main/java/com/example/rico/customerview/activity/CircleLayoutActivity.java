@@ -28,7 +28,7 @@ public class CircleLayoutActivity extends BaseActivity implements View.OnClickLi
         circleView=findViewById(R.id.circle_view);
         lastTv.setOnClickListener(this);
         nextTv.setOnClickListener(this);
-//        oneTv.setOnClickListener(this);
+        oneTv.setOnClickListener(this);
     }
 
     @Override

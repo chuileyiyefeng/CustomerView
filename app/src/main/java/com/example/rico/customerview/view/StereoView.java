@@ -130,6 +130,7 @@ public class StereoView extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+
         return isSliding;
     }
 

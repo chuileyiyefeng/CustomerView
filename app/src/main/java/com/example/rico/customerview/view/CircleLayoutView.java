@@ -2,12 +2,10 @@ package com.example.rico.customerview.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.widget.ScrollView;
 import android.widget.Scroller;
 
 /**
@@ -78,7 +76,51 @@ public class CircleLayoutView extends ViewGroup {
     }
 
     float lastX, lastY, lastMoveY;
-    boolean isScrollFinish = true;
+    boolean isCanSliding = false, isScrollFinish = true;
+
+//    viewGroup事件分发流程 dispatchTouchEvent-onInterceptTouchEvent-onTouchEvent
+
+//    dispatch
+//    为true直接会去调用子view的dispatch
+//    为false会调用父类的onTouchEvent
+//    为super会调用 onInterceptTouchEvent
+
+//    onInterceptTouchEvent
+//    为false或者super，表示不拦截事件，会调用子view的dispatch
+//    为true表示拦截事件，事件交给onTouchEvent处理
+
+    float mDownX, mDownY;
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (!isScrollFinish) {
+            return false;
+        }
+        float x = ev.getX();
+        float y = ev.getY();
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                isCanSliding = false;
+                mDownX = x;
+                mDownY = y;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (!isCanSliding) {
+                    isCanSliding = isCanSliding(ev);
+                }
+//                isCanSliding为true时，会直接调用onTouchEvent的ACTION_MOVE，所以这里改变lastMoveY的值
+                lastMoveY = ev.getY();
+                break;
+
+        }
+        return isCanSliding;
+    }
+
+    public boolean isCanSliding(MotionEvent ev) {
+        float moveX = ev.getX();
+        float moveY = ev.getY();
+        return (Math.abs(moveY - mDownX) > mTouchSlop && (Math.abs(moveY - mDownY) > (Math.abs(moveX - mDownX))));
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -94,12 +136,13 @@ public class CircleLayoutView extends ViewGroup {
                 lastMoveY = event.getY();
                 break;
             case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
                 float distance = event.getY() - lastY;
                 if (Math.abs(distance) > mTouchSlop) {
                     goScroll(distance);
                 }
         }
-        return isScrollFinish;
+        return true;
     }
 
 
@@ -149,7 +192,7 @@ public class CircleLayoutView extends ViewGroup {
     public void moveNext() {
         addNext();
         scroller.startScroll(0,
-                getScrollY()-height,
+                getScrollY() - height,
                 0,
                 height, duration);
         invalidate();
@@ -158,7 +201,7 @@ public class CircleLayoutView extends ViewGroup {
     public void moveLast() {
         addLast();
         scroller.startScroll(0,
-                getScrollY()+height,
+                getScrollY() + height,
                 0,
                 -height, duration);
 
