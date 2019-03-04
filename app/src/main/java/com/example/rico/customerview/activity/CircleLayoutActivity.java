@@ -3,6 +3,7 @@ package com.example.rico.customerview.activity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.rico.customerview.BaseActivity;
 import com.example.rico.customerview.R;
@@ -12,7 +13,7 @@ import com.example.rico.customerview.view.CircleLayoutView;
  * Created by Tmp on 2019/2/21.
  */
 public class CircleLayoutActivity extends BaseActivity implements View.OnClickListener {
-    TextView lastTv, nextTv,oneTv;
+    TextView lastTv, nextTv, oneTv;
     CircleLayoutView circleView;
 
     @Override
@@ -22,10 +23,10 @@ public class CircleLayoutActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void doBusiness() {
-        lastTv=findViewById(R.id.tv_last);
-        nextTv=findViewById(R.id.tv_next);
-        oneTv=findViewById(R.id.tv_one);
-        circleView=findViewById(R.id.circle_view);
+        lastTv = findViewById(R.id.tv_last);
+        nextTv = findViewById(R.id.tv_next);
+        oneTv = findViewById(R.id.tv_one);
+        circleView = findViewById(R.id.circle_view);
         lastTv.setOnClickListener(this);
         nextTv.setOnClickListener(this);
         oneTv.setOnClickListener(this);
@@ -41,7 +42,7 @@ public class CircleLayoutActivity extends BaseActivity implements View.OnClickLi
                 circleView.moveNext();
                 break;
             case R.id.tv_one:
-                Log.e("Circle", "onClick: "+"这是one" );
+                Toast.makeText(CircleLayoutActivity.this, "子view点击了", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

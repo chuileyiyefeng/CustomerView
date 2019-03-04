@@ -2,6 +2,7 @@ package com.example.rico.customerview.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -40,7 +41,8 @@ public class CircleLayoutView extends ViewGroup {
         mTouchSlop = configuration.getScaledTouchSlop();
     }
 
-    int width, height;
+    //    宽、高、滑动临界值
+    int width, height, threshold;
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -54,6 +56,7 @@ public class CircleLayoutView extends ViewGroup {
             width = Math.max(width, v.getMeasuredWidth());
         }
         width = widthMode == MeasureSpec.EXACTLY ? widthSize : width;
+        threshold = height / 3;
         setMeasuredDimension(width, height);
     }
 
@@ -76,7 +79,7 @@ public class CircleLayoutView extends ViewGroup {
     }
 
     float lastX, lastY, lastMoveY;
-    boolean isCanSliding = false, isScrollFinish = true;
+    boolean isCanSliding = false;
 
 //    viewGroup事件分发流程 dispatchTouchEvent-onInterceptTouchEvent-onTouchEvent
 
@@ -93,9 +96,6 @@ public class CircleLayoutView extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (!isScrollFinish) {
-            return false;
-        }
         float x = ev.getX();
         float y = ev.getY();
         switch (ev.getAction()) {
@@ -103,15 +103,14 @@ public class CircleLayoutView extends ViewGroup {
                 isCanSliding = false;
                 mDownX = x;
                 mDownY = y;
+//               有可能这里调用了down，isCanSliding又为true的同时，onTouchEvent的down不会调用，所以这里也给lastY赋值一下
+                lastY=ev.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (!isCanSliding) {
-                    isCanSliding = isCanSliding(ev);
-                }
+                isCanSliding = isCanSliding(ev);
 //                isCanSliding为true时，会直接调用onTouchEvent的ACTION_MOVE，所以这里改变lastMoveY的值
                 lastMoveY = ev.getY();
                 break;
-
         }
         return isCanSliding;
     }
@@ -119,11 +118,14 @@ public class CircleLayoutView extends ViewGroup {
     public boolean isCanSliding(MotionEvent ev) {
         float moveX = ev.getX();
         float moveY = ev.getY();
-        return (Math.abs(moveY - mDownX) > mTouchSlop && (Math.abs(moveY - mDownY) > (Math.abs(moveX - mDownX))));
+        return (Math.abs(moveY - mDownY) > mTouchSlop && (Math.abs(moveY - mDownY) > (Math.abs(moveX - mDownX))));
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (!scroller.isFinished()) {
+            return false;
+        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 lastX = event.getX();
@@ -170,13 +172,13 @@ public class CircleLayoutView extends ViewGroup {
         int level = (getScrollY() % height);
         int shouldScroll;
         if (distance > 0) {
-            if (Math.abs(distance) % height >= height / 3) {
+            if (Math.abs(distance) % height >= threshold) {
                 shouldScroll = -level;
             } else {
                 shouldScroll = height - level;
             }
         } else {
-            if (Math.abs(distance) % height >= height / 3) {
+            if (Math.abs(distance) % height >= threshold) {
                 shouldScroll = height - level;
             } else {
                 shouldScroll = -level;
@@ -186,26 +188,30 @@ public class CircleLayoutView extends ViewGroup {
                 getScrollY(),
                 0,
                 shouldScroll, duration);
-        invalidate();
+        postInvalidate();
     }
 
     public void moveNext() {
         addNext();
+        scrollBy(0, -height);
+//        这里滚动会有误差，暂时不知道什么原因(可能是startScroll的误差),所以加上一个差值，moveLast同理
+        int deviation = getScrollY() % height;
         scroller.startScroll(0,
-                getScrollY() - height,
+                getScrollY(),
                 0,
-                height, duration);
-        invalidate();
+                height - deviation, duration);
+
     }
 
     public void moveLast() {
         addLast();
+        scrollBy(0, height);
+        int deviation = getScrollY() % height;
         scroller.startScroll(0,
-                getScrollY() + height,
+                getScrollY(),
                 0,
-                -height, duration);
+                -height - deviation, duration);
 
-        invalidate();
     }
 
     //    移形换位，最上面的view挪到最底下
@@ -231,6 +237,5 @@ public class CircleLayoutView extends ViewGroup {
             scrollTo(scroller.getCurrX(), scroller.getCurrY());
             invalidate();
         }
-        isScrollFinish = scroller.isFinished();
     }
 }
