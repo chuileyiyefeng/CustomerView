@@ -1,10 +1,14 @@
 package com.example.rico.customerview;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.example.rico.customerview.activity.AllViewActivity;
 import com.example.rico.customerview.activity.CircleLayoutActivity;
@@ -13,6 +17,7 @@ import com.example.rico.customerview.activity.FlowActivity;
 import com.example.rico.customerview.activity.PieActivity;
 import com.example.rico.customerview.activity.RadarActivity;
 import com.example.rico.customerview.activity.ScalAndRoteActivity;
+import com.example.rico.customerview.view.ItemDecoration;
 
 public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemClick {
     RecyclerView rv;
@@ -28,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
     private void initView() {
         rv = findViewById(R.id.rv);
         adapter = new FirstAdapter(this);
-        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setLayoutManager(new GridLayoutManager(this, 2));
         rv.setAdapter(adapter);
         adapter.addItem("饼状图");
         adapter.addItem("缩放旋转");
@@ -42,11 +47,13 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         adapter.addItem("layout改变测试");
         adapter.addItem("流式布局");
         adapter.addItem("循环滚动view");
+        adapter.addItem("气泡波浪");
         adapter.addItemClick(this);
+        rv.addItemDecoration(new ItemDecoration());
     }
 
     @Override
-    public void click(int position) {
+    public void itemClick(int position) {
         Intent intent;
         switch (position) {
             case 0:

@@ -56,7 +56,7 @@ public class BezierView extends View {
         height = h;
         radius = Math.min(width, height) / 10;
         int centerX = radius / 2 * 3, centerY = radius / 2 * 3;
-//        0.551915024494f 所需数值是这样，大概是个固定值
+//        0.551915024494f 画圆所需数值是这样，大概是个固定值
         int halfRadius = (int) (radius * 0.551915024494f + 0.5);
         startP = new Point(centerX - radius, centerY);
         endP = new Point(centerX, centerY - radius);
@@ -157,7 +157,7 @@ public class BezierView extends View {
 
     private static class MyHandler extends Handler {
         WeakReference<BezierView> reference;
-        int everyMove, shouldMoved,leftMoved, moveDistance, endX;
+        int everyMove, shouldMoved, leftMoved, moveDistance, endX;
         BezierView view;
 
         public MyHandler(BezierView view) {
@@ -174,7 +174,7 @@ public class BezierView extends View {
                 } else {
                     view.isMoving = true;
                     endX = view.radius * 9;
-                    everyMove = view.radius / 10 ;
+                    everyMove = view.radius / 10;
                 }
             }
 //            每个阶段的距离
@@ -223,10 +223,10 @@ public class BezierView extends View {
                 if (shouldMoved == 0) {
                     shouldMoved = view.stars[2].x - view.originStars[2].x - view.stars[0].x - view.originStars[0].x;
                 }
-                if (leftMoved>=shouldMoved) {
-                    leftMoved=0;
+                if (leftMoved >= shouldMoved) {
+                    leftMoved = 0;
                 }
-                leftMoved=3;
+                leftMoved = 3;
                 for (int i = 0; i < view.originStars.length; i++) {
                     if (i != 2) {
 //                        view.stars[2].x-view.originStars[2].x为最右边滑动的距离，所有的滑动距离不能超过这个

@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -41,7 +40,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
             @Override
             public void onClick(View v) {
                 if (itemClick != null) {
-                    itemClick.click(i);
+                    itemClick.itemClick(i);
                 }
             }
         });
@@ -76,7 +75,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
     }
 
     public interface ItemClick {
-        void click(int position);
+        void itemClick(int position);
     }
 
 }

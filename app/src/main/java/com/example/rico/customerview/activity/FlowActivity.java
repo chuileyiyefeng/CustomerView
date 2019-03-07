@@ -1,5 +1,6 @@
 package com.example.rico.customerview.activity;
 
+import android.graphics.Color;
 import android.view.View;
 import android.widget.TextView;
 
@@ -42,12 +43,12 @@ public class FlowActivity extends BaseActivity {
         flow = findViewById(R.id.flow);
         flow.setMargin(5, 5);
         for (int i = 0; i < list.size(); i++) {
-
             TextView view = new TextView(this);
+            view.setTextColor(Color.parseColor("#43a2fb"));
             view.setPadding(10, 5, 10, 5);
             view.setText(list.get(i));
             view.setTextSize(20);
-            view.setBackgroundColor(getResources().getColor(R.color.white));
+            view.setBackgroundResource(R.drawable.blue_border);
             if (list.get(i).equals("塞恩")) {
                 view.setVisibility(View.GONE);
             }

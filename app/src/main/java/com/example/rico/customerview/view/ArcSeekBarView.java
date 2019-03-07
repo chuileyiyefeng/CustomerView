@@ -161,7 +161,7 @@ public class ArcSeekBarView extends View {
 
     }
 
-    static class MyHandler extends Handler {
+   private static class MyHandler extends Handler {
         WeakReference<ArcSeekBarView> reference;
 
         private MyHandler(ArcSeekBarView view) {
@@ -176,5 +176,11 @@ public class ArcSeekBarView extends View {
                 sendEmptyMessageDelayed(1, 16);
             }
         }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        handler.removeCallbacksAndMessages(null);
     }
 }

@@ -13,6 +13,7 @@ import com.example.rico.customerview.view.FillTypeView;
 import com.example.rico.customerview.view.FlowView;
 import com.example.rico.customerview.view.HandWritingView;
 import com.example.rico.customerview.view.RegionClickView;
+import com.example.rico.customerview.view.WaveBubbleView;
 
 /**
  * Created by Tmp on 2019/1/8.
@@ -50,15 +51,13 @@ public class AllViewActivity extends BaseActivity {
             case 9:
                 view = new BaseView(this);
                 break;
+            case 12:
+                view = new WaveBubbleView(this);
+                break;
             default:
                 view = new View(this);
                 break;
         }
         llALl.addView(view);
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        return super.dispatchTouchEvent(ev);
     }
 }
