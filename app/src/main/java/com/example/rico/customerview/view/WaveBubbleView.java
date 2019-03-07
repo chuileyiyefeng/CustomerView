@@ -29,7 +29,6 @@ public class WaveBubbleView extends View {
     private int baseLine;
     private int waveHeight = 60;
     private Random random;
-    ;
 
     public WaveBubbleView(Context context) {
         super(context);
