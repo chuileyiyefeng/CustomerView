@@ -78,7 +78,6 @@ public class FishSwimView extends View {
         tailPoints2 = new ArrayList<>();
         finPoints1 = new ArrayList<>();
         finPoints2 = new ArrayList<>();
-
         animator = new ValueAnimator();
 
     }
