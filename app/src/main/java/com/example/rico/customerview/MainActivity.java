@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         adapter.addItem("流式布局");
         adapter.addItem("循环滚动view");
         adapter.addItem("气泡波浪");
+        adapter.addItem("小鱼游泳(还没移动)");
         adapter.addItemClick(this);
         rv.addItemDecoration(new ItemDecoration());
     }

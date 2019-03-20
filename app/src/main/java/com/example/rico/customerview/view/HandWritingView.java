@@ -46,16 +46,25 @@ public class HandWritingView extends View {
 
     public void reset() {
         path.reset();
+        invalidate();
     }
-
+    float downX,downY;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                downX=event.getX();
+                downY=event.getY();
                 path.moveTo(event.getX(), event.getY());
                 break;
             case MotionEvent.ACTION_MOVE:
                 path.lineTo(event.getX(), event.getY());
+                break;
+            case MotionEvent.ACTION_UP:
+                if (Math.abs(event.getX() - downX) < 10 && Math.abs(event.getY() - downY) < 10) {
+//                  先把鱼头方向转至点击的点
+                    reset();
+                }
                 break;
         }
         postInvalidate();

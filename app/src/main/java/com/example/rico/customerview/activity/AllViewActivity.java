@@ -10,6 +10,7 @@ import com.example.rico.customerview.view.ArcSeekBarView;
 import com.example.rico.customerview.view.BaseView;
 import com.example.rico.customerview.view.BezierView;
 import com.example.rico.customerview.view.FillTypeView;
+import com.example.rico.customerview.view.FishSwimView;
 import com.example.rico.customerview.view.FlowView;
 import com.example.rico.customerview.view.HandWritingView;
 import com.example.rico.customerview.view.RegionClickView;
@@ -53,6 +54,9 @@ public class AllViewActivity extends BaseActivity {
                 break;
             case 12:
                 view = new WaveBubbleView(this);
+                break;
+            case 13:
+                view = new FishSwimView(this);
                 break;
             default:
                 view = new View(this);

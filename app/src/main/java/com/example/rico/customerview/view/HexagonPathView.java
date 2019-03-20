@@ -49,7 +49,7 @@ public class HexagonPathView extends View {
     }
 
     //    宽度、高度、绘制区域宽高、多边形的层级
-    int width, heigth, standwidth, levelCount = 5;
+    int width, height, standWidth, levelCount = 5;
     //    文字高度
     float textH;
 
@@ -57,8 +57,8 @@ public class HexagonPathView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         width = w;
-        heigth = h;
-        standwidth = w > h ? h : w;
+        height = h;
+        standWidth = w > h ? h : w;
     }
 
     @Override
@@ -67,8 +67,8 @@ public class HexagonPathView extends View {
         if (dataList.size() == 0) {
             return;
         }
-        allRadius = (int) (standwidth / 2 - dpToPx(20) - maxTextLength);
-        canvas.translate(width / 2, heigth / 2);
+        allRadius = (int) (standWidth / 2 - dpToPx(20) - maxTextLength);
+        canvas.translate(width / 2, height / 2);
         int count = dataList.size();
         int fullAngle = 360;
         double avag = fullAngle / count;
@@ -91,7 +91,6 @@ public class HexagonPathView extends View {
             for (int i = 0; i < count; i++) {
                 canvas.drawLine((int) (-sideLength / 2 + 0.5), y, (int) (sideLength / 2 + 0.5), y, borderPaint);
                 canvas.rotate((float) avag);
-
             }
             canvas.restore();
         }
