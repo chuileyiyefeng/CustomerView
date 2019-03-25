@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import com.example.rico.customerview.activity.AllViewActivity;
 import com.example.rico.customerview.activity.CircleLayoutActivity;
 import com.example.rico.customerview.activity.DrawBitmapActivity;
+import com.example.rico.customerview.activity.FishSwimActivity;
 import com.example.rico.customerview.activity.FlowActivity;
 import com.example.rico.customerview.activity.PieActivity;
 import com.example.rico.customerview.activity.RadarActivity;
@@ -35,20 +36,21 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         adapter = new FirstAdapter(this);
         rv.setLayoutManager(new GridLayoutManager(this, 2));
         rv.setAdapter(adapter);
-        adapter.addItem("饼状图");
-        adapter.addItem("缩放旋转");
-        adapter.addItem("drawBitmap 动画");
-        adapter.addItem("雷达网图");
-        adapter.addItem("贝塞尔曲线");
-        adapter.addItem("path填充模式(并不是)");
-        adapter.addItem("不同区域点击");
-        adapter.addItem("写字板");
-        adapter.addItem("圆弧SeekBar");
-        adapter.addItem("layout改变测试");
-        adapter.addItem("流式布局");
-        adapter.addItem("循环滚动view");
-        adapter.addItem("气泡波浪");
-        adapter.addItem("小鱼游泳(还没移动)");
+        adapter.addItem("1.饼状图");
+        adapter.addItem("2.缩放旋转");
+        adapter.addItem("3.drawBitmap 动画");
+        adapter.addItem("4.雷达网图");
+        adapter.addItem("5.贝塞尔曲线");
+        adapter.addItem("6.path填充模式(并不是)");
+        adapter.addItem("7.不同区域点击");
+        adapter.addItem("8.写字板");
+        adapter.addItem("9.圆弧SeekBar");
+        adapter.addItem("10.layout改变测试");
+        adapter.addItem("11.流式布局");
+        adapter.addItem("12.循环滚动view");
+        adapter.addItem("13.气泡波浪");
+        adapter.addItem("14.小鱼游泳(静止)");
+        adapter.addItem("15.小鱼游泳(移动)");
         adapter.addItemClick(this);
         rv.addItemDecoration(new ItemDecoration());
     }
@@ -74,6 +76,9 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
                 break;
             case 11:
                 intent = new Intent(this, CircleLayoutActivity.class);
+                break;
+            case 14:
+                intent = new Intent(this, FishSwimActivity.class);
                 break;
             default:
                 intent = new Intent(this, AllViewActivity.class).putExtra("type", position);
