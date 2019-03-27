@@ -22,6 +22,7 @@ import java.util.List;
 
 /**
  * Created by Tmp on 2019/3/8.
+ * 画一条鱼
  */
 public class FishSwimView extends View {
     private int width, height, rectLength;
@@ -88,9 +89,57 @@ public class FishSwimView extends View {
         rectLength = Math.min(width, height);
         rect = new Rect(centerPoint.x - rectLength / 2, centerPoint.y - rectLength / 2, centerPoint.x + rectLength / 2, centerPoint.y + rectLength / 2);
         //      4个圆，所有的圆心X坐标是一样的
+        centerX = width / 2;
+        centerY = height / 2;
         initRadius();
         createFishPoint();
         addPath();
+        startAnimator();
+    }
+
+    float centerX, centerY;
+    float everyRotate = 10;
+    float allRotate, shouldRotate, lastRotate;
+    boolean needRotate, isUp;
+
+    public void setAngle(float x, float y, float rotateX, float rotateY) {
+        needRotate = true;
+        calculationAngle(x, y, rotateX, rotateY);
+    }
+
+    //        点击的坐标点x,y 以哪个点为参考旋转 rotateX,rotateY是旋转的中心点
+    private void calculationAngle(float x, float y, float rotateX, float rotateY) {
+        float xSquare = (x - rotateX) * (x - rotateX);
+        float ySquare = (y - rotateY) * (y - rotateY);
+        double distance = Math.pow(xSquare + ySquare, 0.5);
+        float distanceX = x - rotateX;
+
+        float angleSinX = (float) Math.toDegrees(Math.asin((float) (distanceX / distance)));
+        if (y > rotateY) {
+            angleSinX = 180 - angleSinX;
+        }
+        if (angleSinX <= 0) {
+            angleSinX += 360;
+        }
+        allRotate = angleSinX;
+        if (allRotate > shouldRotate) {
+            isUp = true;
+        } else {
+            isUp = false;
+        }
+        if (allRotate > 270 && lastRotate < 90) {
+            isUp = false;
+            allRotate = allRotate - 360;
+            shouldRotate = lastRotate;
+        } else if (allRotate < 90 && lastRotate > 270) {
+            isUp = true;
+            shouldRotate = lastRotate - 360;
+        } else if (lastRotate < 0 && allRotate < 270 && allRotate > 180) {
+            shouldRotate = 360 + lastRotate;
+            isUp = false;
+        }
+        lastRotate = allRotate;
+        invalidate();
     }
 
     private int circleX, distance, radius1, radius2, radius3, radius4;
@@ -315,35 +364,15 @@ public class FishSwimView extends View {
         tailPath.reset();
     }
 
-    private float downX, downY;
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                downX = event.getX();
-                downY = event.getY();
-                break;
-            case MotionEvent.ACTION_UP:
-                if (Math.abs(event.getX() - downX) < 10 && Math.abs(event.getY() - downY) < 10) {
-                    startAnimator();
-//                    setRotateAngle(-10);
-                }
-                break;
-        }
-        return true;
-    }
 
     //        鱼头摇动，以第一个圆圆心摇动
-
     ValueAnimator animator;
     //    摆动幅度
     int amplitudeAngle = 20;
     boolean isLeftSide;
     final int stateLeft = 1, stateRight = 2;
-    float canvasDegrees;
-    //    鱼整个身体摇动系数
-    final double coefficient = 0.5;
+    //    鱼摇动系数
+    int coefficient = 1;
     int tailAngle = 0;
 
     public void startAnimator() {
@@ -373,13 +402,11 @@ public class FishSwimView extends View {
                 switch (state) {
                     case stateRight:
                         tailAngle++;
-                        setRotateAngle(1);
-                        canvasDegrees += coefficient;
+                        setRotateAngle(coefficient);
                         break;
                     case stateLeft:
                         tailAngle--;
-                        setRotateAngle(-1);
-                        canvasDegrees -= coefficient;
+                        setRotateAngle(-coefficient);
                         break;
                 }
             }
@@ -414,15 +441,34 @@ public class FishSwimView extends View {
 
 
 
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawRect(rect, rectPaint);
+//        drawPoints(canvas);
+        if (isUp) {
+            if (shouldRotate + everyRotate > allRotate) {
+                needRotate = false;
+                shouldRotate = shouldRotate + (allRotate - shouldRotate);
+            } else {
+                shouldRotate += everyRotate;
+                needRotate = true;
+            }
+        } else {
+            if (shouldRotate - everyRotate <= allRotate) {
+                needRotate = false;
+                shouldRotate = shouldRotate - (shouldRotate - allRotate);
+            } else {
+                shouldRotate -= everyRotate;
+                needRotate = true;
+            }
+        }
+
+        canvas.rotate(shouldRotate, centerX, centerY);
         canvas.drawPath(fishPath, fishPaint);
         canvas.drawPath(finPath, fishPaint);
         canvas.drawPath(circlePath, fishPaint);
         canvas.drawPath(tailPath, fishPaint);
-//        drawPoints(canvas);
     }
 
     private void drawPoints(Canvas canvas) {

@@ -1,19 +1,24 @@
 package com.example.rico.customerview.view;
 
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.RelativeLayout;
 
 /**
  * Created by Tmp on 2019/3/22.
+ * 点击旋转并移动的view Group
  */
 public class ViewSwimView extends RelativeLayout {
 
@@ -32,11 +37,18 @@ public class ViewSwimView extends RelativeLayout {
         init(context);
     }
 
-    PathMeasure mPathMeasure;
+
+    private PathMeasure mPathMeasure;
+    private Paint paint;
 
     private void init(Context context) {
-        mPathMeasure = new PathMeasure();
         centerPoint = new PointF();
+        setBackgroundColor(Color.parseColor("#ffffff"));
+        movePath = new Path();
+        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.parseColor("#ff0000"));
     }
 
     int width, height;
@@ -48,219 +60,106 @@ public class ViewSwimView extends RelativeLayout {
         width = w;
         height = h;
         centerPoint.set(width / 2, height / 2);
+        allLength = Math.pow(width * width + height * height, 0.5);
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    private float downX, downY, lastDownX, lastDownY,radius;
+
+    //        鱼转方向圆心
+    private float centerX, centerY;
+
+    private int alpha=100;
+
+    public void setRadius(float currentValue) {
+        alpha = (int) (100 * (1 - currentValue) / 2);
+        radius = 100 * currentValue;
+        invalidate();
+
     }
-
-    private float[] mCurrentPosition = new float[2];
-
-    public void setPathAnimation(long duration) {
-        // 0 － getLength()
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, mPathMeasure.getLength());
-        valueAnimator.setDuration(duration);
-        // 减速插值器
-        valueAnimator.setInterpolator(new DecelerateInterpolator());
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float value = (Float) animation.getAnimatedValue();
-                // 获取当前点坐标封装到mCurrentPosition
-                mPathMeasure.getPosTan(value, mCurrentPosition, null);
-                postInvalidate();
-            }
-        });
-        valueAnimator.start();
-    }
-
-    private float downX, downY;
-    private boolean isFinsMoving;
-
-    //    鱼头上次旋转的角度，也就是象限
-    int lastQuadrant;
-    //        鱼头摇动，以第一个圆圆心摇动
-    float centerX;
-    float centerY;
-    float shouldRotate, lastAngleSinX, lastAngleSinY, everyRotate;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 downX = event.getX();
                 downY = event.getY();
                 break;
             case MotionEvent.ACTION_UP:
+
                 if (Math.abs(event.getX() - downX) < 10 && Math.abs(event.getY() - downY) < 10) {
 //                  先把鱼头方向转至点击的点
-                    Point point = getCenterPoint(getChildAt(0));
-                    View childView = getChildAt(0);
-                    centerX = childView.getLeft() + (childView.getRight() - childView.getLeft()) / 2;
-                    centerY = childView.getTop() + (childView.getBottom() - childView.getTop()) / 2;
-                    calculationAngle(event.getX(), event.getY(), point.x, point.y);
+                    if (animator != null && animator.isRunning()) {
+                        return false;
+                    }
+                    ObjectAnimator rippleAnimator = ObjectAnimator.ofFloat(this, "radius", 0.9f, 1f).setDuration(1000);
+                    rippleAnimator.start();
+                    invalidate();
+                    if (lastDownX == 0 && lastDownY == 0) {
+                        Point point = getCenterPoint(getChildAt(0));
+                        centerX = point.x;
+                        centerY = point.y;
+                    } else {
+                        centerX = lastDownX;
+                        centerY = lastDownY;
+                    }
+                    FishSwimView view = (FishSwimView) getChildAt(0);
+                    view.setAngle(event.getX(), event.getY(), centerX, centerY);
+                    startMove();
+
+                    lastDownX = downX;
+                    lastDownY = downY;
                 }
                 break;
         }
         return true;
     }
 
-    //        点击的坐标点x,y 以哪个点为参考旋转 rotateX,rotateY是旋转的中心点
-    private void calculationAngle(float x, float y, float rotateX, float rotateY) {
-        int xSquare = (int) ((x - rotateX) * (x - rotateX));
-        int ySquare = (int) ((y - rotateY) * (y - rotateY));
-        double distance = Math.pow(xSquare + ySquare, 0.5);
-        int distanceY = (int) Math.abs(y - rotateY);
-        int distanceX = (int) Math.abs(x - rotateX);
-
-        float angleSinX = (float) Math.toDegrees(Math.asin(distanceX / distance));
-        float angleSinY = (float) Math.toDegrees(Math.asin(distanceY / distance));
-//         1 右上 和3 左下 象限
-
-
-        int thisQuadrant = 0;
-        if (x > rotateX && y < rotateY) {
-            thisQuadrant = 1;
-        }
-        if (x < rotateX && y > rotateY) {
-
-            thisQuadrant = 3;
-        }
-//        2 左上和4 右下象限
-        if (x < rotateX && y < rotateY) {
-            thisQuadrant = 2;
-        }
-        if (x > rotateX && y > rotateY) {
-            thisQuadrant = 4;
-        }
-
-//        上次鱼头的方向和这次的朝向有多种情况 1-2 1-3 1-4 2-3 2-4 3-4
-
-        switch (lastQuadrant) {
-            case 0:
-                switch (thisQuadrant) {
-                    case 1:
-                        shouldRotate = angleSinX;
-                        break;
-                    case 2:
-                        shouldRotate = -angleSinX;
-                        break;
-                    case 3:
-                        shouldRotate = -angleSinY - 90;
-                        break;
-                    case 4:
-                        shouldRotate = angleSinY + 90;
-                        break;
-                }
-                break;
-            case 1:
-                switch (thisQuadrant) {
-                    case 1:
-                        shouldRotate = angleSinX - lastAngleSinX;
-                        break;
-                    case 2:
-                        shouldRotate = -angleSinX - lastAngleSinX;
-                        break;
-                    case 3:
-                        shouldRotate = -lastAngleSinX - 90 - angleSinY;
-                        break;
-                    case 4:
-                        shouldRotate = 180 - angleSinX - lastAngleSinX;
-                        break;
-                }
-                break;
-            case 2:
-                switch (thisQuadrant) {
-                    case 1:
-                        shouldRotate = lastAngleSinX + angleSinX;
-                        break;
-                    case 2:
-                        shouldRotate = lastAngleSinX - angleSinX;
-                        break;
-                    case 3:
-                        shouldRotate = lastAngleSinX - 90 - angleSinY;
-                        break;
-                    case 4:
-                        shouldRotate = -((90 - lastAngleSinX) + 90 + angleSinX);
-                        break;
-                }
-                break;
-            case 3:
-                switch (thisQuadrant) {
-                    case 1:
-                        shouldRotate = lastAngleSinY + angleSinX + 90;
-                        break;
-                    case 2:
-                        shouldRotate = lastAngleSinY + 90 - angleSinX;
-                        break;
-                    case 3:
-                        shouldRotate = angleSinX - lastAngleSinX;
-                        break;
-                    case 4:
-                        shouldRotate = -lastAngleSinX - angleSinX;
-                        break;
-                }
-                break;
-            case 4:
-                switch (thisQuadrant) {
-                    case 1:
-                        shouldRotate = angleSinX + lastAngleSinX - 180;
-                        break;
-                    case 2:
-                        shouldRotate = lastAngleSinX + 90 + (90 - angleSinX);
-                        break;
-                    case 3:
-                        shouldRotate = lastAngleSinX + (90 - angleSinY);
-                        break;
-                    case 4:
-                        shouldRotate = lastAngleSinX - angleSinX;
-                        break;
-                }
-                break;
-            default:
-                break;
-        }
-        lastAngleSinX = angleSinX;
-        lastAngleSinY = angleSinY;
-        everyRotate = Math.abs(shouldRotate) / 10;
-        lastQuadrant = thisQuadrant;
-        invalidate();
-    }
-
-    float allRotate, currentRotate;
-    boolean needRotate;
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (shouldRotate > 0 && currentRotate < shouldRotate) {
-            allRotate += everyRotate;
-            currentRotate += everyRotate;
-            needRotate = true;
-            if (currentRotate > shouldRotate) {
-                float distance = shouldRotate - currentRotate + everyRotate;
-                allRotate -= distance;
-                needRotate = false;
-            }
-        }
+        canvas.save();
 
-        if (shouldRotate < 0 && currentRotate > shouldRotate) {
-            allRotate -= everyRotate;
-            currentRotate -= everyRotate;
-            needRotate = true;
-            if (currentRotate < shouldRotate) {
-                float distance = shouldRotate - (currentRotate + everyRotate);
-                allRotate -= distance;
-                needRotate = false;
+        canvas.drawCircle(downX, downY, 20, paint);
+        View childView = getChildAt(0);
+        centerX = childView.getLeft() + (childView.getRight() - childView.getLeft()) / 2;
+        centerY = childView.getTop() + (childView.getBottom() - childView.getTop()) / 2;
+//        canvas.drawLine(downX, downY, centerX, centerY, paint);
+        paint.setARGB(alpha, 255, 0, 0);
+        canvas.drawCircle(downX, downY, radius, paint);
+    }
+
+    private ObjectAnimator animator;
+    private Path movePath;
+    private PathMeasure pathMeasure;
+    double allLength;
+
+    private void startMove() {
+        if (animator != null) {
+            animator.cancel();
+        }
+        movePath.reset();
+        final float[] tan = new float[2];
+        View childView = getChildAt(0);
+        movePath.moveTo(centerX - childView.getWidth() / 2, centerY - childView.getHeight() / 2);
+        movePath.lineTo(downX - childView.getWidth() / 2, downY - childView.getHeight() / 2);
+        pathMeasure = new PathMeasure(movePath, false);
+        animator = ObjectAnimator.ofFloat(getChildAt(0), "x", "y", movePath);
+        float xSquare = Math.abs(centerX - downX) * Math.abs(centerX - downX);
+        float ySquare = Math.abs(centerY - downY) * Math.abs(centerY - downY);
+        double distance = Math.pow(xSquare + ySquare, 0.5);
+
+        animator.setDuration((long) (3000 * distance / allLength));
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = animation.getAnimatedFraction();
+                pathMeasure.getPosTan(pathMeasure.getLength() * value, null, tan);
             }
-        }
-        allRotate = allRotate % 360;
-        canvas.rotate(allRotate, centerX, centerY);
-        if (needRotate) {
-            invalidate();
-        }
+        });
+        animator.start();
     }
 
     private Point getCenterPoint(View view) {
