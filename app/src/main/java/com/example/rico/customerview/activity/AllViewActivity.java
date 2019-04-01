@@ -9,6 +9,8 @@ import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.ArcSeekBarView;
 import com.example.rico.customerview.view.BaseView;
 import com.example.rico.customerview.view.BezierView;
+import com.example.rico.customerview.view.EvaluatorAttrView;
+import com.example.rico.customerview.view.EvaluatorMoveView;
 import com.example.rico.customerview.view.FillTypeView;
 import com.example.rico.customerview.view.FishSwimView;
 import com.example.rico.customerview.view.FlowView;
@@ -57,6 +59,12 @@ public class AllViewActivity extends BaseActivity {
                 break;
             case 13:
                 view = new FishSwimView(this);
+                break;
+            case 15:
+                view = new EvaluatorMoveView(this);
+                break;
+            case 16:
+                view = new EvaluatorAttrView(this);
                 break;
             default:
                 view = new View(this);

@@ -47,7 +47,8 @@ public class ViewSwimView extends RelativeLayout {
         movePath = new Path();
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        paint.setStyle(Paint.Style.FILL);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(10);
         paint.setColor(Color.parseColor("#ff0000"));
     }
 
@@ -92,7 +93,7 @@ public class ViewSwimView extends RelativeLayout {
                     if (animator != null && animator.isRunning()) {
                         return false;
                     }
-                    ObjectAnimator rippleAnimator = ObjectAnimator.ofFloat(this, "radius", 0.9f, 1f).setDuration(1000);
+                    ObjectAnimator rippleAnimator = ObjectAnimator.ofFloat(this, "radius", 0f, 1f).setDuration(1000);
                     rippleAnimator.start();
                     invalidate();
                     if (lastDownX == 0 && lastDownY == 0) {
