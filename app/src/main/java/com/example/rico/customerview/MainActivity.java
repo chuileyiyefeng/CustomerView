@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
     private void initView() {
         rv = findViewById(R.id.rv);
         adapter = new FirstAdapter(this);
-        rv.setLayoutManager(new GridLayoutManager(this, 1));
+        rv.setLayoutManager(new GridLayoutManager(this, 2));
         rv.setAdapter(adapter);
         adapter.addItem("1.饼状图");
         adapter.addItem("2.缩放旋转");
@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         adapter.addItem("15.小鱼游泳(移动)");
         adapter.addItem("16.Evaluator(ValueAnimator)");
         adapter.addItem("17.Evaluator(ObjectAnimator)");
+        adapter.addItem("18.翻页view");
         adapter.addItemClick(this);
         rv.addItemDecoration(new ItemDecoration());
     }
