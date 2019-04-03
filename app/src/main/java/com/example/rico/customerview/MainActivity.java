@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         adapter.addItem("3.drawBitmap 动画");
         adapter.addItem("4.雷达网图");
         adapter.addItem("5.贝塞尔曲线");
-        adapter.addItem("6.path填充模式(并不是)");
+        adapter.addItem("6.path填充模式");
         adapter.addItem("7.不同区域点击");
         adapter.addItem("8.写字板");
         adapter.addItem("9.圆弧SeekBar");

@@ -38,7 +38,6 @@ public class ViewSwimView extends RelativeLayout {
     }
 
 
-    private PathMeasure mPathMeasure;
     private Paint paint;
 
     private void init(Context context) {
@@ -73,7 +72,7 @@ public class ViewSwimView extends RelativeLayout {
 
     public void setRadius(float currentValue) {
         alpha = (int) (100 * (1 - currentValue) / 2);
-        radius = 100 * currentValue;
+        radius = 100 * currentValue+10;
         invalidate();
 
     }
@@ -122,13 +121,14 @@ public class ViewSwimView extends RelativeLayout {
         super.onDraw(canvas);
         canvas.save();
 
-        canvas.drawCircle(downX, downY, 20, paint);
         View childView = getChildAt(0);
         centerX = childView.getLeft() + (childView.getRight() - childView.getLeft()) / 2;
         centerY = childView.getTop() + (childView.getBottom() - childView.getTop()) / 2;
 //        canvas.drawLine(downX, downY, centerX, centerY, paint);
         paint.setARGB(alpha, 255, 0, 0);
-        canvas.drawCircle(downX, downY, radius, paint);
+        if (downX!=0&&downY!=0) {
+            canvas.drawCircle(downX, downY, radius, paint);
+        }
     }
 
     private ObjectAnimator animator;
