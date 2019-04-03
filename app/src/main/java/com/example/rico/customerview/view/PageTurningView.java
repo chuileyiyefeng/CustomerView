@@ -1,15 +1,13 @@
 package com.example.rico.customerview.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -53,9 +51,9 @@ public class PageTurningView extends View {
         paintB = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintC = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        paintA.setColor(getResources().getColor(R.color.colorAccent));
-        paintB.setColor(getResources().getColor(R.color.text_normal));
-        paintC.setColor(getResources().getColor(R.color.colorLine));
+        paintA.setColor(getResources().getColor(R.color.colorLine));
+        paintB.setColor(getResources().getColor(R.color.saffon_yellow));
+        paintC.setColor(getResources().getColor(R.color.button_bg));
         pathA = new Path();
         pathB = new Path();
         pathC = new Path();
@@ -64,16 +62,20 @@ public class PageTurningView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-//        width = w - 50;
-//        height = h - 50;
-        width = w;
-        height = h;
+        width = w - 50;
+        height = h - 50;
+//        width = w;
+//        height = h;
+        setBackgroundColor(paintA.getColor());
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                if (!(event.getX() > width / 2 && event.getY() > height / 2)) {
+                    return false;
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
                 move(event);
@@ -94,15 +96,16 @@ public class PageTurningView extends View {
     private void move(MotionEvent event) {
         float downX = event.getX();
         float downY = event.getY();
+
         a.set(downX, downY);
         f.set(width, height);
         g.set((width + downX) / 2, (height + downY) / 2);
         float gfLength = (g.x - f.x) * (g.x - f.x) + (g.y - f.y) * (g.y - f.y);
         gfLength = (float) Math.pow(gfLength, 0.5);
 //        gf与x轴的夹角为
-        float gfAngle = (float) Math.toDegrees(Math.acos(((f.x - g.x) / gfLength)));
+        double gfAngle = Math.toDegrees(Math.acos(((f.x - g.x) / gfLength)));
 //        eg与x轴的夹角为
-        float egAngle = 90 - gfAngle;
+        double egAngle = 90 - gfAngle;
 //        g点到底部的距离
         float gDistanceY = f.y - g.y;
 //        ge的长度为
@@ -117,21 +120,24 @@ public class PageTurningView extends View {
 
 //        线段cj是ag的垂直平分线 c靠底边，j靠右
 //        假设ag的中点为l;
-        PointF l = new PointF((a.x + g.x) / 2, (a.y + g.y) / 2);
-        float lfLength = (l.x - f.x) * (l.x - f.x) + (l.y - f.y) * (l.y - f.y);
+        float lx = (a.x + g.x) / 2;
+        float ly = (a.y + g.y) / 2;
+        float lfLength = (lx - f.x) * (lx - f.x) + (ly - f.y) * (ly - f.y);
         lfLength = (float) Math.pow(lfLength, 0.5);
 //        l点到底部的距离
-        float lDistanceY = f.y - l.y;
+        float lDistanceY = f.y - ly;
 //        gh的长度为
         float leLength = lDistanceY / (float) Math.sin(Math.toRadians(egAngle));
 //        e点的x轴坐标为
-        c.x = l.x - (float) Math.cos(Math.toRadians(egAngle)) * leLength;
+        c.x = lx - (float) Math.cos(Math.toRadians(egAngle)) * leLength;
+        Log.e("move", "move: " + c.x);
         c.y = height;
 //       hf与gf之间的夹角就等于eg与ef之间的夹角 hf的长度为
         float jfLength = lfLength / (float) Math.cos(Math.toRadians(egAngle));
         j.x = width;
         j.y = height - jfLength;
 //        点b是ae和cj的交点，点k是ah和cj的交点
+
         getNodePoint(b, a, e, c, j);
         getNodePoint(k, a, h, c, j);
 //        取cb线段的中点P,点d就是pe的中点
@@ -145,11 +151,10 @@ public class PageTurningView extends View {
         getPathA();
         getPathB();
         getPathC();
-//        pathC.op(pathA,pathB,Path.Op.DIFFERENCE);
         invalidate();
+
     }
 
-    Path intersectP = new Path();
     int radius = 10;
 
     //    获取两条线段的交点，并赋值给目标点
@@ -176,8 +181,13 @@ public class PageTurningView extends View {
         super.onDraw(canvas);
 //        drawLines(canvas);
         canvas.drawPath(pathA, paintA);
+        canvas.drawPath(pathC, paintC);
         canvas.drawPath(pathB, paintB);
-//        canvas.drawPath(pathC,paintC);
+        drawShadow(canvas);
+    }
+
+    private void drawShadow(Canvas canvas) {
+//        就是画矩形，用paint.setShader实现阴影渐变
     }
 
     private void getPathA() {
@@ -200,39 +210,50 @@ public class PageTurningView extends View {
         pathB.lineTo(a.x, a.y);
         pathB.lineTo(k.x, k.y);
         pathB.lineTo(i.x, i.y);
-        pathB.close();
+        pathB.lineTo(d.x, d.y);
 
-//        减去两条路径的交集
-        intersectP.reset();
-        intersectP.op(pathA, pathB, Path.Op.INTERSECT);
-        pathB.op(intersectP, Path.Op.DIFFERENCE);
+        interR.reset();
+        interR.moveTo(d.x, d.y);
+        interR.lineTo(b.x, b.y);
+        interR.lineTo(a.x, a.y);
+        interR.lineTo(k.x, k.y);
+        interR.lineTo(i.x, i.y);
+        interR.lineTo(d.x, d.y);
+        //        两条路径的交集
+        interR.op(pathA, Path.Op.INTERSECT);
+        pathB.op(interR, Path.Op.DIFFERENCE);
     }
+
+    private Path interR = new Path();
 
     private void getPathC() {
         pathC.reset();
         pathC.lineTo(0, height);
         pathC.lineTo(width, height);
         pathC.lineTo(width, 0);
-        pathC.close();
+        pathC.lineTo(0, 0);
+
+        pathC.op(pathA, Path.Op.DIFFERENCE);
+//        pathC.op(pathB,Path.Op.DIFFERENCE);
     }
 
     private void drawLines(Canvas canvas) {
-        canvas.drawLine(a.x, a.y, f.x, f.y, paintA);
-        canvas.drawLine(a.x, a.y, e.x, e.y, paintA);
-        canvas.drawLine(a.x, a.y, h.x, h.y, paintA);
-        canvas.drawLine(e.x, e.y, h.x, h.y, paintA);
-        canvas.drawLine(c.x, c.y, j.x, j.y, paintA);
-        paintA.setTextSize(50);
-        canvas.drawText("a", a.x, a.y, paintA);
-        canvas.drawText("b", b.x, b.y, paintA);
-        canvas.drawText("c", c.x, c.y, paintA);
-        canvas.drawText("d", d.x, d.y, paintA);
-        canvas.drawText("e", e.x, e.y, paintA);
-        canvas.drawText("f", f.x, f.y, paintA);
-        canvas.drawText("g", g.x, g.y, paintA);
-        canvas.drawText("h", h.x, h.y, paintA);
-        canvas.drawText("i", i.x, i.y, paintA);
-        canvas.drawText("j", j.x, j.y, paintA);
-        canvas.drawText("k", k.x, k.y, paintA);
+        canvas.drawLine(a.x, a.y, f.x, f.y, paintB);
+        canvas.drawLine(a.x, a.y, e.x, e.y, paintB);
+        canvas.drawLine(a.x, a.y, h.x, h.y, paintB);
+        canvas.drawLine(e.x, e.y, h.x, h.y, paintB);
+        canvas.drawLine(c.x, c.y, j.x, j.y, paintB);
+        paintB.setTextSize(50);
+        canvas.drawText("a", a.x, a.y, paintB);
+        canvas.drawText("b", b.x, b.y, paintB);
+        canvas.drawText("c", c.x, c.y, paintB);
+        canvas.drawText("d", d.x, d.y, paintB);
+        canvas.drawText("e", e.x, e.y, paintB);
+        canvas.drawText("f", f.x, f.y, paintB);
+        canvas.drawText("g", g.x, g.y, paintB);
+        canvas.drawText("h", h.x, h.y, paintB);
+        canvas.drawText("i", i.x, i.y, paintB);
+        canvas.drawText("j", j.x, j.y, paintB);
+        canvas.drawText("k", k.x, k.y, paintB);
     }
 }
