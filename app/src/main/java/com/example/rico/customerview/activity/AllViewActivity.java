@@ -15,6 +15,7 @@ import com.example.rico.customerview.view.FillTypeView;
 import com.example.rico.customerview.view.FishSwimView;
 import com.example.rico.customerview.view.FlowView;
 import com.example.rico.customerview.view.HandWritingView;
+import com.example.rico.customerview.view.NetColorView;
 import com.example.rico.customerview.view.PageTurningView;
 import com.example.rico.customerview.view.RegionClickView;
 import com.example.rico.customerview.view.WaveBubbleView;
@@ -69,6 +70,9 @@ public class AllViewActivity extends BaseActivity {
                 break;
             case 17:
                 view = new PageTurningView(this);
+                break;
+            case 18:
+                view = new NetColorView(this);
                 break;
             default:
                 view = new View(this);

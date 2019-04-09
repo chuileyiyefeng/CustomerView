@@ -78,8 +78,8 @@ public class FillTypeView extends View {
         canvas.drawPath(lCircle, paint);
         paint.setColor(getResources().getColor(R.color.white));
         canvas.drawCircle(point.x, point.y - sRadius, 20, paint);
-        canvas.drawPath(rCircle, paint);
-        paint.setColor(getResources().getColor(R.color.text_normal));
-        canvas.drawCircle(point.x, point.y + sRadius, 20, paint);
+//        canvas.drawPath(rCircle, paint);
+//        paint.setColor(getResources().getColor(R.color.text_normal));
+//        canvas.drawCircle(point.x, point.y + sRadius, 20, paint);
     }
 }

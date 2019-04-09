@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         adapter.addItem("16.Evaluator(ValueAnimator)");
         adapter.addItem("17.Evaluator(ObjectAnimator)");
         adapter.addItem("18.翻页view");
+        adapter.addItem("19.网状view");
         adapter.addItemClick(this);
         rv.addItemDecoration(new ItemDecoration());
     }
