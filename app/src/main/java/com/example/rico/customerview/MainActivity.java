@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         adapter = new FirstAdapter(this);
         rv.setLayoutManager(new GridLayoutManager(this, 2));
         rv.setAdapter(adapter);
-        adapter.addItem("1.饼状图");
+        adapter.addItem("1.圆角ImageView");
         adapter.addItem("2.缩放旋转");
         adapter.addItem("3.drawBitmap 动画");
         adapter.addItem("4.雷达网图");

@@ -1,14 +1,15 @@
 package com.example.rico.customerview.activity;
 
+import com.bumptech.glide.Glide;
 import com.example.rico.customerview.BaseActivity;
 import com.example.rico.customerview.R;
-import com.example.rico.customerview.view.PieView;
+import com.example.rico.customerview.view.CornerImageView;
 
 /**
  * Created by Tmp on 2018/12/18.
  */
 public class PieActivity extends BaseActivity {
-    PieView pieView;
+    CornerImageView pieView;
 
     @Override
     public int bindLayout() {
@@ -18,9 +19,7 @@ public class PieActivity extends BaseActivity {
     @Override
     public void doBusiness() {
         pieView = findViewById(R.id.pie);
-        pieView.addData(R.color.colorAccent, 50);
-        pieView.addData(R.color.colorPrimaryDark, 50);
-        pieView.addData(R.color.saffon_yellow, 10);
+        Glide.with(this).load(R.mipmap.timg).into(pieView);
     }
 
 }

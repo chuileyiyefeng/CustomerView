@@ -9,6 +9,7 @@ import android.view.View;
  * Created by Tmp on 2019/4/8.
  */
 public abstract class BaseCustomerView extends View {
+   protected int width, height;
     public BaseCustomerView(Context context) {
         super(context);
         init(context);
@@ -22,6 +23,13 @@ public abstract class BaseCustomerView extends View {
     public BaseCustomerView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        width = w;
+        height = h;
     }
 
     protected abstract void init(Context context);
