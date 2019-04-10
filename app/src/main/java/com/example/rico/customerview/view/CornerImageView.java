@@ -2,7 +2,6 @@ package com.example.rico.customerview.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,15 +12,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewParent;
-
-import com.example.rico.customerview.R;
 
 import java.lang.reflect.Field;
 
 /**
  * Created by Tmp on 2019/4/9.
- * 圆角imageView
+ * 圆角imageView，支持gif加载
+ * 父控件是图片背景时，会有一些问题
  */
 public class CornerImageView extends AppCompatImageView {
     Context context;
