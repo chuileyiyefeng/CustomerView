@@ -66,7 +66,7 @@ public class ScrollTextView extends BaseCustomerView {
 
     int alphaValue;
 
-    public void startAnimator() {
+    public void startAnimator(){
         if (animator == null) {
             animator = ValueAnimator.ofInt(width);
         }
