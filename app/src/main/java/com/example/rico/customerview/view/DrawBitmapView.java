@@ -76,7 +76,7 @@ public class DrawBitmapView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         width = w;
         height = h;
-        radius = (w > h ? h / 2 : w / 2);
+        radius = Math.min(w,h)/2;
     }
 
     MyHandler handler;

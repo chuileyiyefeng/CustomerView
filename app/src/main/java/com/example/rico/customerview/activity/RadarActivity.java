@@ -22,7 +22,7 @@ public class RadarActivity extends BaseActivity {
         HexagonPathView pathView = new HexagonPathView(this);
         pathView.clearData();
         pathView.addData("第一",0.75);
-        pathView.addData("第二",0.25);
+        pathView.addData("第二",0.95);
         pathView.addData("第三",0.65);
         pathView.addData("第四",0.85);
         pathView.addData("第五",0.375);

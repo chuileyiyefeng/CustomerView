@@ -2,12 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/blue_thumb">
 
     <com.example.rico.customerview.view.CornerImageView
         android:id="@+id/pie"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="400dp"
         android:scaleType="centerCrop"
         android:padding="20dp" />
 </LinearLayout>

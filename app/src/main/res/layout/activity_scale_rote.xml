@@ -2,9 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
-    <com.example.rico.customerview.view.ScaleView
+    <com.example.rico.customerview.view.ScrollTextView
+        android:id="@+id/text_view"
+        android:layout_gravity="center_vertical"
+        android:background="@color/colorLine"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

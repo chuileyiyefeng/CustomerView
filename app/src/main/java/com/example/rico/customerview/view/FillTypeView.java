@@ -70,7 +70,6 @@ public class FillTypeView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        setBackgroundColor(getResources().getColor(R.color.button_bg));
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(getResources().getColor(R.color.text_normal));

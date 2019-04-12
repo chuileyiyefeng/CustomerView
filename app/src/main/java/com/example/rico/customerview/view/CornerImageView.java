@@ -17,8 +17,7 @@ import java.lang.reflect.Field;
 
 /**
  * Created by Tmp on 2019/4/9.
- * 圆角imageView，支持gif加载
- * 父控件是图片背景时，会有一些问题
+ * 圆角imageView,关键是canvas.clipPath()方法
  */
 public class CornerImageView extends AppCompatImageView {
     Context context;
@@ -26,11 +25,13 @@ public class CornerImageView extends AppCompatImageView {
     public CornerImageView(Context context) {
         super(context);
         this.context = context;
+        init();
     }
 
     public CornerImageView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
+        init();
     }
 
     int width;
@@ -43,7 +44,8 @@ public class CornerImageView extends AppCompatImageView {
         width = w;
         height = h;
         getRadius();
-        init();
+        rectFCrop = new RectF(getPaddingLeft(), getPaddingTop(), width - getPaddingRight(), height - getPaddingBottom());
+        path.addRoundRect(rectFCrop, radii, Path.Direction.CW);
     }
 
     //    设置圆角大小
@@ -54,54 +56,17 @@ public class CornerImageView extends AppCompatImageView {
                 radiusX, radiusY};
     }
 
-    private Paint paint;
     private Path path;
-    private RectF rectFAll, rectFCrop;
+    private RectF rectFCrop;
     float[] radii;
 
     protected void init() {
-        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-//        如果父控件没有背景，就使用theme的背景色
-        TypedArray array = context.getTheme().obtainStyledAttributes(new int[]{android.R.attr.colorBackground,
-                android.R.attr.textColorPrimary,
-        });
-        int backgroundColor = array.getColor(0, 0xFF00FF);
-        View parentView = (View) getParent();
-        Drawable drawable = parentView.getBackground();
-        if (drawable != null) {
-            if (drawable != null) {
-                Class<Drawable> mDrawable_class = (Class<Drawable>) drawable.getClass();
-                try {
-                    Field mField = mDrawable_class.getDeclaredField("mColorState");
-                    mField.setAccessible(true);
-                    Object mColorState = mField.get(drawable);
-                    Class mColorState_class = mColorState.getClass();
-                    Field mColorState_field = mColorState_class.getDeclaredField("mUseColor");
-                    mColorState_field.setAccessible(true);
-                    int color = (int) mColorState_field.get(mColorState);
-                    if (color != Color.TRANSPARENT) {
-                        paint.setColor(backgroundColor);
-                    } else {
-                        paint.setColor(color);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        } else {
-            paint.setColor(backgroundColor);
-        }
         path = new Path();
-        rectFAll = new RectF(0, 0, width, height);
-        rectFCrop = new RectF(getPaddingLeft(), getPaddingTop(), width - getPaddingRight(), height - getPaddingBottom());
-        path.setFillType(Path.FillType.EVEN_ODD);
-        path.addRect(rectFAll, Path.Direction.CW);
-        path.addRoundRect(rectFCrop, radii, Path.Direction.CW);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+        canvas.clipPath(path);
         super.onDraw(canvas);
-        canvas.drawPath(path, paint);
     }
 }

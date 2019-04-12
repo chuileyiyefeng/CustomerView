@@ -21,5 +21,4 @@ public class PieActivity extends BaseActivity {
         pieView = findViewById(R.id.pie);
         Glide.with(this).load(R.mipmap.timg).into(pieView);
     }
-
 }

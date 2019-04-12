@@ -82,12 +82,13 @@ public class NetColorView extends BaseCustomerView {
 
     private void createPoints() {
         int area;
-        for (int i = 0; i < 100; i++) {
-            if (i >= 0 && i < 25) {
+        int pointCount=100;
+        for (int i = 0; i < pointCount; i++) {
+            if (i >= 0 && i < pointCount/4) {
                 area = 1;
-            } else if (i >= 25 && i < 50) {
+            } else if (i >=  pointCount/4 && i <  pointCount/2) {
                 area = 2;
-            } else if (i >= 50 && i < 75) {
+            } else if (i >=  pointCount/2 && i <  pointCount/4*3) {
                 area = 3;
             } else {
                 area = 4;

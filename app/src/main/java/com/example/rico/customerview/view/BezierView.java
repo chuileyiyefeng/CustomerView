@@ -137,11 +137,11 @@ public class BezierView extends View {
         path.reset();
         path.moveTo(stars[0].x, stars[0].y);
 //        4个阶段的辅助线
-        int each = radius * 9 / 4;
-        canvas.drawLine(each, 0, each, height, paint);
-        canvas.drawLine(each * 2, 0, each * 2, height, paint);
-        canvas.drawLine(each * 3, 0, each * 3, height, paint);
-        canvas.drawLine(each * 4, 0, each * 4, height, paint);
+//        int each = radius * 9 / 4;
+//        canvas.drawLine(each, 0, each, height, paint);
+//        canvas.drawLine(each * 2, 0, each * 2, height, paint);
+//        canvas.drawLine(each * 3, 0, each * 3, height, paint);
+//        canvas.drawLine(each * 4, 0, each * 4, height, paint);
         for (int i = 0; i < 4; i++) {
             int k = 2 * i;
 //            画控制点辅助线
