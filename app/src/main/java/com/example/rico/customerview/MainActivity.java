@@ -13,7 +13,7 @@ import com.example.rico.customerview.activity.FishSwimActivity;
 import com.example.rico.customerview.activity.FlowActivity;
 import com.example.rico.customerview.activity.PieActivity;
 import com.example.rico.customerview.activity.RadarActivity;
-import com.example.rico.customerview.activity.ScaleAndRoteActivity;
+import com.example.rico.customerview.activity.TextMoveActivity;
 import com.example.rico.customerview.view.ItemDecoration;
 
 public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemClick {
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         rv.setLayoutManager(new GridLayoutManager(this, 2));
         rv.setAdapter(adapter);
         adapter.addItem("1.圆角ImageView");
-        adapter.addItem("2.缩放旋转");
+        adapter.addItem("2.文字滚动view");
         adapter.addItem("3.drawBitmap 动画");
         adapter.addItem("4.雷达网图");
         adapter.addItem("5.贝塞尔曲线");
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
                 intent = new Intent(this, PieActivity.class);
                 break;
             case 1:
-                intent = new Intent(this, ScaleAndRoteActivity.class);
+                intent = new Intent(this, TextMoveActivity.class);
                 break;
             case 2:
                 intent = new Intent(this, DrawBitmapActivity.class);

@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.PieActivity" />
-        <activity android:name=".activity.ScaleAndRoteActivity" />
+        <activity android:name=".activity.TextMoveActivity" />
         <activity android:name=".activity.DrawBitmapActivity" />
         <activity android:name=".activity.RadarActivity" />
         <activity android:name=".activity.AllViewActivity" />

@@ -6,8 +6,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+
+import java.util.ArrayList;
 
 /**
  * Created by Tmp on 2019/4/12.
@@ -15,8 +18,8 @@ import android.util.Log;
  */
 public class ScrollTextView extends BaseCustomerView {
     private Paint lastPaint, thisPaint;
-    private String text;
-    private float textLength;
+    private String lastText, newText;
+    private float lastTextLength, newTextLength;
     private float thisHeight, lastHeight;
     private ValueAnimator animator;
     private Paint.FontMetrics metrics;
@@ -51,49 +54,103 @@ public class ScrollTextView extends BaseCustomerView {
         setMeasuredDimension(widthMeasureSpec, realHeight);
     }
 
+    int moveCount = 20;
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        lastHeight = height / 2 + metrics.bottom ;
-        thisHeight = lastHeight*2+metrics.bottom;
-        everyHeightMove = lastHeight / 20;
+        initBeginValue();
+        everyHeightMove = (lastHeight + metrics.bottom) / moveCount;
     }
 
-    public void setText(String text) {
-        this.text = text;
-        textLength = lastPaint.measureText(text);
+    private void initBeginValue() {
+        lastHeight = height / 2 + metrics.bottom;
+        thisHeight = lastHeight * 2 + metrics.bottom;
+        lastAlpha = 255;
+        thisAlpha = 255 - moveCount * alphaValue;
+        lastPaint.setAlpha(lastAlpha);
+        thisPaint.setAlpha(thisAlpha);
     }
 
-    int alphaValue;
+    public void setText() {
+        if (strings.size() == 0) {
+            return;
+        } else if (strings.size() == 1) {
+            lastP = thisP = 0;
+        }
+        lastText = strings.get(lastP);
+        newText = strings.get(thisP);
+        lastTextLength = lastPaint.measureText(lastText);
+        newTextLength = lastPaint.measureText(newText);
+        lastP = thisP;
+        thisP++;
+        if (thisP > strings.size() - 1) {
+            thisP = 0;
+        }
+    }
 
-    public void startAnimator(){
+    int lastP, thisP = 1;
+    ArrayList<String> strings;
+
+    public void addText(ArrayList<String> strings) {
+        this.strings = strings;
+        setText();
+    }
+
+    int alphaValue = 10, lastAlpha, thisAlpha;
+
+    public void startAnimator() {
+        if (strings == null || strings.size() < 2) {
+            return;
+        }
         if (animator == null) {
             animator = ValueAnimator.ofInt(width);
-        }
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                if (lastHeight > -metrics.bottom) {
-                    lastHeight -= everyHeightMove;
-                    thisHeight -= everyHeightMove;
-                    invalidate();
-                } else {
-                    animation.cancel();
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    if (lastHeight > -metrics.bottom) {
+                        if (lastHeight - everyHeightMove < -metrics.bottom) {
+                            float distance = lastHeight + metrics.bottom;
+                            lastHeight -= distance;
+                            thisHeight -= distance;
+                        } else {
+                            lastHeight -= everyHeightMove;
+                            thisHeight -= everyHeightMove;
+                        }
+                        lastAlpha -= alphaValue;
+                        thisAlpha += alphaValue;
+                        if (lastAlpha < 0) {
+                            lastAlpha = 0;
+                        }
+                        if (thisAlpha > 255) {
+                            thisAlpha = 255;
+                        }
+                        lastPaint.setAlpha(lastAlpha);
+                        thisPaint.setAlpha(thisAlpha);
+                        invalidate();
+                    } else {
+                        animation.cancel();
+                        initBeginValue();
+                        setText();
+                    }
                 }
-            }
-        });
-        animator.setRepeatCount(ValueAnimator.INFINITE);
-        animator.setDuration(1000);
+            });
+            animator.setRepeatCount(ValueAnimator.INFINITE);
+            animator.setDuration(1000);
+        }
         animator.start();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        float textStart = (width - textLength) / 2;
-        canvas.drawText(text, textStart, lastHeight, lastPaint);
-        canvas.drawText(text, textStart, thisHeight, thisPaint);
-        canvas.drawLine(0,height/2,width,height/2,lastPaint);
+        if (TextUtils.isEmpty(lastText) || TextUtils.isEmpty(newText)) {
+            return;
+        }
+        float lastTextStart = (width - lastTextLength) / 2;
+        float newTextStart = (width - newTextLength) / 2;
+        canvas.drawText(lastText, lastTextStart, lastHeight, lastPaint);
+        canvas.drawText(newText, newTextStart, thisHeight, thisPaint);
     }
 
     @Override

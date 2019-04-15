@@ -6,11 +6,13 @@ import com.example.rico.customerview.BaseActivity;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.ScrollTextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by Tmp on 2018/12/18.
  * 缩放和旋转
  */
-public class ScaleAndRoteActivity extends BaseActivity {
+public class TextMoveActivity extends BaseActivity {
     ScrollTextView text;
 
     @Override
@@ -18,10 +20,16 @@ public class ScaleAndRoteActivity extends BaseActivity {
         return R.layout.activity_scale_rote;
     }
 
+    ArrayList<String> strings;
+
     @Override
     public void doBusiness() {
         text = findViewById(R.id.text_view);
-        text.setText("this is test god");
+        strings = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            strings.add("this is " + i);
+        }
+        text.addText(strings);
         text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
