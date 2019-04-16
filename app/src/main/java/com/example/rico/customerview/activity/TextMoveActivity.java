@@ -26,8 +26,9 @@ public class TextMoveActivity extends BaseActivity {
     public void doBusiness() {
         text = findViewById(R.id.text_view);
         strings = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            strings.add("this is " + i);
+        for (int i = 0; i < 1; i++) {
+            strings.add("this");
+            strings.add("though");
         }
         text.addText(strings);
         text.setOnClickListener(new View.OnClickListener() {
