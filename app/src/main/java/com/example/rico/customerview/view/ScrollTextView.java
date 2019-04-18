@@ -5,10 +5,13 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 /**
@@ -16,15 +19,16 @@ import java.util.ArrayList;
  * 滚动的文字view
  */
 public class ScrollTextView extends BaseCustomerView {
-//    要移出屏幕的字符画笔、要显示的字符画笔、做平移字符画笔
+    //    要移出屏幕的字符画笔、要显示的字符画笔、做平移字符画笔
     private Paint lastPaint, newPaint, firstPaint;
-//    移出屏幕的字符、要显示的字符
+    //    移出屏幕的字符、要显示的字符
     private String lastText, newText;
     private float lastTextLength, newTextLength;
     private float newHeight, lastHeight, firstHeight;
     private ValueAnimator animator;
     private Paint.FontMetrics metrics;
     private float everyHeightMove;
+    private MyHandler handler;
 
     public ScrollTextView(Context context) {
         super(context);
@@ -54,6 +58,7 @@ public class ScrollTextView extends BaseCustomerView {
         newInfoList = new ArrayList<>();
         lastRemove = new ArrayList<>();
         newRemove = new ArrayList<>();
+        handler = new MyHandler(this);
     }
 
     @Override
@@ -65,10 +70,16 @@ public class ScrollTextView extends BaseCustomerView {
     }
 
     //    字符串滚动的次数
-    int moveCount = 40;
+    int moveCount = 30;
     //    每次位移时画笔透明度变化值  上次移动的字符画笔透明度值 要显示的字符画笔透明度值
-    int alphaValue = 5, lastAlpha, newAlpha;
+    int alphaValue = 8, lastAlpha, newAlpha;
 
+    //    设置滚动次数
+    public void setMoveCount(int moveCount) {
+        this.moveCount = moveCount;
+        moveCount = moveCount > 255 ? 255 : moveCount;
+        alphaValue = 255 / moveCount;
+    }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -175,13 +186,16 @@ public class ScrollTextView extends BaseCustomerView {
                         animation.cancel();
                         initBeginValue();
                         setText();
+                        handler.sendEmptyMessageDelayed(1, 500);
                     }
                 }
             });
             animator.setRepeatCount(ValueAnimator.INFINITE);
             animator.setDuration(1000);
         }
-        animator.start();
+        if (!animator.isRunning()) {
+            animator.start();
+        }
     }
 
     //    筛选出当前字符串和新的字符串相同的字符
@@ -274,6 +288,7 @@ public class ScrollTextView extends BaseCustomerView {
         if (animator != null) {
             animator.cancel();
         }
+        handler.removeCallbacksAndMessages(null);
     }
 
     ArrayList<CharInfo> lastInfoList, newInfoList, lastRemove, newRemove;
@@ -282,5 +297,19 @@ public class ScrollTextView extends BaseCustomerView {
     class CharInfo {
         String aChar;
         float position, distance, moveX, everyMove;
+    }
+
+    private static class MyHandler extends Handler {
+        WeakReference<ScrollTextView> reference;
+
+        public MyHandler(ScrollTextView scrollTextView) {
+            reference = new WeakReference<>(scrollTextView);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            reference.get().animator.start();
+        }
     }
 }

@@ -27,15 +27,15 @@ public class TextMoveActivity extends BaseActivity {
         text = findViewById(R.id.text_view);
         strings = new ArrayList<>();
         for (int i = 0; i < 1; i++) {
-            strings.add("this");
+            strings.add("recognitions");
             strings.add("中文");
             strings.add("红中");
             strings.add("corporation");
-            strings.add("though");
+            strings.add("technologies");
             strings.add("international");
             strings.add("analysis");
-            strings.add("information ");
-            strings.add("account");
+            strings.add("information");
+            strings.add("partnership");
             strings.add("welcomes");
             strings.add("homepage");
             strings.add("communications");
