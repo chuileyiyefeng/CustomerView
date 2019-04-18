@@ -8,7 +8,6 @@ import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -17,7 +16,9 @@ import java.util.ArrayList;
  * 滚动的文字view
  */
 public class ScrollTextView extends BaseCustomerView {
-    private Paint lastPaint, newPaint;
+//    要移出屏幕的字符画笔、要显示的字符画笔、做平移字符画笔
+    private Paint lastPaint, newPaint, firstPaint;
+//    移出屏幕的字符、要显示的字符
     private String lastText, newText;
     private float lastTextLength, newTextLength;
     private float newHeight, lastHeight, firstHeight;
@@ -43,6 +44,11 @@ public class ScrollTextView extends BaseCustomerView {
         newPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         newPaint.setTextSize(textSize);
         newPaint.setColor(Color.BLACK);
+
+        firstPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        firstPaint.setTextSize(textSize);
+        firstPaint.setColor(Color.BLACK);
+
         metrics = lastPaint.getFontMetrics();
         lastInfoList = new ArrayList<>();
         newInfoList = new ArrayList<>();
@@ -59,7 +65,10 @@ public class ScrollTextView extends BaseCustomerView {
     }
 
     //    字符串滚动的次数
-    int moveCount = 20;
+    int moveCount = 40;
+    //    每次位移时画笔透明度变化值  上次移动的字符画笔透明度值 要显示的字符画笔透明度值
+    int alphaValue = 5, lastAlpha, newAlpha;
+
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -74,9 +83,9 @@ public class ScrollTextView extends BaseCustomerView {
         newHeight = lastHeight * 2 + metrics.bottom;
         firstHeight = lastHeight;
         lastAlpha = 255;
-        thisAlpha = 255 - moveCount * alphaValue;
+        newAlpha = 255 - moveCount * alphaValue;
         lastPaint.setAlpha(lastAlpha);
-        newPaint.setAlpha(thisAlpha);
+        newPaint.setAlpha(newAlpha);
         isQuery = false;
     }
 
@@ -102,6 +111,7 @@ public class ScrollTextView extends BaseCustomerView {
     private void charWeight(String lastText, String newText) {
         lastInfoList.clear();
         newInfoList.clear();
+        lastRemove.clear();
         float lastPosition = 0, newPosition = 0;
         for (int i = 0; i < lastText.length(); i++) {
             String lastC = lastText.substring(i, i + 1);
@@ -130,18 +140,17 @@ public class ScrollTextView extends BaseCustomerView {
         setText();
     }
 
-    int alphaValue = 10, lastAlpha, thisAlpha;
 
     public void startAnimator() {
         if (strings == null || strings.size() < 2) {
             return;
         }
-
         if (animator == null) {
             animator = ValueAnimator.ofInt(width);
             animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
+//                    计算上下字符移动位置
                     if (lastHeight > -metrics.bottom) {
                         if (lastHeight - everyHeightMove < -metrics.bottom) {
                             float distance = lastHeight + metrics.bottom;
@@ -152,15 +161,15 @@ public class ScrollTextView extends BaseCustomerView {
                             newHeight -= everyHeightMove;
                         }
                         lastAlpha -= alphaValue;
-                        thisAlpha += alphaValue;
+                        newAlpha += alphaValue;
                         if (lastAlpha < 0) {
                             lastAlpha = 0;
                         }
-                        if (thisAlpha > 255) {
-                            thisAlpha = 255;
+                        if (newAlpha > 255) {
+                            newAlpha = 255;
                         }
                         lastPaint.setAlpha(lastAlpha);
-                        newPaint.setAlpha(thisAlpha);
+                        newPaint.setAlpha(newAlpha);
                         querySame();
                     } else {
                         animation.cancel();
@@ -179,7 +188,12 @@ public class ScrollTextView extends BaseCustomerView {
     //    Boolean值控制只计算一次
     boolean isQuery;
 
+    //    查找上下字段相同的字符
     private void querySame() {
+        if (lastText.equals(newText)) {
+            invalidate();
+            return;
+        }
         if (!isQuery) {
             lastRemove.clear();
             newRemove.clear();
@@ -188,11 +202,12 @@ public class ScrollTextView extends BaseCustomerView {
                 for (int k = 0; k < newInfoList.size(); k++) {
                     CharInfo newInfo = newInfoList.get(k);
                     if (newInfo.aChar.equals(info.aChar)) {
-                        if (!lastRemove.contains(info)) {
-                            info.distance = newInfo.position - info.position;
+//                        新的字符可能会包含多个相同的字符，这里只添加一个，多的不管
+//                        例如：lastString="this" newString="though" 只移动前两个字符，最后一个字符忽略
+                        if (!lastRemove.contains(info) && !newRemove.contains(newInfo)) {
+                            info.distance = (lastTextLength - newTextLength) / 2 + newInfo.position - info.position;
+                            info.everyMove = info.distance / moveCount;
                             lastRemove.add(info);
-                        }
-                        if (!newRemove.contains(newInfo)) {
                             newRemove.add(newInfo);
                         }
                     }
@@ -202,7 +217,30 @@ public class ScrollTextView extends BaseCustomerView {
             newInfoList.removeAll(newRemove);
             isQuery = true;
         }
+        movingX();
         invalidate();
+    }
+
+    //    计算x轴的平移距离
+    private void movingX() {
+        for (int i = 0; i < lastRemove.size(); i++) {
+            CharInfo info = lastRemove.get(i);
+            float moveX = info.moveX;
+            float everyMove = info.everyMove;
+            float distance = info.distance;
+            moveX += everyMove;
+            if (distance > 0) {
+                if (moveX > distance) {
+                    moveX = distance;
+                }
+            }
+            if (distance < 0) {
+                if (moveX < distance) {
+                    moveX = distance;
+                }
+            }
+            info.moveX = moveX;
+        }
     }
 
     float lastTextStart, newTextStart;
@@ -215,8 +253,6 @@ public class ScrollTextView extends BaseCustomerView {
         }
         lastTextStart = (width - lastTextLength) / 2;
         newTextStart = (width - newTextLength) / 2;
-//        canvas.drawText(lastText, lastTextStart, lastHeight, lastPaint);
-//        canvas.drawText(newText, newTextStart, newHeight, newPaint);
 
 
         for (int i = 0; i < lastInfoList.size(); i++) {
@@ -225,13 +261,10 @@ public class ScrollTextView extends BaseCustomerView {
         for (int i = 0; i < newInfoList.size(); i++) {
             canvas.drawText(newInfoList.get(i).aChar, newTextStart + newInfoList.get(i).position, newHeight, newPaint);
         }
-        //        这里做位移动画
+        //        这里画位移字符
         for (int i = 0; i < lastRemove.size(); i++) {
-            canvas.drawText(lastRemove.get(i).aChar, lastTextStart + lastRemove.get(i).position, firstHeight, newPaint);
+            canvas.drawText(lastRemove.get(i).aChar, lastTextStart + lastRemove.get(i).position + lastRemove.get(i).moveX, firstHeight, firstPaint);
         }
-//        for (int i = 0; i < newRemove.size(); i++) {
-//            canvas.drawText(newRemove.get(i).aChar, newTextStart + newRemove.get(i).position, newHeight, newPaint);
-//        }
     }
 
     //    从窗口移除时，取消动画
@@ -248,7 +281,6 @@ public class ScrollTextView extends BaseCustomerView {
     //    字符类，包含当前单个字符的内容以及位置
     class CharInfo {
         String aChar;
-        float position;
-        float distance;
+        float position, distance, moveX, everyMove;
     }
 }

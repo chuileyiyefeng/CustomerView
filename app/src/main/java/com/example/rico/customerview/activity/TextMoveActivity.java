@@ -28,7 +28,17 @@ public class TextMoveActivity extends BaseActivity {
         strings = new ArrayList<>();
         for (int i = 0; i < 1; i++) {
             strings.add("this");
+            strings.add("中文");
+            strings.add("红中");
+            strings.add("corporation");
             strings.add("though");
+            strings.add("international");
+            strings.add("analysis");
+            strings.add("information ");
+            strings.add("account");
+            strings.add("welcomes");
+            strings.add("homepage");
+            strings.add("communications");
         }
         text.addText(strings);
         text.setOnClickListener(new View.OnClickListener() {
