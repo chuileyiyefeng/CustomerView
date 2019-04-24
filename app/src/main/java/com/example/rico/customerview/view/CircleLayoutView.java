@@ -76,6 +76,7 @@ public class CircleLayoutView extends ViewGroup {
             child.layout(wDistance, top + hDistance, child.getMeasuredWidth() + wDistance, top + child.getMeasuredHeight() + hDistance);
             top = top + height;
         }
+
     }
 
     float lastX, lastY, lastMoveY;
@@ -194,7 +195,7 @@ public class CircleLayoutView extends ViewGroup {
     public void moveNext() {
         addNext();
         scrollBy(0, -height);
-//        这里滚动会有误差，暂时不知道什么原因(可能是startScroll的误差),所以加上一个差值，moveLast同理
+//        这里滚动会有误差，所以加上一个差值，moveLast同理
         int deviation = getScrollY() % height;
         scroller.startScroll(0,
                 getScrollY(),
@@ -229,7 +230,6 @@ public class CircleLayoutView extends ViewGroup {
         removeViewAt(count - 1);
         addView(v, 0);
     }
-
     @Override
     public void computeScroll() {
         super.computeScroll();

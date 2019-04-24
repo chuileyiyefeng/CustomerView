@@ -11,7 +11,7 @@ import com.example.rico.customerview.activity.CircleLayoutActivity;
 import com.example.rico.customerview.activity.DrawBitmapActivity;
 import com.example.rico.customerview.activity.FishSwimActivity;
 import com.example.rico.customerview.activity.FlowActivity;
-import com.example.rico.customerview.activity.PieActivity;
+import com.example.rico.customerview.activity.CornerImageActivity;
 import com.example.rico.customerview.activity.RadarActivity;
 import com.example.rico.customerview.activity.TextMoveActivity;
 import com.example.rico.customerview.view.ItemDecoration;
@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         adapter.addItem("17.Evaluator(ObjectAnimator)");
         adapter.addItem("18.翻页view");
         adapter.addItem("19.网状view");
+        adapter.addItem("20.MatrixSetPoly");
         adapter.addItemClick(this);
         rv.addItemDecoration(new ItemDecoration());
     }
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         Intent intent;
         switch (position) {
             case 0:
-                intent = new Intent(this, PieActivity.class);
+                intent = new Intent(this, CornerImageActivity.class);
                 break;
             case 1:
                 intent = new Intent(this, TextMoveActivity.class);

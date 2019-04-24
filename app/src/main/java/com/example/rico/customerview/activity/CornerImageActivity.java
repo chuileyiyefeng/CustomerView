@@ -8,7 +8,7 @@ import com.example.rico.customerview.view.CornerImageView;
 /**
  * Created by Tmp on 2018/12/18.
  */
-public class PieActivity extends BaseActivity {
+public class CornerImageActivity extends BaseActivity {
     CornerImageView pieView;
 
     @Override

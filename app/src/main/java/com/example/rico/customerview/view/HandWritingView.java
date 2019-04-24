@@ -8,6 +8,7 @@ import android.graphics.Path;
 import android.graphics.PathEffect;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -34,7 +35,6 @@ public class HandWritingView extends View {
         super(context, attrs, defStyleAttr);
         init();
     }
-
     private void init() {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStyle(Paint.Style.STROKE);
@@ -49,8 +49,10 @@ public class HandWritingView extends View {
         invalidate();
     }
     float downX,downY;
+    long time;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 downX=event.getX();
@@ -61,9 +63,14 @@ public class HandWritingView extends View {
                 path.lineTo(event.getX(), event.getY());
                 break;
             case MotionEvent.ACTION_UP:
-                if (Math.abs(event.getX() - downX) < 10 && Math.abs(event.getY() - downY) < 10) {
+                if (Math.abs(event.getX() - downX) < 10 && Math.abs(event.getY() - downY) < 30) {
 //                  先把鱼头方向转至点击的点
-                    reset();
+                    if (time==0) {
+                        time=System.currentTimeMillis();
+                    }else if (System.currentTimeMillis()-time<300){
+                        reset();
+                    }
+                    time=System.currentTimeMillis();
                 }
                 break;
         }

@@ -15,6 +15,7 @@ import com.example.rico.customerview.view.EvaluatorMoveView;
 import com.example.rico.customerview.view.FillTypeView;
 import com.example.rico.customerview.view.FishSwimView;
 import com.example.rico.customerview.view.HandWritingView;
+import com.example.rico.customerview.view.MatrixSetPolyView;
 import com.example.rico.customerview.view.NetColorView;
 import com.example.rico.customerview.view.PageTurningView;
 import com.example.rico.customerview.view.RegionClickView;
@@ -75,9 +76,7 @@ public class AllViewActivity extends BaseActivity {
                 view = new NetColorView(this);
                 break;
             case 19:
-                view = new CornerImageView(this);
-                ((ImageView)view).setScaleType(ImageView.ScaleType.CENTER_CROP);
-                ((ImageView)view).setImageResource(R.mipmap.page_trunning);
+                view = new MatrixSetPolyView(this);
                 break;
             default:
                 view = new View(this);
