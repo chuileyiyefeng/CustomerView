@@ -1,6 +1,7 @@
 package com.example.rico.customerview;
 
 import android.content.Intent;
+import android.graphics.Matrix;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,6 +13,7 @@ import com.example.rico.customerview.activity.DrawBitmapActivity;
 import com.example.rico.customerview.activity.FishSwimActivity;
 import com.example.rico.customerview.activity.FlowActivity;
 import com.example.rico.customerview.activity.CornerImageActivity;
+import com.example.rico.customerview.activity.MatrixActivity;
 import com.example.rico.customerview.activity.RadarActivity;
 import com.example.rico.customerview.activity.TextMoveActivity;
 import com.example.rico.customerview.view.ItemDecoration;
@@ -80,6 +82,9 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
                 break;
             case 14:
                 intent = new Intent(this, FishSwimActivity.class);
+                break;
+            case 19:
+                intent = new Intent(this, MatrixActivity.class);
                 break;
             default:
                 intent = new Intent(this, AllViewActivity.class).putExtra("type", position);

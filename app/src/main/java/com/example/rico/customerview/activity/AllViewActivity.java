@@ -75,9 +75,6 @@ public class AllViewActivity extends BaseActivity {
             case 18:
                 view = new NetColorView(this);
                 break;
-            case 19:
-                view = new MatrixSetPolyView(this);
-                break;
             default:
                 view = new View(this);
                 break;

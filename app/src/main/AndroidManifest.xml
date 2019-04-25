@@ -24,6 +24,7 @@
         <activity android:name=".activity.FlowActivity" />
         <activity android:name=".activity.CircleLayoutActivity" />
         <activity android:name=".activity.FishSwimActivity" />
+        <activity android:name=".activity.MatrixActivity" />
     </application>
 
 </manifest>
