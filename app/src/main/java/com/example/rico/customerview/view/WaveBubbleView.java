@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Shader;
@@ -24,7 +25,7 @@ import java.util.Random;
  * 原理在图 R.mipmap.wave_wave_explanation
  */
 public class WaveBubbleView extends View {
-    private Paint paint, bubblePaint,rectFPaint;
+    private Paint paint, bubblePaint, rectFPaint;
     private Path path, rectPath;
     private int baseLine;
     private int waveHeight = 60;
@@ -83,6 +84,8 @@ public class WaveBubbleView extends View {
         LinearGradient gradient = new LinearGradient(0, baseLine, 0, height, arcColors, null, Shader.TileMode.CLAMP);
         paint.setShader(gradient);
         produceBubble();
+        resetPath();
+        rectPath.addRect(50, 50, width - 50, height - 50, Path.Direction.CW);
     }
 
     List<Bubble> bubbleList;
@@ -98,29 +101,6 @@ public class WaveBubbleView extends View {
 
     long drawTime;
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-//        clipPath操作要在画图之前操作，clipPath不会影响到已经画好的图形
-        rectPath.addRect(50, 50, width - 50, height - 50, Path.Direction.CW);
-        canvas.clipPath(rectPath);
-        canvas.drawPath(rectPath,rectFPaint);
-        path.reset();
-        path.moveTo(-width, baseLine);
-        for (int i = -3; i < 2; i++) {
-            int start = i * width / 2 + offsetX;
-            path.quadTo(start + width / 4, getY(i), start + width / 2, baseLine);
-        }
-        path.lineTo(width, height);
-        path.lineTo(0, height);
-        path.close();
-        canvas.drawPath(path, paint);
-
-        for (int i = 0; i < bubbleList.size(); i++) {
-            Bubble newBubble = getNewBubble(bubbleList.get(i));
-            canvas.drawCircle(newBubble.getPointX(), newBubble.getPointY(), newBubble.getRadius(), bubblePaint);
-        }
-
-    }
 
     //    生成一个新的气泡
     private Bubble createNewBubble() {
@@ -179,17 +159,36 @@ public class WaveBubbleView extends View {
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                float value = (float) animation.getAnimatedValue();
-                offsetX = (int) value;
-                baseLine--;
-                if (baseLine > 0) {
-                    postInvalidate();
+                offsetX += 15;
+                if (offsetX >= width) {
+                    offsetX = 0;
                 }
+                baseLine--;
+                resetPath();
+//                画波浪线的path与矩形path相交的值为波浪线的path
+//                原波浪线的path包含的内容太多，影响性能
+                path.op(rectPath,Path.Op.INTERSECT);
+                invalidate();
             }
         });
         animator.setDuration(2000);
         animator.setRepeatCount(ValueAnimator.INFINITE);
         animator.start();
+    }
+    private void resetPath() {
+        if (baseLine<=0) {
+            animator.cancel();
+            return;
+        }
+        path.reset();
+        path.moveTo(-width, baseLine);
+        for (int i = -3; i < 2; i++) {
+            int start = i * width / 2 + offsetX;
+            path.quadTo(start + width / 4, getY(i), start + width / 2, baseLine);
+        }
+        path.lineTo(width, height);
+        path.lineTo(0, height);
+
     }
 
     float downX, downY;
@@ -218,6 +217,19 @@ public class WaveBubbleView extends View {
         }
     }
 
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+//        clipPath操作要在画图之前操作，clipPath不会影响到已经画好的图形
+        canvas.clipPath(rectPath);
+        canvas.drawPath(rectPath, rectFPaint);
+        canvas.drawPath(path, paint);
+//
+        for (int i = 0; i < bubbleList.size(); i++) {
+            Bubble newBubble = getNewBubble(bubbleList.get(i));
+            canvas.drawCircle(newBubble.getPointX(), newBubble.getPointY(), newBubble.getRadius(), bubblePaint);
+        }
+    }
 
     @Override
     protected void onDetachedFromWindow() {

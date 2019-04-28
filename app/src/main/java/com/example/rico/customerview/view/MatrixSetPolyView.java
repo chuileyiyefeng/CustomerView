@@ -44,7 +44,7 @@ public class MatrixSetPolyView extends BaseCustomerView {
         mBitmap = BitmapFactory.decodeResource(getResources(),
                 R.mipmap.dog);
 
-       temp =new float[] {0, 0,                                    // 左上
+        temp = new float[]{0, 0,                                    // 左上
                 mBitmap.getWidth(), 0,                          // 右上
                 mBitmap.getWidth(), mBitmap.getHeight(),        // 右下
                 0, mBitmap.getHeight()};// 左下
@@ -81,7 +81,6 @@ public class MatrixSetPolyView extends BaseCustomerView {
                 invalidate();
                 break;
         }
-
         return true;
     }
 
@@ -108,8 +107,8 @@ public class MatrixSetPolyView extends BaseCustomerView {
 
     public void setTestPoint(int testPoint) {
         this.testPoint = testPoint > 4 || testPoint < 0 ? 4 : testPoint;
-        dst=temp.clone();
-        src=temp.clone();
+        dst = temp.clone();
+        src = temp.clone();
         resetPolyMatrix(this.testPoint);
         invalidate();
     }

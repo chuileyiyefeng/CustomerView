@@ -1,7 +1,6 @@
 package com.example.rico.customerview.activity;
 
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.rico.customerview.BaseActivity;
@@ -9,13 +8,11 @@ import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.ArcSeekBarView;
 import com.example.rico.customerview.view.BaseView;
 import com.example.rico.customerview.view.BezierView;
-import com.example.rico.customerview.view.CornerImageView;
 import com.example.rico.customerview.view.EvaluatorAttrView;
 import com.example.rico.customerview.view.EvaluatorMoveView;
 import com.example.rico.customerview.view.FillTypeView;
 import com.example.rico.customerview.view.FishSwimView;
 import com.example.rico.customerview.view.HandWritingView;
-import com.example.rico.customerview.view.MatrixSetPolyView;
 import com.example.rico.customerview.view.NetColorView;
 import com.example.rico.customerview.view.PageTurningView;
 import com.example.rico.customerview.view.RegionClickView;
@@ -73,6 +70,9 @@ public class AllViewActivity extends BaseActivity {
                 view = new PageTurningView(this);
                 break;
             case 18:
+                view = new NetColorView(this);
+                break;
+            case 20:
                 view = new NetColorView(this);
                 break;
             default:

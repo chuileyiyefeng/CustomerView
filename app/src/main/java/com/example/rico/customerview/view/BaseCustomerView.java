@@ -11,13 +11,11 @@ import android.view.View;
 public abstract class BaseCustomerView extends View {
    protected int width, height;
     public BaseCustomerView(Context context) {
-        super(context);
-        init(context);
+        this(context,null);
     }
 
     public BaseCustomerView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
+        this(context,attrs,0);
     }
 
     public BaseCustomerView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
