@@ -15,6 +15,7 @@ import com.example.rico.customerview.activity.FlowActivity;
 import com.example.rico.customerview.activity.CornerImageActivity;
 import com.example.rico.customerview.activity.MatrixActivity;
 import com.example.rico.customerview.activity.RadarActivity;
+import com.example.rico.customerview.activity.RotateActivity;
 import com.example.rico.customerview.activity.TextMoveActivity;
 import com.example.rico.customerview.view.ItemDecoration;
 
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         adapter.addItem("18.翻页view");
         adapter.addItem("19.网状view");
         adapter.addItem("20.MatrixSetPoly");
-        adapter.addItem("21.咖啡雾气");
+        adapter.addItem("21.无限循环view");
         adapter.addItemClick(this);
         rv.addItemDecoration(new ItemDecoration());
     }
@@ -86,6 +87,9 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
                 break;
             case 19:
                 intent = new Intent(this, MatrixActivity.class);
+                break;
+            case 20:
+                intent = new Intent(this, RotateActivity.class);
                 break;
             default:
                 intent = new Intent(this, AllViewActivity.class).putExtra("type", position);

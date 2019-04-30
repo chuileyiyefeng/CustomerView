@@ -23,5 +23,5 @@
     <color name="text_color">#4578e6</color>
     <color name="button_color">#335fbd</color>
     <color name="button_otp">#5188ff</color>
-    <color name="saffon_yellow">#f28c29</color>
+    <color name="yellow">#f28c29</color>
 </resources>

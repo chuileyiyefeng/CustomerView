@@ -60,7 +60,7 @@ public class ScaleView extends View {
         RectF rectF = new RectF(0, 0, radius / 1.2F, radius / 1.2F);
         canvas.drawRect(rectF,paint);
         canvas.scale(-1,-1); //绕原点旋转180
-        paint.setColor(getResources().getColor(R.color.saffon_yellow));
+        paint.setColor(getResources().getColor(R.color.yellow));
         canvas.drawRect(rectF,paint);
 
     }

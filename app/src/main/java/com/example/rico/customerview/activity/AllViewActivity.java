@@ -72,9 +72,6 @@ public class AllViewActivity extends BaseActivity {
             case 18:
                 view = new NetColorView(this);
                 break;
-            case 20:
-                view = new NetColorView(this);
-                break;
             default:
                 view = new View(this);
                 break;

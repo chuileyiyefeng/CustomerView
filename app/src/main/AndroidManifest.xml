@@ -25,6 +25,7 @@
         <activity android:name=".activity.CircleLayoutActivity" />
         <activity android:name=".activity.FishSwimActivity" />
         <activity android:name=".activity.MatrixActivity" />
+        <activity android:name=".activity.RotateActivity" />
     </application>
 
 </manifest>

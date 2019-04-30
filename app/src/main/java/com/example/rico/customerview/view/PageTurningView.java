@@ -52,7 +52,7 @@ public class PageTurningView extends View {
         paintC = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         paintA.setColor(getResources().getColor(R.color.colorLine));
-        paintB.setColor(getResources().getColor(R.color.saffon_yellow));
+        paintB.setColor(getResources().getColor(R.color.yellow));
         paintC.setColor(getResources().getColor(R.color.button_bg));
         pathA = new Path();
         pathB = new Path();
