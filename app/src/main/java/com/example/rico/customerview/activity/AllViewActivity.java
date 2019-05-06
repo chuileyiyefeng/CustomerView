@@ -6,7 +6,7 @@ import android.widget.LinearLayout;
 import com.example.rico.customerview.BaseActivity;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.ArcSeekBarView;
-import com.example.rico.customerview.view.BaseView;
+import com.example.rico.customerview.view.LayoutChangeView;
 import com.example.rico.customerview.view.BezierView;
 import com.example.rico.customerview.view.EvaluatorAttrView;
 import com.example.rico.customerview.view.EvaluatorMoveView;
@@ -52,7 +52,7 @@ public class AllViewActivity extends BaseActivity {
                 view = new ArcSeekBarView(this);
                 break;
             case 9:
-                view = new BaseView(this);
+                view = new LayoutChangeView(this);
                 break;
             case 12:
                 view = new WaveBubbleView(this);

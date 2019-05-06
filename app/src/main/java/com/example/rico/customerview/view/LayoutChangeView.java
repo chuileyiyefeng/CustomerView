@@ -14,19 +14,20 @@ import android.view.ViewGroup;
 
 /**
  * Created by Tmp on 2019/2/13.
+ *
  */
-public class BaseView extends View {
-    public BaseView(Context context) {
+public class LayoutChangeView extends View {
+    public LayoutChangeView(Context context) {
         super(context);
         init(context);
     }
 
-    public BaseView(Context context, @Nullable AttributeSet attrs) {
+    public LayoutChangeView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public BaseView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public LayoutChangeView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }

@@ -4,7 +4,9 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Camera;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.Nullable;
@@ -22,11 +24,21 @@ public class MatrixAndCameraTestView extends ViewGroup {
     public MatrixAndCameraTestView(Context context) {
         super(context);
         this.context = context;
+        init();
     }
 
     public MatrixAndCameraTestView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
+        init();
+    }
+
+    Camera camera;
+    Matrix matrix;
+
+    private void init() {
+        camera = new Camera();
+        matrix = new Matrix();
     }
 
     //    宽、高、滑动临界值
@@ -53,7 +65,7 @@ public class MatrixAndCameraTestView extends ViewGroup {
         int count = getChildCount();
         if (count > 5) {
             count = 5;
-        }else if (count<5){
+        } else if (count < 5) {
             return;
         }
         int top = 0;
@@ -67,15 +79,54 @@ public class MatrixAndCameraTestView extends ViewGroup {
             //设置View的左边、上边、右边底边位置
             child.layout(wDistance, top + hDistance, child.getMeasuredWidth() + wDistance, top + child.getMeasuredHeight() + hDistance);
             top = top + height;
-
         }
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        for (int i = 0; i < getChildCount(); i++) {
+            drawChild(canvas, i, getChildAt(i));
+        }
+    }
+
+    //
+    private void drawChild(Canvas canvas, int index, View child) {
+        int childTop = height * index;
+
+        if (getScrollY() + height < childTop) {
+//            0+100<100?
+            return;
+        }
+        if (childTop < getScrollY() - height) {
+//            100<0-100?
+            return;
+        }
+        float centerX = width / 2;
+        float centerY = (getScrollY() > childTop) ? childTop + height : childTop;
+//      90*-100/10=-90;
+        float degree = 90 * (getScrollY() - childTop) / height;
+        if (degree >= 90 || degree <= -90) {
+            return;
+        }
+        canvas.save();
+        camera.save();
+        camera.rotateX(degree);
+        camera.getMatrix(matrix);
+        camera.restore();
+
+        matrix.preTranslate(-centerX, -centerY);
+        matrix.postTranslate(centerX, centerY);
+
+        canvas.concat(matrix);
+        drawChild(canvas, child, getDrawingTime());
+        canvas.restore();
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        if (getChildCount()>=3) {
-            startAnimator();
+        if (getChildCount() >= 3) {
+//            startAnimator();
         }
     }
 
@@ -92,6 +143,7 @@ public class MatrixAndCameraTestView extends ViewGroup {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     int value = (int) animation.getAnimatedValue();
+                    value = height * 4 - value;
                     scrollTo(0, value);
                 }
             });
@@ -104,7 +156,7 @@ public class MatrixAndCameraTestView extends ViewGroup {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (animator!=null) {
+        if (animator != null) {
             animator.cancel();
         }
     }
