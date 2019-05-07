@@ -39,6 +39,7 @@ public class MatrixAndCameraTestView extends ViewGroup {
     private void init() {
         camera = new Camera();
         matrix = new Matrix();
+        matrixValues = new float[9];
     }
 
     //    宽、高、滑动临界值
@@ -89,21 +90,21 @@ public class MatrixAndCameraTestView extends ViewGroup {
         }
     }
 
+    float[] matrixValues;
+    float scale;
+
     //
     private void drawChild(Canvas canvas, int index, View child) {
         int childTop = height * index;
 
         if (getScrollY() + height < childTop) {
-//            0+100<100?
             return;
         }
         if (childTop < getScrollY() - height) {
-//            100<0-100?
             return;
         }
         float centerX = width / 2;
         float centerY = (getScrollY() > childTop) ? childTop + height : childTop;
-//      90*-100/10=-90;
         float degree = 90 * (getScrollY() - childTop) / height;
         if (degree >= 90 || degree <= -90) {
             return;
@@ -113,6 +114,7 @@ public class MatrixAndCameraTestView extends ViewGroup {
         camera.rotateX(degree);
         camera.getMatrix(matrix);
         camera.restore();
+
 
         matrix.preTranslate(-centerX, -centerY);
         matrix.postTranslate(centerX, centerY);
@@ -125,8 +127,9 @@ public class MatrixAndCameraTestView extends ViewGroup {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        scale = getResources().getDisplayMetrics().density;
         if (getChildCount() >= 3) {
-//            startAnimator();
+            startAnimator();
         }
     }
 
@@ -137,7 +140,7 @@ public class MatrixAndCameraTestView extends ViewGroup {
         if (animator == null) {
             scroller = new Scroller(context);
             animator = ValueAnimator.ofInt(0, height * 4);
-            animator.setDuration(3000);
+            animator.setDuration(5000);
             animator.setRepeatCount(ValueAnimator.INFINITE);
             animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
