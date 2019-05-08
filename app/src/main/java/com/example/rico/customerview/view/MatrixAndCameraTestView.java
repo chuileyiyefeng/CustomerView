@@ -106,7 +106,7 @@ public class MatrixAndCameraTestView extends ViewGroup {
         float centerX = width / 2;
         float centerY = (getScrollY() > childTop) ? childTop + height : childTop;
         float degree = 90 * (getScrollY() - childTop) / height;
-        if (degree >= 90 || degree <= -90) {
+        if (degree >= 90 || degree <= -90 ) {
             return;
         }
         canvas.save();

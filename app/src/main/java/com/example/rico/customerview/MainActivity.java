@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         adapter.addItem("19.网状view");
         adapter.addItem("20.MatrixSetPoly");
         adapter.addItem("21.无限循环view");
+        adapter.addItem("22.拼图view");
         adapter.addItemClick(this);
         rv.addItemDecoration(new ItemDecoration());
     }
