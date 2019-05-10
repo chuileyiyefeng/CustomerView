@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.example.rico.customerview.R;
 
@@ -37,7 +38,7 @@ public class PuzzleView extends BaseCustomerView {
     //    图片距离顶部的距离
     int distance;
     //    行数、列数
-    int rowCount = 3, columnCount = 5;
+    int rowCount = 3, columnCount = 4;
     //    大图片
     Bitmap bitmap;
     Paint paint;
@@ -90,18 +91,9 @@ public class PuzzleView extends BaseCustomerView {
         }
 //        打乱list的顺序,但是要保留原有的top、left数据
 //        用两个array来互相映射原有的和原本的排列位置
-        Collections.shuffle(ltList);
-        for (int i = 0; i < ltList.size(); i++) {
-            LeftAndTop lt = ltList.get(i);
-            for (int k = 0; k < bitmapList.size(); k++) {
-                BitmapInfo info = bitmapList.get(k);
-                if (lt.top == info.top && lt.left == info.left) {
-                    originArray.put(i, k);
-                    changeArray.put(k, i);
-                }
-            }
-        }
         setWhiteArea();
+        shuffleList();
+        mapping();
 
 //        添加分割线路径
         for (int i = 1; i < columnCount; i++) {
@@ -115,11 +107,33 @@ public class PuzzleView extends BaseCustomerView {
 
     }
 
+    //    打乱图片的排序
+    private void shuffleList() {
+//        这个方法打乱是错误的，这是随机重新排序了数组
+//        拼图排序有规则的，不是随机排序，随机打乱是可能没办法还原的
+//        Collections.shuffle(ltList);
+
+//        新的随机排序方法
+
+    }
+
+    //    设置两个集合的互相映射
+    private void mapping() {
+        for (int i = 0; i < ltList.size(); i++) {
+            LeftAndTop lt = ltList.get(i);
+            for (int k = 0; k < bitmapList.size(); k++) {
+                BitmapInfo info = bitmapList.get(k);
+                if (lt.top == info.top && lt.left == info.left) {
+                    originArray.put(i, k);
+                    changeArray.put(k, i);
+                }
+            }
+        }
+    }
+
     //    随机设置空白块
     private void setWhiteArea() {
-        Random random = new Random();
-        int i = random.nextInt(ltList.size());
-        LeftAndTop lf = ltList.get(i);
+        LeftAndTop lf = ltList.get(ltList.size() - 1);
         lf.isWhite = true;
     }
 
@@ -134,40 +148,17 @@ public class PuzzleView extends BaseCustomerView {
                 downArea();
                 Log.e("DownType", "onTouchEvent: " + moveType);
                 break;
-            case MotionEvent.ACTION_MOVE:
-                if (moveType != NO_MOVE) {
-                    float moveX = event.getX() - downX;
-                    float moveY = event.getY() - downY;
-                    changeDirection = NO_MOVE;
-                    switch (moveType) {
-                        case LEFT:
-                            if (moveX < 0) {
-                                changeDirection = LEFT;
-                            }
-                            break;
-                        case UP:
-                            if (moveY < 0) {
-                                changeDirection = UP;
-                            }
-                            break;
-                        case RIGHT:
-                            if (moveX > 0) {
-                                changeDirection = RIGHT;
-                            }
-                            break;
-                        case DOWN:
-                            if (moveY > 0) {
-                                changeDirection = DOWN;
-                            }
-                            break;
-
-                    }
-                }
-                break;
             case MotionEvent.ACTION_UP:
 //                选中的图片与白块互换位置
-                if (changeDirection != NO_MOVE) {
-
+                if (moveType != NO_MOVE) {
+//                    集合元素交换
+                    LeftAndTop lt1 = ltList.get(changeArray.get(downPosition));
+                    LeftAndTop lt2 = ltList.get(newPosition);
+                    lt1.isWhite = !lt1.isWhite;
+                    lt2.isWhite = !lt2.isWhite;
+                    Collections.swap(ltList, changeArray.get(downPosition), newPosition);
+                    mapping();
+                    invalidate();
                 }
                 break;
         }
@@ -177,11 +168,13 @@ public class PuzzleView extends BaseCustomerView {
     //                首先判断按下的这个方块位置
     //                判断按下的这个方块可以向哪个方向移动
     //                可以滑动的方向、变换方块的方向
-    int moveType, changeDirection;
+    int moveType;
     final int NO_MOVE = 0, LEFT = 1, UP = 2, RIGHT = 3, DOWN = 4;
+    //    按下的位置、要交换的位置
+    int downPosition, newPosition;
 
     private void downArea() {
-        int downPosition = -1;
+        downPosition = -1;
 //        这里判断点击的位置要用图片原始的位置，而不是打乱顺序后的位置
 //        便于判断位置
         for (int i = 0; i < ltList.size(); i++) {
@@ -206,15 +199,17 @@ public class PuzzleView extends BaseCustomerView {
         LeftAndTop lf = ltList.get(changeArray.get(downPosition));
 //        能否向左滑动
         if (downPosition > 0) {
-            LeftAndTop lastLf = ltList.get(changeArray.get(downPosition - 1));
+            newPosition = changeArray.get(downPosition - 1);
+            LeftAndTop lastLf = ltList.get(newPosition);
             if (lastLf.isWhite && lastLf.top == lf.top) {
                 moveType = LEFT;
                 return;
             }
         }
 //        能否向上滑动
-        if (downPosition > columnCount) {
-            LeftAndTop lastLf = ltList.get(changeArray.get(downPosition - columnCount));
+        if (downPosition > columnCount - 1) {
+            newPosition = changeArray.get(downPosition - columnCount);
+            LeftAndTop lastLf = ltList.get(newPosition);
             if (lastLf.isWhite) {
                 moveType = UP;
                 return;
@@ -222,7 +217,8 @@ public class PuzzleView extends BaseCustomerView {
         }
 //        能否向右滑动
         if (downPosition < ltList.size() - 1) {
-            LeftAndTop lastLf = ltList.get(changeArray.get(downPosition + 1));
+            newPosition = changeArray.get(downPosition + 1);
+            LeftAndTop lastLf = ltList.get(newPosition);
             if (lastLf.isWhite && lastLf.top == lf.top) {
                 moveType = RIGHT;
                 return;
@@ -230,7 +226,8 @@ public class PuzzleView extends BaseCustomerView {
         }
 //        能否向下滑动
         if (downPosition + columnCount < ltList.size()) {
-            LeftAndTop lastLf = ltList.get(changeArray.get(downPosition + columnCount));
+            newPosition = changeArray.get(downPosition + columnCount);
+            LeftAndTop lastLf = ltList.get(newPosition);
             if (lastLf.isWhite) {
                 moveType = DOWN;
                 return;
@@ -239,16 +236,29 @@ public class PuzzleView extends BaseCustomerView {
         moveType = NO_MOVE;
     }
 
+    boolean puzzleDone;
+
     @Override
     protected void onDraw(Canvas canvas) {
+        int noMatch = 0;
         for (int i = 0; i < bitmapList.size(); i++) {
             BitmapInfo info = bitmapList.get(i);
             LeftAndTop lt = ltList.get(i);
+            boolean isTop = info.top == lt.top;
+            boolean isLeft = info.left == lt.left;
+            if (!(isTop && isLeft)) {
+                noMatch++;
+            }
             if (!lt.isWhite) {
                 canvas.drawBitmap(info.bitmap, lt.left, lt.top + distance, paint);
             }
         }
+        puzzleDone = noMatch == 0;
         canvas.drawPath(dividerPath, paint);
+//        判断是否拼完
+        if (puzzleDone) {
+            Toast.makeText(context, "拼图完成", Toast.LENGTH_SHORT).show();
+        }
     }
 
     //    获取填满屏幕宽度的图片
