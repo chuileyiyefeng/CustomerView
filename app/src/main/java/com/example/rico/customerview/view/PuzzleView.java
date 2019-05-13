@@ -38,7 +38,8 @@ public class PuzzleView extends BaseCustomerView {
     //    图片距离顶部的距离
     int distance;
     //    行数、列数
-    int rowCount = 3, columnCount = 4;
+    int rowCount = 4, columnCount = 5;
+    Random random;
     //    大图片
     Bitmap bitmap;
     Paint paint;
@@ -63,13 +64,14 @@ public class PuzzleView extends BaseCustomerView {
         dividerPath = new Path();
         originArray = new SparseIntArray();
         changeArray = new SparseIntArray();
+        random = new Random();
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         setBackgroundColor(getResources().getColor(R.color.button_bg));
-        bitmap = getJigsaw(context);
+        bitmap = getNewBitmap(context);
         distance = (height - bitmap.getHeight()) / 2;
 //        整个图片分为三行五列的小图片
         minWidth = bitmap.getWidth() / columnCount;
@@ -92,9 +94,8 @@ public class PuzzleView extends BaseCustomerView {
 //        打乱list的顺序,但是要保留原有的top、left数据
 //        用两个array来互相映射原有的和原本的排列位置
         setWhiteArea();
-        shuffleList();
         mapping();
-
+        tap();
 //        添加分割线路径
         for (int i = 1; i < columnCount; i++) {
             dividerPath.moveTo((float) width / columnCount * i, distance);
@@ -107,20 +108,27 @@ public class PuzzleView extends BaseCustomerView {
 
     }
 
-    //    打乱图片的排序
-    private void shuffleList() {
-//        这个方法打乱是错误的，这是随机重新排序了数组
-//        拼图排序有规则的，不是随机排序，随机打乱是可能没办法还原的
-//        Collections.shuffle(ltList);
+    int whitePosition;
 
-//        新的随机排序方法
-
+    private void tap() {
+        for (int i = 0; i < 300; i++) {
+            downX = random.nextInt(bitmap.getWidth());
+            downY = random.nextInt(bitmap.getHeight()) + distance;
+            downArea();
+            if (moveType != NO_MOVE) {
+//                    集合元素交换
+                changeElement();
+            }
+        }
     }
 
     //    设置两个集合的互相映射
     private void mapping() {
         for (int i = 0; i < ltList.size(); i++) {
             LeftAndTop lt = ltList.get(i);
+            if (lt.isWhite) {
+                whitePosition = i;
+            }
             for (int k = 0; k < bitmapList.size(); k++) {
                 BitmapInfo info = bitmapList.get(k);
                 if (lt.top == info.top && lt.left == info.left) {
@@ -133,7 +141,9 @@ public class PuzzleView extends BaseCustomerView {
 
     //    随机设置空白块
     private void setWhiteArea() {
-        LeftAndTop lf = ltList.get(ltList.size() - 1);
+//        whitePosition = random.nextInt(ltList.size());
+        whitePosition = ltList.size() - 1;
+        LeftAndTop lf = ltList.get(whitePosition);
         lf.isWhite = true;
     }
 
@@ -152,17 +162,21 @@ public class PuzzleView extends BaseCustomerView {
 //                选中的图片与白块互换位置
                 if (moveType != NO_MOVE) {
 //                    集合元素交换
-                    LeftAndTop lt1 = ltList.get(changeArray.get(downPosition));
-                    LeftAndTop lt2 = ltList.get(newPosition);
-                    lt1.isWhite = !lt1.isWhite;
-                    lt2.isWhite = !lt2.isWhite;
-                    Collections.swap(ltList, changeArray.get(downPosition), newPosition);
-                    mapping();
+                    changeElement();
                     invalidate();
                 }
                 break;
         }
         return true;
+    }
+
+    private void changeElement() {
+        LeftAndTop lt1 = ltList.get(changeArray.get(downPosition));
+        LeftAndTop lt2 = ltList.get(newPosition);
+        lt1.isWhite = !lt1.isWhite;
+        lt2.isWhite = !lt2.isWhite;
+        Collections.swap(ltList, changeArray.get(downPosition), newPosition);
+        mapping();
     }
 
     //                首先判断按下的这个方块位置
@@ -190,7 +204,13 @@ public class PuzzleView extends BaseCustomerView {
                 break;
             }
         }
-//        点击范围不在图片上.
+        moveType(downPosition);
+    }
+
+    //    判断该往哪个方向移动
+    private void moveType(int downPosition) {
+        //        点击范围不在图片上.
+        this.downPosition = downPosition;
         if (downPosition == -1) {
             moveType = NO_MOVE;
             return;
@@ -233,6 +253,7 @@ public class PuzzleView extends BaseCustomerView {
                 return;
             }
         }
+
         moveType = NO_MOVE;
     }
 
@@ -262,8 +283,8 @@ public class PuzzleView extends BaseCustomerView {
     }
 
     //    获取填满屏幕宽度的图片
-    public Bitmap getJigsaw(Context context) {
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.img);
+    public Bitmap getNewBitmap(Context context) {
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.img1);
         int bitmapWidth = bitmap.getWidth();
         int bitmapHeight = bitmap.getHeight();
         int screenWidth = width;
@@ -286,5 +307,23 @@ public class PuzzleView extends BaseCustomerView {
         float top, left;
         //        是否为空白块
         boolean isWhite;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (bitmap!=null&&!bitmap.isRecycled()) {
+            bitmap.recycle();
+            bitmap=null;
+        }
+        for (int i = 0; i < bitmapList.size(); i++) {
+            Bitmap bitmap=bitmapList.get(i).bitmap;
+            if (bitmap!=null&&!bitmap.isRecycled()) {
+                bitmap.recycle();
+                bitmap=null;
+            }
+        }
+        bitmapList.clear();
+        ltList.clear();
     }
 }
