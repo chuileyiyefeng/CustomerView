@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.rico.customerview.BaseActivity;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.FlowView;
 

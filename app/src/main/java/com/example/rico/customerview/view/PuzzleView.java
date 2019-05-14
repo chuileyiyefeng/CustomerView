@@ -38,7 +38,7 @@ public class PuzzleView extends BaseCustomerView {
     //    图片距离顶部的距离
     int distance;
     //    行数、列数
-    int rowCount = 4, columnCount = 5;
+    int rowCount = 3, columnCount = 4;
     Random random;
     //    大图片
     Bitmap bitmap;

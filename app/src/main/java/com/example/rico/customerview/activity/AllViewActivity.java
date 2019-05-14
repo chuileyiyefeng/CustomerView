@@ -3,11 +3,9 @@ package com.example.rico.customerview.activity;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.example.rico.customerview.BaseActivity;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.ArcSeekBarView;
 import com.example.rico.customerview.view.LayoutChangeView;
-import com.example.rico.customerview.view.BezierView;
 import com.example.rico.customerview.view.EvaluatorAttrView;
 import com.example.rico.customerview.view.EvaluatorMoveView;
 import com.example.rico.customerview.view.FillTypeView;
@@ -37,9 +35,6 @@ public class AllViewActivity extends BaseActivity {
         type = getIntent().getIntExtra("type", 1);
         View view;
         switch (type) {
-            case 4:
-                view = new BezierView(this);
-                break;
             case 5:
                 view = new FillTypeView(this);
                 break;

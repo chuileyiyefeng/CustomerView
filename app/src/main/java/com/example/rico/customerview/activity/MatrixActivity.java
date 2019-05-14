@@ -2,7 +2,6 @@ package com.example.rico.customerview.activity;
 
 import android.widget.RadioGroup;
 
-import com.example.rico.customerview.BaseActivity;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.MatrixSetPolyView;
 

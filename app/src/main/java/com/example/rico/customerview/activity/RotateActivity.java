@@ -1,6 +1,5 @@
 package com.example.rico.customerview.activity;
 
-import com.example.rico.customerview.BaseActivity;
 import com.example.rico.customerview.R;
 
 /**

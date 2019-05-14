@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,6 +26,7 @@
         <activity android:name=".activity.FishSwimActivity" />
         <activity android:name=".activity.MatrixActivity" />
         <activity android:name=".activity.RotateActivity" />
+        <activity android:name=".activity.BezierMoveActivity" />
     </application>
 
 </manifest>

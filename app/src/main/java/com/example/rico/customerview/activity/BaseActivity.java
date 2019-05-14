@@ -1,4 +1,4 @@
-package com.example.rico.customerview;
+package com.example.rico.customerview.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

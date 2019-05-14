@@ -1,5 +1,10 @@
 package com.example.rico.customerview;
 
+import android.animation.ValueAnimator;
+import android.support.annotation.NonNull;
+
+import java.lang.reflect.Field;
+
 /**
  * Created by Tmp on 2019/1/4.
  * 一些参考
@@ -21,4 +26,20 @@ public class SomeThing {
 //    getExternalFilesDir(“test”) = /mnt/sdcard/Android/data/com.my.app/files/test
 //    getExternalFilesDir(null) = /mnt/sdcard/Android/data/com.my.app/files
 //    getFilesDir() = /data/data/com.my.app/files
+
+//    重置动画时长，假如手动关闭动画，动画将不会再运行
+    public static void resetDurationScale() {
+        try {
+            getField().setFloat(null, 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @NonNull
+    private static Field getField() throws NoSuchFieldException {
+        Field field = ValueAnimator.class.getDeclaredField("sDurationScale");
+        field.setAccessible(true);
+        return field;
+    }
 }

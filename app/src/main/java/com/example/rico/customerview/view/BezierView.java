@@ -113,6 +113,7 @@ public class BezierView extends View {
         return true;
     }
 
+
     private void startMove() {
         if (!isMoving) {
             resetPosition();

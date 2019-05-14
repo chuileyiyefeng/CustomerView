@@ -1,13 +1,17 @@
-package com.example.rico.customerview;
+package com.example.rico.customerview.activity;
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Matrix;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.example.rico.customerview.BaseAdapter;
+import com.example.rico.customerview.FirstAdapter;
+import com.example.rico.customerview.R;
 import com.example.rico.customerview.activity.AllViewActivity;
+import com.example.rico.customerview.activity.BezierMoveActivity;
 import com.example.rico.customerview.activity.CircleLayoutActivity;
 import com.example.rico.customerview.activity.DrawBitmapActivity;
 import com.example.rico.customerview.activity.FishSwimActivity;
@@ -64,36 +68,40 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
     @Override
     public void itemClick(int position) {
         Intent intent;
+        Context context=this;
         switch (position) {
             case 0:
-                intent = new Intent(this, CornerImageActivity.class);
+                intent = new Intent(context, CornerImageActivity.class);
                 break;
             case 1:
-                intent = new Intent(this, TextMoveActivity.class);
+                intent = new Intent(context, TextMoveActivity.class);
                 break;
             case 2:
-                intent = new Intent(this, DrawBitmapActivity.class);
+                intent = new Intent(context, DrawBitmapActivity.class);
                 break;
             case 3:
-                intent = new Intent(this, RadarActivity.class);
+                intent = new Intent(context, RadarActivity.class);
+                break;
+            case 4:
+                intent = new Intent(context, BezierMoveActivity.class);
                 break;
             case 10:
-                intent = new Intent(this, FlowActivity.class);
+                intent = new Intent(context, FlowActivity.class);
                 break;
             case 11:
-                intent = new Intent(this, CircleLayoutActivity.class);
+                intent = new Intent(context, CircleLayoutActivity.class);
                 break;
             case 14:
-                intent = new Intent(this, FishSwimActivity.class);
+                intent = new Intent(context, FishSwimActivity.class);
                 break;
             case 19:
-                intent = new Intent(this, MatrixActivity.class);
+                intent = new Intent(context, MatrixActivity.class);
                 break;
             case 20:
-                intent = new Intent(this, RotateActivity.class);
+                intent = new Intent(context, RotateActivity.class);
                 break;
             default:
-                intent = new Intent(this, AllViewActivity.class).putExtra("type", position);
+                intent = new Intent(context, AllViewActivity.class).putExtra("type", position);
                 break;
         }
         startActivity(intent);

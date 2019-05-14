@@ -1,7 +1,6 @@
 package com.example.rico.customerview.activity;
 
 import com.bumptech.glide.Glide;
-import com.example.rico.customerview.BaseActivity;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.CornerImageView;
 
