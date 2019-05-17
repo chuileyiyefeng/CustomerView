@@ -1,28 +1,23 @@
 package com.example.rico.customerview.activity;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.example.rico.customerview.R;
-import com.example.rico.customerview.view.ArcSeekBarView;
-import com.example.rico.customerview.view.LayoutChangeView;
-import com.example.rico.customerview.view.EvaluatorAttrView;
-import com.example.rico.customerview.view.EvaluatorMoveView;
-import com.example.rico.customerview.view.FillTypeView;
-import com.example.rico.customerview.view.FishSwimView;
-import com.example.rico.customerview.view.HandWritingView;
-import com.example.rico.customerview.view.NetColorView;
-import com.example.rico.customerview.view.PageTurningView;
-import com.example.rico.customerview.view.PuzzleView;
-import com.example.rico.customerview.view.RegionClickView;
-import com.example.rico.customerview.view.WaveBubbleView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * Created by Tmp on 2019/1/8.
  */
 public class AllViewActivity extends BaseActivity {
     LinearLayout llALl;
-    int type;
+    View view;
 
     @Override
     public int bindLayout() {
@@ -30,51 +25,26 @@ public class AllViewActivity extends BaseActivity {
     }
 
     @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
     public void doBusiness() {
         llALl = findViewById(R.id.ll_content);
-        type = getIntent().getIntExtra("type", 1);
-        View view;
-        switch (type) {
-            case 5:
-                view = new FillTypeView(this);
-                break;
-            case 6:
-                view = new RegionClickView(this);
-                break;
-            case 7:
-                view = new HandWritingView(this);
-                break;
-            case 8:
-                view = new ArcSeekBarView(this);
-                break;
-            case 9:
-                view = new LayoutChangeView(this);
-                break;
-            case 12:
-                view = new WaveBubbleView(this);
-                break;
-            case 13:
-                view = new FishSwimView(this);
-                break;
-            case 15:
-                view = new EvaluatorMoveView(this);
-                break;
-            case 16:
-                view = new EvaluatorAttrView(this);
-                break;
-            case 17:
-                view = new PageTurningView(this);
-                break;
-            case 18:
-                view = new NetColorView(this);
-                break;
-            case 21:
-                view = new PuzzleView(this);
-                break;
-            default:
-                view = new View(this);
-                break;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onEventMainThread(View view) {
+        if (view != null) {
+            llALl.addView(view);
         }
-        llALl.addView(view);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

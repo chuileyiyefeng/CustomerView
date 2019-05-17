@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 /**
  * Created by Tmp on 2018/12/18.
  */
-public class FirstAdapter extends BaseAdapter<String> {
+public class FirstAdapter extends BaseAdapter<ItemInfo> {
     public FirstAdapter(Context context) {
         super(context);
     }
@@ -18,6 +18,6 @@ public class FirstAdapter extends BaseAdapter<String> {
 
     @Override
     protected void bindHolder(@NonNull BaseViewHolder holder, int i) {
-        holder.setText(R.id.tv, getItem(i));
+        holder.setText(R.id.tv, getItem(i).itemName);
     }
 }

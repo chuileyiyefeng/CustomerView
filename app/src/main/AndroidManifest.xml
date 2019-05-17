@@ -27,6 +27,7 @@
         <activity android:name=".activity.MatrixActivity" />
         <activity android:name=".activity.RotateActivity" />
         <activity android:name=".activity.BezierMoveActivity" />
+        <activity android:name=".activity.SideDeleteActivity" />
     </application>
 
 </manifest>

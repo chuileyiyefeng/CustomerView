@@ -130,7 +130,6 @@ public class FlowView extends ViewGroup {
             }
             //设置View的左边、上边、右边底边位置
             ChildPos pos = list.get(i);
-            Log.e("position", "onLayout: " + pos.left + " " + " " + pos.top + "  " + pos.right + "  " + pos.bottom);
             child.layout(pos.left, pos.top, pos.right, pos.bottom);
         }
     }

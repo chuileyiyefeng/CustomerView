@@ -3,15 +3,14 @@ package com.example.rico.customerview.view;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
-import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 
 import com.example.rico.customerview.R;
@@ -25,7 +24,7 @@ public class BezierMoveView extends BaseCustomerView {
     Paint paint;
     PointF startP, endP;
     Path path;
-    int defaultLeft;
+    Matrix matrix;
 
     public BezierMoveView(Context context) {
         super(context);
@@ -53,8 +52,7 @@ public class BezierMoveView extends BaseCustomerView {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        params = (ViewGroup.MarginLayoutParams) getLayoutParams();
-        defaultLeft = getLeft();
+        matrix = new Matrix();
         radius = Math.min(width, height) / 10;
         centerX = radius * 2;
         centerY = radius * 4;
@@ -108,7 +106,8 @@ public class BezierMoveView extends BaseCustomerView {
         return true;
     }
 
-    ValueAnimator animator;
+    //    形变动画
+    ValueAnimator deformAnimator;
 
     //    从图原理可知 点 2、3、4 x半径是从r-2r-1.5r-r
     //     点 8、9、10 x半径是从r-1.5r-r
@@ -116,43 +115,94 @@ public class BezierMoveView extends BaseCustomerView {
 
     //     点2、3、4  8、9、10  x轴的变换值
     //     点11、0、1  5、6、7  x轴的变换值
-    float rightX, leftX, topY, underY;
+    float lastRightX, rightX, leftX, underY;
     //    左边点x值及上下y值变化的临界值
-    float value, scale;
+    float value, scale, moveDistance, defaultMove = 1800f / (2000f / 16);
+    boolean rightIsFull, isDown;
+    int addTime, lastTrend;
+    final int add = 1, decrease = 2;
 
-
+    //    要移动200，1000秒移动完
     private void startAnimator() {
-        if (animator == null) {
-            scale = radius / 100;
-//            animator = ValueAnimator.ofFloat(0, width - centerX - radius);
-            animator = ValueAnimator.ofInt(100, 200, 100);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        matrix.reset();
+        value = 0;
+        addTime = 0;
+        lastTrend = 0;
+        isDown = false;
+        rightIsFull = false;
+        moveDistance = defaultMove;
+        scale = (float) radius / 100;
+        if (deformAnimator == null) {
+            deformAnimator = ValueAnimator.ofInt(100, 200, 300, 150, 170, 150);
+            deformAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     int newValue = (int) animation.getAnimatedValue();
-                    rightX = newValue * scale - radius;
-                    leftX = -(newValue * scale - radius); // 0.5*radius-0
+                    if (newValue > value) {
+                        if (lastTrend != add) {
+                            addTime++;
+                            lastTrend = add;
+                        }
+                    } else if (newValue < value) {
+                        if (lastTrend != decrease) {
+                            addTime++;
+                            lastTrend = decrease;
+                        }
+                    }
+                    if (addTime > 2) {
+                        moveDistance = 0;
+                        //                    已经到终点，缓冲动画
+                        leftX = ((newValue - 50) * scale - radius);
+                        //                    左边的x值变化是右边的过了临界值的时候开始变
+                        underY = leftX * 0.2f;
+                    }
+                    if (addTime < 3 && newValue <= 200) {
+                        if (moveDistance != defaultMove) {
+                            moveDistance = 0;
+                        }
+                        if (newValue > value && newValue <= 150) {
+                            rightX = newValue * scale - radius;
+
+                        } else if (newValue < value) {
+                            rightX = (newValue - 50) * scale - radius;
+                            moveDistance = lastRightX - rightX;
+
+                        }
 //                    左边的x值变化是右边的过了临界值的时候开始变
-//                    if (newValue > value && newValue > 150) {
-//                        leftX = -(newValue * scale - radius); // 0.5*radius-0
-//                    }
-                    value = newValue;
+                        if (newValue > value && newValue >= 150) {
+                            if (!rightIsFull) {
+                                rightIsFull = true;
+                            }
+                            //                        这个时候满足move条件
+//                        右边是150到200时，左边是100到150
+                            leftX = -((newValue - 50) * scale - radius); // 0.5*radius-0
+//                        上下分别加减0.8r
+                            underY = -((newValue - 50) * scale - radius) * 0.2f;
+
+                        } else if (newValue < value) {
+//                        右边是200到100时，左边是150到100
+                            leftX = -((newValue - 50) * scale - radius);
+                            underY = -((newValue - 50) * scale - radius) * 0.2f;
+
+                        }
+                        value = newValue;
+                        lastRightX = rightX;
+                    }
                     changePath();
-                    invalidate();
+//                    结束缓冲动画
                 }
             });
-            animator.setInterpolator(new DecelerateInterpolator());
-            animator.setDuration(2000);
+            deformAnimator.setDuration(2000);
+            deformAnimator.setInterpolator(new DecelerateInterpolator());
         }
-        animator.start();
+        deformAnimator.start();
     }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawPath(path, paint);
     }
-
-    ViewGroup.MarginLayoutParams params;
 
     private void changePath() {
         for (int i = 2; i < 5; i++) {
@@ -161,12 +211,23 @@ public class BezierMoveView extends BaseCustomerView {
         for (int i = 8; i < 11; i++) {
             control[i].x = originControl[i].x + leftX;
         }
+        for (int i = 5; i < 8; i++) {
+            control[i].y = originControl[i].y + underY;
+        }
+        control[0].y = originControl[0].y - underY;
+        control[11].y = originControl[11].y - underY;
+        control[1].y = originControl[1].y - underY;
+
         path.reset();
         path.moveTo(control[0].x, control[0].y);
         path.cubicTo(control[1].x, control[1].y, control[2].x, control[2].y, control[3].x, control[3].y);
         path.cubicTo(control[4].x, control[4].y, control[5].x, control[5].y, control[6].x, control[6].y);
         path.cubicTo(control[7].x, control[7].y, control[8].x, control[8].y, control[9].x, control[9].y);
         path.cubicTo(control[10].x, control[10].y, control[11].x, control[11].y, control[0].x, control[0].y);
-
+        if (rightIsFull) {
+            matrix.postTranslate(moveDistance, 0);
+            path.transform(matrix);
+        }
+        invalidate();
     }
 }
