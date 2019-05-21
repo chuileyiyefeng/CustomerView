@@ -1,12 +1,12 @@
 package com.example.rico.customerview.view;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Scroller;
 
 /**
  * Created by Tmp on 2019/5/16.
@@ -22,9 +22,22 @@ public class SideDeleteView extends ViewGroup {
         init(context);
     }
 
-    private void init(Context context) {
+    private Scroller scroller;
+    private int duration = 300;
+    private int scrollDx;
 
+    private int height, sideWidth, moveLimit;
+    private float downX, downY, lastMoveX, moveDistance;
+
+    //    Java中多个实例的static变量会共享同一块内存区域
+    //     用静态变量控制上一个侧滑的view
+    private static boolean isOpen;
+    private static SideDeleteView deleteView;
+
+    private void init(Context context) {
+        scroller = new Scroller(context);
     }
+
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
@@ -36,14 +49,13 @@ public class SideDeleteView extends ViewGroup {
         }
     }
 
-    int width, height, sideWidth, moveLimit;
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         View view = getChildAt(0);
         measureChild(view, widthMeasureSpec, heightMeasureSpec);
-        width = view.getMeasuredWidth();
+        int width = view.getMeasuredWidth();
 
         if (getChildCount() > 1) {
             for (int i = 0; i < getChildCount(); i++) {
@@ -63,20 +75,22 @@ public class SideDeleteView extends ViewGroup {
         setMeasuredDimension(realWidth, realHeight);
     }
 
-    float downX, downY, lastMoveX, moveDistance;
-    int scrollDx, scrollX;
-    boolean toRight;
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (animator != null && animator.isRunning()) {
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (!scroller.isFinished()) {
             return false;
+        }
+        if (deleteView != null && deleteView != this) {
+            if (isOpen) {
+                deleteView.closeSide();
+            }
         }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 downX = event.getX();
                 downY = event.getY();
-                lastMoveX=downX;
+                lastMoveX = downX;
                 break;
             case MotionEvent.ACTION_MOVE:
                 moveDistance = (int) (lastMoveX - event.getX());
@@ -91,46 +105,84 @@ public class SideDeleteView extends ViewGroup {
                 }
                 scrollBy((int) moveDistance, 0);
                 lastMoveX = event.getX();
+//                是否禁用父类的拦截功能
+                if (isOpen) {
+                    disallowParent(true);
+                }else {
+                    disallowParent(Math.abs(downX - event.getX()) > Math.abs(downY - event.getY()));
+                }
                 break;
             case MotionEvent.ACTION_UP:
-                toRight=moveDistance>0;
-                if (getScrollX() > moveLimit&&toRight) {
+                boolean toRight = moveDistance > 0;
+                if (getScrollX() >= moveLimit && toRight) {
 //                    打开右侧
                     scrollDx = sideWidth;
-                    startMove();
-                }else if (sideWidth-getScrollX()>moveLimit&&!toRight){
+                } else if (sideWidth - getScrollX() >= moveLimit && !toRight) {
 //                    关闭右侧
-                    scrollDx=0;
-                    startMove();
+                    scrollDx = 0;
+                } else if (getScrollX() < moveLimit && toRight) {
+                    scrollDx = 0;
+                } else if (sideWidth - getScrollX() < moveLimit && !toRight) {
+                    scrollDx = sideWidth;
                 }
+                upResult();
+                scroller.startScroll(getScrollX(), 0, scrollDx - getScrollX(), 0, duration);
+                invalidate();
                 break;
         }
-        return true;
+        return super.dispatchTouchEvent(event);
     }
 
-    ValueAnimator animator;
-    long duration;
+    //    是否禁用父类的拦截功能
+    private void disallowParent(boolean b) {
+        getParent().requestDisallowInterceptTouchEvent(b);
+    }
 
-    private void startMove() {
-        if (animator == null) {
-            animator = ValueAnimator.ofInt(getScrollX(), scrollDx);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    int value = (int) animation.getAnimatedValue();
-                    scrollTo(value, 0);
-                }
-            });
+
+    //    侧滑view是否是打开状态
+    private void upResult() {
+        boolean b = sideWidth == scrollDx;
+        isOpen = b;
+        if (b) {
+            deleteView = this;
+            disallowParent(true);
         }
-        animator.setDuration(500);
-        animator.start();
     }
 
+    //    关闭侧滑view
     public void closeSide() {
-        toRight = false;
         scrollDx = 0;
-        scrollX = sideWidth;
-        duration = 100;
-        startMove();
+        scroller.startScroll(getScrollX(), 0, scrollDx - getScrollX(), 0, duration);
+        isOpen = false;
+        invalidate();
+    }
+
+    //    是否拦截
+    boolean isIntercept;
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                isIntercept = false;
+                downX = ev.getX();
+                downY = ev.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                isIntercept = Math.abs(downX - ev.getX()) > Math.abs(downY - ev.getY());
+                break;
+
+        }
+        return isIntercept;
+    }
+
+    @Override
+    public void computeScroll() {
+        super.computeScroll();
+        if (scroller.computeScrollOffset()) {
+            scrollTo(scroller.getCurrX(), scroller.getCurrY());
+            postInvalidate();
+        }
+
     }
 }

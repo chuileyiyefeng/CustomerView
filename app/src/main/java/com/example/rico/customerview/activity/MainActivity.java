@@ -2,29 +2,15 @@ package com.example.rico.customerview.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
 
-import com.example.rico.customerview.BaseAdapter;
-import com.example.rico.customerview.FirstAdapter;
+import com.example.rico.customerview.adapter.BaseAdapter;
+import com.example.rico.customerview.adapter.FirstAdapter;
 import com.example.rico.customerview.ItemInfo;
 import com.example.rico.customerview.R;
-import com.example.rico.customerview.activity.AllViewActivity;
-import com.example.rico.customerview.activity.BezierMoveActivity;
-import com.example.rico.customerview.activity.CircleLayoutActivity;
-import com.example.rico.customerview.activity.DrawBitmapActivity;
-import com.example.rico.customerview.activity.FishSwimActivity;
-import com.example.rico.customerview.activity.FlowActivity;
-import com.example.rico.customerview.activity.CornerImageActivity;
-import com.example.rico.customerview.activity.MatrixActivity;
-import com.example.rico.customerview.activity.RadarActivity;
-import com.example.rico.customerview.activity.RotateActivity;
-import com.example.rico.customerview.activity.TextMoveActivity;
 import com.example.rico.customerview.view.ArcSeekBarView;
 import com.example.rico.customerview.view.EvaluatorAttrView;
 import com.example.rico.customerview.view.EvaluatorMoveView;
@@ -39,11 +25,6 @@ import com.example.rico.customerview.view.RegionClickView;
 import com.example.rico.customerview.view.WaveBubbleView;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemClick {
     RecyclerView rv;

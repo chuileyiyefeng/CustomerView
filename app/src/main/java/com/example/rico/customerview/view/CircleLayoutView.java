@@ -139,7 +139,6 @@ public class CircleLayoutView extends ViewGroup {
                 lastMoveY = event.getY();
                 break;
             case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
                 float distance = event.getY() - lastY;
                 if (Math.abs(distance) > mTouchSlop) {
                     goScroll(distance);
@@ -201,6 +200,7 @@ public class CircleLayoutView extends ViewGroup {
                 getScrollY(),
                 0,
                 height - deviation, duration);
+        invalidate();
 
     }
 
@@ -212,6 +212,7 @@ public class CircleLayoutView extends ViewGroup {
                 getScrollY(),
                 0,
                 -height - deviation, duration);
+        invalidate();
 
     }
 
@@ -235,7 +236,7 @@ public class CircleLayoutView extends ViewGroup {
         super.computeScroll();
         if (scroller.computeScrollOffset()) {
             scrollTo(scroller.getCurrX(), scroller.getCurrY());
-            invalidate();
+            postInvalidate();
         }
     }
 }

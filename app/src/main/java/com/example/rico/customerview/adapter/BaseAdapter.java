@@ -1,4 +1,4 @@
-package com.example.rico.customerview;
+package com.example.rico.customerview.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

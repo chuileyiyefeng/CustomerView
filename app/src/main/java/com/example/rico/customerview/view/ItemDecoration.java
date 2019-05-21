@@ -17,7 +17,6 @@ public class ItemDecoration extends RecyclerView.ItemDecoration {
     public ItemDecoration() {
         mPaint = new Paint();
         mPaint.setColor(Color.parseColor("#BBBBBB"));
-        // 画笔颜色设置为黄色
     }
 
     public ItemDecoration(int dividerHeight, int color) {

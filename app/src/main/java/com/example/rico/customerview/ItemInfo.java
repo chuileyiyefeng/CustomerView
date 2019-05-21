@@ -8,7 +8,7 @@ import android.view.View;
  */
 public class ItemInfo{
     public Intent intent;
-    String itemName;
+    public String itemName;
     public View view;
 
     public ItemInfo(String itemName, Intent intent) {
