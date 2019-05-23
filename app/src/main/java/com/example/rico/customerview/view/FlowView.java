@@ -36,10 +36,6 @@ public class FlowView extends ViewGroup {
         init();
     }
 
-    public FlowView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-    }
 
     boolean isChange = false;
     int lastBottom;

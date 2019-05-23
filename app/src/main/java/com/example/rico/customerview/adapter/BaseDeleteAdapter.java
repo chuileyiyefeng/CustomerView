@@ -7,33 +7,43 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.rico.customerview.R;
+import com.example.rico.customerview.view.SideDeleteView;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 /**
- * Created by Tmp on 2018/12/18.
+ * Created by Tmp on 2019/5/22.
  */
-public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
+public abstract class BaseDeleteAdapter<T> extends RecyclerView.Adapter<BaseDeleteViewHolder> {
     protected Context context;
     private List<T> list;
 
-     BaseAdapter(Context context) {
+    public BaseDeleteAdapter(Context context) {
         this.context = context;
         list = new ArrayList<>();
     }
 
+    protected abstract int bindContentLayout();
 
-    protected abstract int bindLayout();
+    protected abstract int bindDeleteLayout();
 
     @NonNull
     @Override
-    public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new BaseViewHolder(LayoutInflater.from(context).inflate(bindLayout(), viewGroup, false));
+    public BaseDeleteViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        SideDeleteView parentView = (SideDeleteView) LayoutInflater.from(context).inflate(R.layout.item_base_delete, viewGroup, false);
+        parentView.addView(LayoutInflater.from(context).inflate(bindContentLayout(), viewGroup, false));
+        parentView.addView(LayoutInflater.from(context).inflate(bindDeleteLayout(), viewGroup, false));
+        BaseDeleteViewHolder holder = new BaseDeleteViewHolder(parentView);
+        holder.contentView = parentView.getChildAt(0);
+        holder.deleteView = parentView.getChildAt(1);
+        return holder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull BaseViewHolder holder, final int i) {
+    public void onBindViewHolder(@NonNull BaseDeleteViewHolder holder, final int i) {
         bindHolder(holder, i);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,7 +55,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
         });
     }
 
-    protected abstract void bindHolder(@NonNull BaseViewHolder holder, int i);
+    protected abstract void bindHolder(@NonNull BaseDeleteViewHolder holder, int i);
 
     @Override
     public int getItemCount() {

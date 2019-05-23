@@ -32,6 +32,7 @@ public class SideDeleteView extends ViewGroup {
     //    Java中多个实例的static变量会共享同一块内存区域
     //     用静态变量控制上一个侧滑的view
     private static boolean isOpen;
+    private boolean hasOpen, interceptParent;
     private static SideDeleteView deleteView;
 
     private void init(Context context) {
@@ -41,58 +42,99 @@ public class SideDeleteView extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        if (getChildCount() > 1) {
-            View child_0 = getChildAt(0);
-            View child_1 = getChildAt(1);
-            child_0.layout(l, getPaddingTop(), r, height + getPaddingTop());
-            child_1.layout(r, getPaddingTop(), r + child_0.getMeasuredWidth(), height + getPaddingTop());
+        int lastWidth = 0;
+        for (int i = 0; i < getChildCount(); i++) {
+            View view = getChildAt(i);
+            view.layout(l + lastWidth, getPaddingTop(), r + lastWidth, getPaddingTop() + view.getMeasuredHeight());
+            lastWidth += view.getMeasuredWidth();
         }
+
     }
 
+    //    重写测量child方法，使子view的高度一样，都为最大高度
+    @Override
+    protected void measureChild(View child, int parentWidthMeasureSpec, int parentHeightMeasureSpec) {
+        final LayoutParams lp = child.getLayoutParams();
+        int mHeight = lp.height;
+        if (height != 0) {
+            mHeight = height;
+        }
+        final int childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec,
+                getPaddingLeft() + getPaddingRight(), lp.width);
+        final int childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec,
+                getPaddingTop() + getPaddingBottom(), mHeight);
+
+        child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+    }
+
+    int measureTime;
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        View view = getChildAt(0);
-        measureChild(view, widthMeasureSpec, heightMeasureSpec);
-        int width = view.getMeasuredWidth();
-
-        if (getChildCount() > 1) {
-            for (int i = 0; i < getChildCount(); i++) {
-                View childView = getChildAt(i);
-                measureChild(childView, widthMeasureSpec, heightMeasureSpec);
-                height = Math.max(height, childView.getMeasuredHeight());
-                if (i == 1) {
-                    sideWidth = childView.getMeasuredWidth();
-                }
+        measureTime++;
+        setClickable(true);
+        int child0Width = 0;
+        for (int i = 0; i < getChildCount(); i++) {
+            View childView = getChildAt(i);
+//            childView.setClickable(true);
+            measureChild(childView, widthMeasureSpec, heightMeasureSpec);
+            height = Math.max(height, childView.getMeasuredHeight());
+            if (i == 0) {
+                child0Width = childView.getMeasuredWidth();
+            } else if (i == 1) {
+                sideWidth = childView.getMeasuredWidth();
             }
         }
         moveLimit = sideWidth / 5;
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        int realWidth = MeasureSpec.makeMeasureSpec(width, widthMode);
+        int realWidth = MeasureSpec.makeMeasureSpec(child0Width, widthMode);
         int realHeight = MeasureSpec.makeMeasureSpec(height + getPaddingTop() + getPaddingBottom(), heightMode);
         setMeasuredDimension(realWidth, realHeight);
     }
 
+    @Override
+    public boolean performClick() {
+//        如果是禁用父类拦截或者有sideView打开
+        if (interceptParent || hasOpen) {
+            return false;
+        }
+        return super.performClick();
+    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (!scroller.isFinished()) {
             return false;
         }
-        if (deleteView != null && deleteView != this) {
-            if (isOpen) {
-                deleteView.closeSide();
-            }
-        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                hasOpen = false;
+                if (deleteView != null && deleteView != this) {
+                    if (isOpen) {
+                        deleteView.closeSide();
+                        disallowParent(true);
+                        hasOpen = true;
+                    }
+                }
                 downX = event.getX();
                 downY = event.getY();
                 lastMoveX = downX;
                 break;
             case MotionEvent.ACTION_MOVE:
+//                是否禁用父类的拦截功能
+                if (hasOpen) {
+                    return false;
+                }
+                interceptParent = Math.abs(downX - event.getX()) > Math.abs(downY - event.getY());
+                if (isOpen && deleteView == this) {
+                    interceptParent = true;
+                }
+                if (!interceptParent) {
+                    break;
+                }
+
                 moveDistance = (int) (lastMoveX - event.getX());
                 if (moveDistance > 0) {
                     if (getScrollX() + moveDistance > sideWidth) {
@@ -105,12 +147,7 @@ public class SideDeleteView extends ViewGroup {
                 }
                 scrollBy((int) moveDistance, 0);
                 lastMoveX = event.getX();
-//                是否禁用父类的拦截功能
-                if (isOpen) {
-                    disallowParent(true);
-                }else {
-                    disallowParent(Math.abs(downX - event.getX()) > Math.abs(downY - event.getY()));
-                }
+                disallowParent(true);
                 break;
             case MotionEvent.ACTION_UP:
                 boolean toRight = moveDistance > 0;
@@ -151,8 +188,9 @@ public class SideDeleteView extends ViewGroup {
 
     //    关闭侧滑view
     public void closeSide() {
+        deleteView = null;
         scrollDx = 0;
-        scroller.startScroll(getScrollX(), 0, scrollDx - getScrollX(), 0, duration);
+        scroller.startScroll(getScrollX(), 0, -getScrollX(), 0, duration);
         isOpen = false;
         invalidate();
     }
