@@ -9,15 +9,15 @@ import android.view.View;
 public class ItemInfo{
     public Intent intent;
     public String itemName;
-    public View view;
+    public int type;
 
     public ItemInfo(String itemName, Intent intent) {
         this.intent = intent;
         this.itemName = itemName;
     }
 
-    public ItemInfo(String itemName, View view) {
+    public ItemInfo(String itemName, int type) {
         this.itemName = itemName;
-        this.view = view;
+        this.type = type;
     }
 }

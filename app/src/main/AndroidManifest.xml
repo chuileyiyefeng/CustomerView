@@ -28,6 +28,7 @@
         <activity android:name=".activity.RotateActivity" />
         <activity android:name=".activity.BezierMoveActivity" />
         <activity android:name=".activity.SideDeleteActivity" />
+        <activity android:name=".activity.RevealActivity" />
     </application>
 
 </manifest>

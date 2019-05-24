@@ -96,7 +96,6 @@ public class NetColorView extends BaseCustomerView {
             MovePoint point = new MovePoint();
             point.x = getRandomX(area);
             point.y = getRandomY(area);
-            Log.e("create", "createPoints: " + area);
             if (point.x == 0 || point.y == 0) {
                 continue;
             }

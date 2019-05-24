@@ -130,7 +130,6 @@ public class PageTurningView extends View {
         float leLength = lDistanceY / (float) Math.sin(Math.toRadians(egAngle));
 //        e点的x轴坐标为
         c.x = lx - (float) Math.cos(Math.toRadians(egAngle)) * leLength;
-        Log.e("move", "move: " + c.x);
         c.y = height;
 //       hf与gf之间的夹角就等于eg与ef之间的夹角 hf的长度为
         float jfLength = lfLength / (float) Math.cos(Math.toRadians(egAngle));

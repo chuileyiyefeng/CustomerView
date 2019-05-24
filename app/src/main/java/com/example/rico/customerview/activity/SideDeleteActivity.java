@@ -13,6 +13,7 @@ import com.example.rico.customerview.view.ItemDecoration;
 
 /**
  * Created by Tmp on 2019/5/16.
+ *  侧滑删除
  */
 public class SideDeleteActivity extends BaseActivity {
     RecyclerView rvDelete;
@@ -29,7 +30,7 @@ public class SideDeleteActivity extends BaseActivity {
         rvDelete.setLayoutManager(new LinearLayoutManager(this));
         rvDelete.addItemDecoration(new ItemDecoration());
         adapter = new DeleteAdapter(this);
-        for (int i = 0; i < 0; i++) {
+        for (int i = 0; i < 10; i++) {
             adapter.addItem("第一");
         }
         rvDelete.setAdapter(adapter);

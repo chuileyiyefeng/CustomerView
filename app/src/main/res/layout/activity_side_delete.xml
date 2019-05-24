@@ -20,6 +20,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+
             <TextView
                 android:layout_width="85dp"
                 android:layout_height="match_parent"
@@ -46,6 +47,7 @@
         </LinearLayout>
 
     </com.example.rico.customerview.view.SideDeleteView>
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_delete"

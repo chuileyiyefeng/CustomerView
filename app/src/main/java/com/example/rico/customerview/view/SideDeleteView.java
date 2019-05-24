@@ -51,7 +51,7 @@ public class SideDeleteView extends ViewGroup {
 
     }
 
-    //    重写测量child方法，使子view的高度一样，都为最大高度
+    //    重写测量child方法，使子view的高度一样，都为第一个view高度
     @Override
     protected void measureChild(View child, int parentWidthMeasureSpec, int parentHeightMeasureSpec) {
         final LayoutParams lp = child.getLayoutParams();
@@ -63,24 +63,21 @@ public class SideDeleteView extends ViewGroup {
                 getPaddingLeft() + getPaddingRight(), lp.width);
         final int childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec,
                 getPaddingTop() + getPaddingBottom(), mHeight);
-
         child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
     }
 
-    int measureTime;
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        measureTime++;
         setClickable(true);
         int child0Width = 0;
         for (int i = 0; i < getChildCount(); i++) {
             View childView = getChildAt(i);
 //            childView.setClickable(true);
             measureChild(childView, widthMeasureSpec, heightMeasureSpec);
-            height = Math.max(height, childView.getMeasuredHeight());
             if (i == 0) {
+                height = childView.getMeasuredHeight();
                 child0Width = childView.getMeasuredWidth();
             } else if (i == 1) {
                 sideWidth = childView.getMeasuredWidth();

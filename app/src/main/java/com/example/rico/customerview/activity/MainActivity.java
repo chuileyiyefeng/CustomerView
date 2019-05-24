@@ -24,8 +24,6 @@ import com.example.rico.customerview.view.PuzzleView;
 import com.example.rico.customerview.view.RegionClickView;
 import com.example.rico.customerview.view.WaveBubbleView;
 
-import org.greenrobot.eventbus.EventBus;
-
 public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemClick {
     RecyclerView rv;
     FirstAdapter adapter;
@@ -36,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         setContentView(R.layout.activity_main);
         initView();
     }
+
     private void initView() {
         rv = findViewById(R.id.rv);
         adapter = new FirstAdapter(this);
@@ -50,21 +49,23 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         adapter.addItem(new ItemInfo("无限循环view", new Intent(context, CircleLayoutActivity.class)));
         adapter.addItem(new ItemInfo("循环滚动", new Intent(context, RotateActivity.class)));
         adapter.addItem(new ItemInfo("MatrixSetPoly", new Intent(context, MatrixActivity.class)));
-        adapter.addItem(new ItemInfo("流式布局", new Intent(context, FlowActivity.class)));
+        adapter.addItem(new ItemInfo("标签布局", new Intent(context, FlowActivity.class)));
         adapter.addItem(new ItemInfo("小鱼游泳(移动)", new Intent(context, FishSwimActivity.class)));
 
-        adapter.addItem(new ItemInfo("小鱼游泳(静止)", new FishSwimView(context)));
-        adapter.addItem(new ItemInfo("path填充模式", new FillTypeView(context)));
-        adapter.addItem(new ItemInfo("不同区域点击", new RegionClickView(context)));
-        adapter.addItem(new ItemInfo("写字板", new HandWritingView(context)));
-        adapter.addItem(new ItemInfo("圆弧SeekBar", new ArcSeekBarView(context)));
-        adapter.addItem(new ItemInfo("气泡波浪", new WaveBubbleView(context)));
-        adapter.addItem(new ItemInfo("Evaluator(Value)", new EvaluatorMoveView(context)));
-        adapter.addItem(new ItemInfo("Evaluator(Object)", new EvaluatorAttrView(context)));
-        adapter.addItem(new ItemInfo("翻页view", new PageTurningView(context)));
-        adapter.addItem(new ItemInfo("网状view", new NetColorView(context)));
-        adapter.addItem(new ItemInfo("拼图view", new PuzzleView(context)));
+        adapter.addItem(new ItemInfo("小鱼游泳(静止)", 1));
+        adapter.addItem(new ItemInfo("path填充模式", 2));
+        adapter.addItem(new ItemInfo("不同区域点击", 3));
+        adapter.addItem(new ItemInfo("写字板",4));
+        adapter.addItem(new ItemInfo("圆弧SeekBar", 5));
+        adapter.addItem(new ItemInfo("气泡波浪",6));
+        adapter.addItem(new ItemInfo("Evaluator(Value)", 7));
+        adapter.addItem(new ItemInfo("Evaluator(Object)",8));
+        adapter.addItem(new ItemInfo("翻页view", 9));
+        adapter.addItem(new ItemInfo("网状view", 10));
+        adapter.addItem(new ItemInfo("拼图view", 11));
+
         adapter.addItem(new ItemInfo("侧滑删除", new Intent(context, SideDeleteActivity.class)));
+        adapter.addItem(new ItemInfo("转场动画", new Intent(context, RevealActivity.class)));
         adapter.addItemClick(this);
         rv.addItemDecoration(new ItemDecoration());
     }
@@ -74,9 +75,8 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         ItemInfo info = adapter.getItem(position);
         if (info.intent != null) {
             startActivity(info.intent);
-        } else if (info.view != null) {
-            EventBus.getDefault().postSticky(info.view);
-            startActivity(new Intent(this, AllViewActivity.class));
+        } else {
+            startActivity(new Intent(this, AllViewActivity.class).putExtra("type", info.type));
         }
     }
 }
