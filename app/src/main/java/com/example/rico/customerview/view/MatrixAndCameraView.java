@@ -18,16 +18,16 @@ import android.widget.Scroller;
 /**
  * Created by Tmp on 2019/4/29.
  */
-public class MatrixAndCameraTestView extends ViewGroup {
+public class MatrixAndCameraView extends ViewGroup {
     private Context context;
 
-    public MatrixAndCameraTestView(Context context) {
+    public MatrixAndCameraView(Context context) {
         super(context);
         this.context = context;
         init();
     }
 
-    public MatrixAndCameraTestView(Context context, @Nullable AttributeSet attrs) {
+    public MatrixAndCameraView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
         init();

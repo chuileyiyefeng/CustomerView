@@ -55,17 +55,18 @@ public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemC
         adapter.addItem(new ItemInfo("小鱼游泳(静止)", 1));
         adapter.addItem(new ItemInfo("path填充模式", 2));
         adapter.addItem(new ItemInfo("不同区域点击", 3));
-        adapter.addItem(new ItemInfo("写字板",4));
+        adapter.addItem(new ItemInfo("写字板", 4));
         adapter.addItem(new ItemInfo("圆弧SeekBar", 5));
-        adapter.addItem(new ItemInfo("气泡波浪",6));
+        adapter.addItem(new ItemInfo("气泡波浪", 6));
         adapter.addItem(new ItemInfo("Evaluator(Value)", 7));
-        adapter.addItem(new ItemInfo("Evaluator(Object)",8));
+        adapter.addItem(new ItemInfo("Evaluator(Object)", 8));
         adapter.addItem(new ItemInfo("翻页view", 9));
         adapter.addItem(new ItemInfo("网状view", 10));
         adapter.addItem(new ItemInfo("拼图view", 11));
 
         adapter.addItem(new ItemInfo("侧滑删除", new Intent(context, SideDeleteActivity.class)));
-        adapter.addItem(new ItemInfo("转场动画", new Intent(context, RevealActivity.class)));
+        adapter.addItem(new ItemInfo("揭示动画", new Intent(context, RevealActivity.class)));
+        adapter.addItem(new ItemInfo("上滑翻页", new Intent(context, FlipBoardActivity.class)));
         adapter.addItemClick(this);
         rv.addItemDecoration(new ItemDecoration());
     }

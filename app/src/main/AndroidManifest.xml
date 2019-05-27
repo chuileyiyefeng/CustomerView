@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.rico.customerview">
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -29,6 +30,7 @@
         <activity android:name=".activity.BezierMoveActivity" />
         <activity android:name=".activity.SideDeleteActivity" />
         <activity android:name=".activity.RevealActivity" />
+        <activity android:name=".activity.FlipBoardActivity" />
     </application>
 
 </manifest>

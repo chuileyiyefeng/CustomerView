@@ -2,6 +2,8 @@ package com.example.rico.customerview.view;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Camera;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -34,7 +36,6 @@ public class CameraTestView extends BaseCustomerView {
         matrix = new Matrix();
         // 获取手机像素密度 （即dp与px的比例）
         matrixValues = new float[9];
-        Log.e("tag", "init: " + scale);
     }
 
     Camera camera;

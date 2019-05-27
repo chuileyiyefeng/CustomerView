@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.example.rico.customerview.view.MatrixAndCameraTestView
+    <com.example.rico.customerview.view.MatrixAndCameraView
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center_horizontal">
@@ -43,7 +43,7 @@
             android:background="@color/dodgerblue"
             android:gravity="center"
             android:text="五" />
-    </com.example.rico.customerview.view.MatrixAndCameraTestView>
+    </com.example.rico.customerview.view.MatrixAndCameraView>
 
     <com.example.rico.customerview.view.CameraTestView
         android:background="@color/colorLine"
