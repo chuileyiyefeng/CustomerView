@@ -2,6 +2,8 @@ package com.example.rico.customerview.activity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.view.View;
+import android.widget.Toast;
 
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.FlipBoardView;
@@ -26,9 +28,15 @@ public class FlipBoardActivity extends BaseActivity {
         hideStatusBar();
         fbv = findViewById(R.id.fbv);
         bitmaps=new ArrayList<>();
-        for (int i = 0; i < res.length; i++) {
-            bitmaps.add(BitmapFactory.decodeResource(getResources(),res[i]));
+        for (int resId : res) {
+            bitmaps.add(BitmapFactory.decodeResource(getResources(),resId));
         }
         fbv.setBitmapList(bitmaps);
+        fbv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fbv.nextPage();
+            }
+        });
     }
 }
