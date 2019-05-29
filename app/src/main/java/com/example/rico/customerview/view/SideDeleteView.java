@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.Scroller;
 
@@ -34,9 +35,11 @@ public class SideDeleteView extends ViewGroup {
     private static boolean isOpen;
     private boolean hasOpen, interceptParent;
     private static SideDeleteView deleteView;
+    private float touchSlop;
 
     private void init(Context context) {
         scroller = new Scroller(context);
+        touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
 
@@ -94,11 +97,13 @@ public class SideDeleteView extends ViewGroup {
     @Override
     public boolean performClick() {
 //        如果是禁用父类拦截或者有sideView打开
-        if (interceptParent || hasOpen) {
+        if (isScroll || hasOpen) {
             return false;
         }
         return super.performClick();
     }
+
+    boolean isScroll;
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
@@ -108,6 +113,7 @@ public class SideDeleteView extends ViewGroup {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 hasOpen = false;
+                isScroll = false;
                 if (deleteView != null && deleteView != this) {
                     if (isOpen) {
                         deleteView.closeSide();
@@ -128,11 +134,13 @@ public class SideDeleteView extends ViewGroup {
                 if (isOpen && deleteView == this) {
                     interceptParent = true;
                 }
-                if (!interceptParent) {
-                    break;
-                }
 
                 moveDistance = (int) (lastMoveX - event.getX());
+                if (!isScroll) {
+                    if (Math.abs(moveDistance) > touchSlop) {
+                        isScroll = true;
+                    }
+                }
                 if (moveDistance > 0) {
                     if (getScrollX() + moveDistance > sideWidth) {
                         moveDistance = sideWidth - getScrollX();

@@ -35,19 +35,17 @@ public class FlipBoardView extends BaseCustomerView {
 
     float downX, downY, scale, touchSlop;
 
-    //    是否是上下滑动
-    boolean isFling;
 
     @Override
     protected void init(Context context) {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         matrix = new Matrix();
         camera = new Camera();
+        bitmapList = new ArrayList<>();
         scale = context.getResources().getDisplayMetrics().density;
 //        改变camera深度 Camera默认距离为-8
         camera.setLocation(0, 0, -scale * 10);
         touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.flip_3);
     }
 
 
@@ -59,75 +57,117 @@ public class FlipBoardView extends BaseCustomerView {
         invalidate();
     }
 
+    @Override
+    public boolean performClick() {
+        return moveAngle == 0 && super.performClick();
+    }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 downX = event.getX();
                 downY = event.getY();
-                isFling = false;
-                time = 0;
-                positionChange = false;
+                pChange = false;
+                tpChange = false;
                 break;
             case MotionEvent.ACTION_MOVE:
-                isFling = Math.abs(event.getX() - downX) < Math.abs(event.getY() - downY) && Math.abs(event.getY() - downY) > touchSlop;
-                if (isFling) {
-                    float distance = downY - event.getY();
-                    moveAngle = getSlopAngle(distance);
-                    if (Math.abs(moveAngle) > 90) {
-                        
-                    }
-                    changPosition();
-                    invalidate();
+                float distance = downY - event.getY();
+                moveAngle = getSlopAngle(distance);
+//                    当前为最后一张图，不能上滑
+//                    当前为第一张图，不能下滑
+                if (moveAngle < 0 && cPosition == 0 && !pChange) {
+                    moveAngle = 0;
+                    return false;
+                } else if (moveAngle > 0 && cPosition == bitmapList.size() - 1 && !pChange) {
+                    moveAngle = 0;
+                    return false;
                 }
+                changPosition();
+                invalidate();
+
                 break;
             case MotionEvent.ACTION_UP:
+                if (Math.abs(event.getY() - downY) < touchSlop && Math.abs(event.getX() - downX) < touchSlop) {
+                    performClick();
+                }
                 reduction();
                 break;
         }
-        return super.dispatchTouchEvent(event);
+        return true;
     }
 
-    //    在滑动中是向同一方向 Position的值只变动一次，
-    boolean positionChange;
+    //    在滑动中是向同一方向 Position的值只变动一次，不同方向tpChange
+    boolean pChange, tpChange;
 
-    //    滑动过程中经过临界值的次数
-    int time;
 
     //    滑动的角度
     float moveAngle;
     //    翻页的临界值
     float threshold = 90;
     //    当前绘制的图的下标
-    int cPosition = 2;
+    int cPosition = 0;
 
     //    图片集合下标变换
     private void changPosition() {
-        if (positionChange && time == 1) {
+//        例如上滑超过临界值，然后又下滑小于临界值的情况
+        if (moveAngle > 0 && pChange) {
+            if (moveAngle <= threshold) {
+                if (!tpChange) {
+                    if (cPosition > 0) {
+                        cPosition--;
+                    }
+                    tpChange = true;
+                    pChange = !tpChange;
+                }
+                return;
+            }
+        } else if (moveAngle < 0 && pChange) {
+            if (Math.abs(moveAngle) <= threshold) {
+                if (!tpChange) {
+                    if (cPosition < bitmapList.size() - 1) {
+                        cPosition++;
+                    }
+                    tpChange = true;
+                    pChange = false;
+                }
+                return;
+            }
+        }
+//        普通的单方向的滑动情况
+        if (pChange) {
             return;
         }
         if (moveAngle > threshold) {
             if (cPosition < bitmapList.size() - 1) {
                 cPosition++;
             }
-            positionChange = true;
+            pChange = true;
+            tpChange = false;
         } else if (moveAngle < -threshold) {
             if (cPosition > 0) {
                 cPosition--;
             }
-            positionChange = true;
+            pChange = true;
+            tpChange = false;
         }
-    }
-
-    @Override
-    public boolean performClick() {
-        return !isFling && super.performClick();
     }
 
     //    获得当前滑动的角度
     private float getSlopAngle(float distance) {
-        return (distance / (touchSlop * 15)) * 90;
+//        角度越接近90度，角度变化越小，视觉效果不好
+//        修改系数，使变化平滑
+        float angle = (distance / (touchSlop * 15)) * 90;
+        if (angle >= 0 && angle < threshold) {
+
+        } else if (angle >= threshold && angle < 180) {
+
+        } else if (angle > -threshold && angle <= 0) {
+
+        } else if (angle > -180 && angle <= -threshold) {
+
+        }
+        return angle;
     }
 
 
@@ -158,17 +198,17 @@ public class FlipBoardView extends BaseCustomerView {
     @Override
     protected void onDraw(Canvas canvas) {
         float upAngle = 0, downAngle = 0;
-        if (bitmapList != null) {
-            if (moveAngle >= 0 && moveAngle < 90) {
+        if (bitmapList != null && bitmapList.size() > 0) {
+            if (moveAngle >= 0 && moveAngle < threshold) {
                 upAngle = 0;
                 downAngle = moveAngle;
-            } else if (moveAngle >= 90 && moveAngle < 180) {
+            } else if (moveAngle >= threshold && moveAngle < 180) {
                 upAngle = moveAngle - 180;
                 downAngle = 0;
-            } else if (moveAngle > -90 && moveAngle <= 0) {
+            } else if (moveAngle > -threshold && moveAngle <= 0) {
                 upAngle = moveAngle;
                 downAngle = 0;
-            } else if (moveAngle > -180 && moveAngle <= -90) {
+            } else if (moveAngle > -180 && moveAngle <= -threshold) {
                 upAngle = 0;
                 downAngle = 180 + moveAngle;
             } else if (Math.abs(moveAngle) >= 180) {
@@ -177,13 +217,13 @@ public class FlipBoardView extends BaseCustomerView {
                 upAngle = 0;
                 downAngle = 0;
             }
+            drawTop(canvas, upAngle);
+            drawBottom(canvas, downAngle);
         }
-        drawTop(canvas, upAngle);
-        drawBottom(canvas, downAngle);
+
     }
 
-    Bitmap bitmap;
-
+    //    1
     private void drawTop(Canvas canvas, float mAngle) {
         matrix.reset();
         canvas.save();
@@ -221,21 +261,5 @@ public class FlipBoardView extends BaseCustomerView {
         canvas.concat(matrix);
         canvas.drawBitmap(bitmapList.get(cPosition), matrix, paint);
         canvas.restore();
-    }
-
-    //    滑到下一页
-    public void nextPage() {
-        ValueAnimator animator = ValueAnimator.ofFloat(0, 180);
-
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                moveAngle = (float) animation.getAnimatedValue();
-                changPosition();
-                invalidate();
-            }
-        });
-        animator.setDuration(3000);
-        animator.start();
     }
 }
