@@ -3,11 +3,7 @@ package com.example.rico.customerview.activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.support.annotation.IdRes;
-import android.util.Log;
-import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.Toast;
 
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.FlipBoardView;

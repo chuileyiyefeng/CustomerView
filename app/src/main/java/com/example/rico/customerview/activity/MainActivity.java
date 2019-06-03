@@ -24,16 +24,22 @@ import com.example.rico.customerview.view.PuzzleView;
 import com.example.rico.customerview.view.RegionClickView;
 import com.example.rico.customerview.view.WaveBubbleView;
 
-public class MainActivity extends AppCompatActivity implements BaseAdapter.ItemClick {
+public class MainActivity extends BaseActivity implements BaseAdapter.ItemClick {
     RecyclerView rv;
     FirstAdapter adapter;
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        initView();
+    public int bindLayout() {
+        return R.layout.activity_main;
     }
+
+    @Override
+    public void doBusiness() {
+        initView();
+        setStatusBarColor(R.color.colorLine);
+    }
+    
 
     private void initView() {
         rv = findViewById(R.id.rv);

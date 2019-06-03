@@ -3,17 +3,15 @@ package com.example.rico.customerview.view;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Camera;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
-
-import com.example.rico.customerview.R;
 
 import java.util.ArrayList;
 
@@ -157,15 +155,15 @@ public class FlipBoardView extends BaseCustomerView {
     private float getSlopAngle(float distance) {
 //        角度越接近90度，角度变化越小，视觉效果不好
 //        修改系数，使变化平滑
+//        使用正弦函数，sin0=0,sin90=1 sin180=0;
         float angle = (distance / (touchSlop * 15)) * 90;
-        if (angle >= 0 && angle < threshold) {
-
-        } else if (angle >= threshold && angle < 180) {
-
-        } else if (angle > -threshold && angle <= 0) {
-
-        } else if (angle > -180 && angle <= -threshold) {
-
+        double cos;
+        if (angle >= 0) {
+            cos = Math.sin(Math.toRadians(angle));
+            angle = (float) (angle + scale * 10 * cos);
+        } else {
+            cos = Math.sin(Math.toRadians(-angle));
+            angle = (float) (angle - scale * 10 * cos);
         }
         return angle;
     }
@@ -191,7 +189,7 @@ public class FlipBoardView extends BaseCustomerView {
                 invalidate();
             }
         });
-        mAnimator.setDuration(200);
+        mAnimator.setDuration(160);
         mAnimator.start();
     }
 

@@ -131,10 +131,9 @@ public class SideDeleteView extends ViewGroup {
                     return false;
                 }
                 interceptParent = Math.abs(downX - event.getX()) > Math.abs(downY - event.getY());
-                if (isOpen && deleteView == this) {
-                    interceptParent = true;
+                if (!interceptParent&&getScrollX()==0) {
+                    break;
                 }
-
                 moveDistance = (int) (lastMoveX - event.getX());
                 if (!isScroll) {
                     if (Math.abs(moveDistance) > touchSlop) {
@@ -155,6 +154,7 @@ public class SideDeleteView extends ViewGroup {
                 disallowParent(true);
                 break;
             case MotionEvent.ACTION_UP:
+//            case MotionEvent.ACTION_CANCEL:
                 boolean toRight = moveDistance > 0;
                 if (getScrollX() >= moveLimit && toRight) {
 //                    打开右侧
