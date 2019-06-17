@@ -8,6 +8,7 @@ import android.view.ViewTreeObserver;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.FlipBoardView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**

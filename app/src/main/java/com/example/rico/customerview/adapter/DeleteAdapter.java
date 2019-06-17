@@ -27,7 +27,7 @@ public class DeleteAdapter extends BaseDeleteAdapter<String> {
     }
 
     @Override
-    protected void bindHolder(@NonNull BaseDeleteViewHolder holder, int i) {
+    protected void bindHolder(@NonNull BaseDeleteViewHolder holder, final int i) {
         holder.setText(R.id.tv, getItem(i));
         View deleteView=holder.deleteView;
         TextView delete=deleteView.findViewById(R.id.tv_delete);
@@ -36,19 +36,19 @@ public class DeleteAdapter extends BaseDeleteAdapter<String> {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context,"删除",Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"删除 "+i,Toast.LENGTH_SHORT).show();
             }
         });
         top.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context,"置顶",Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"置顶 "+i,Toast.LENGTH_SHORT).show();
             }
         });
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context,"编辑",Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"编辑 "+i,Toast.LENGTH_SHORT).show();
             }
         });
     }

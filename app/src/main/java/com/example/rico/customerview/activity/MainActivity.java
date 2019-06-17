@@ -2,8 +2,6 @@ package com.example.rico.customerview.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -11,18 +9,7 @@ import com.example.rico.customerview.adapter.BaseAdapter;
 import com.example.rico.customerview.adapter.FirstAdapter;
 import com.example.rico.customerview.ItemInfo;
 import com.example.rico.customerview.R;
-import com.example.rico.customerview.view.ArcSeekBarView;
-import com.example.rico.customerview.view.EvaluatorAttrView;
-import com.example.rico.customerview.view.EvaluatorMoveView;
-import com.example.rico.customerview.view.FillTypeView;
-import com.example.rico.customerview.view.FishSwimView;
-import com.example.rico.customerview.view.HandWritingView;
 import com.example.rico.customerview.view.ItemDecoration;
-import com.example.rico.customerview.view.NetColorView;
-import com.example.rico.customerview.view.PageTurningView;
-import com.example.rico.customerview.view.PuzzleView;
-import com.example.rico.customerview.view.RegionClickView;
-import com.example.rico.customerview.view.WaveBubbleView;
 
 public class MainActivity extends BaseActivity implements BaseAdapter.ItemClick {
     RecyclerView rv;
@@ -37,9 +24,10 @@ public class MainActivity extends BaseActivity implements BaseAdapter.ItemClick 
     @Override
     public void doBusiness() {
         initView();
-        setStatusBarColor(R.color.colorLine);
+        setStatusBarColor(R.color.gray_thumb);
+        setStatusTextDark(true);
     }
-    
+
 
     private void initView() {
         rv = findViewById(R.id.rv);
@@ -57,6 +45,9 @@ public class MainActivity extends BaseActivity implements BaseAdapter.ItemClick 
         adapter.addItem(new ItemInfo("MatrixSetPoly", new Intent(context, MatrixActivity.class)));
         adapter.addItem(new ItemInfo("标签布局", new Intent(context, FlowActivity.class)));
         adapter.addItem(new ItemInfo("小鱼游泳(移动)", new Intent(context, FishSwimActivity.class)));
+        adapter.addItem(new ItemInfo("侧滑删除", new Intent(context, SideDeleteActivity.class)));
+        adapter.addItem(new ItemInfo("揭示动画", new Intent(context, RevealActivity.class)));
+        adapter.addItem(new ItemInfo("上滑翻页", new Intent(context, FlipBoardActivity.class)));
 
         adapter.addItem(new ItemInfo("小鱼游泳(静止)", 1));
         adapter.addItem(new ItemInfo("path填充模式", 2));
@@ -69,10 +60,9 @@ public class MainActivity extends BaseActivity implements BaseAdapter.ItemClick 
         adapter.addItem(new ItemInfo("翻页view", 9));
         adapter.addItem(new ItemInfo("网状view", 10));
         adapter.addItem(new ItemInfo("拼图view", 11));
+        adapter.addItem(new ItemInfo("switch动画", 12));
 
-        adapter.addItem(new ItemInfo("侧滑删除", new Intent(context, SideDeleteActivity.class)));
-        adapter.addItem(new ItemInfo("揭示动画", new Intent(context, RevealActivity.class)));
-        adapter.addItem(new ItemInfo("上滑翻页", new Intent(context, FlipBoardActivity.class)));
+
         adapter.addItemClick(this);
         rv.addItemDecoration(new ItemDecoration());
     }

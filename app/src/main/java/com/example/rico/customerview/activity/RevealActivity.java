@@ -18,6 +18,8 @@ import com.example.rico.customerview.fragment.Fragment1;
 import com.example.rico.customerview.fragment.Fragment2;
 import com.example.rico.customerview.fragment.Fragment3;
 
+import java.io.File;
+
 /**
  * Created by Tmp on 2019/5/24.
  * 揭示动画变换fragment
@@ -54,8 +56,7 @@ public class RevealActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-
-        Fragment fragment = null;
+        Fragment fragment;
         transaction = fragmentManager.beginTransaction();
         switch (v.getId()) {
             case R.id.iv1:
@@ -67,14 +68,18 @@ public class RevealActivity extends BaseActivity implements View.OnClickListener
             case R.id.iv3:
                 fragment = fragment3;
                 break;
+            default:
+                fragment = fragment1;
+                break;
         }
         int finalRadius = Math.max(fl.getWidth(), fl.getHeight());
-        fl_parent.setBackground(new BitmapDrawable(getResources(),createBitmap(fl)));
+        fl_parent.setBackground(new BitmapDrawable(getResources(), createBitmap(fl)));
         Animator animator = ViewAnimationUtils.createCircularReveal(fl, v.getLeft(), fl.getHeight(), 0, finalRadius);
         animator.setInterpolator(new AccelerateInterpolator());
         animator.setDuration(300);
         animator.start();
         transaction.replace(R.id.frame, fragment).commit();
+
     }
 
     private Bitmap createBitmap(View v) {

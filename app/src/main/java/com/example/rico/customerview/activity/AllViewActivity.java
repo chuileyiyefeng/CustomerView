@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.example.rico.customerview.R;
+import com.example.rico.customerview.view.AnimatorSwitchView;
 import com.example.rico.customerview.view.ArcSeekBarView;
 import com.example.rico.customerview.view.EvaluatorAttrView;
 import com.example.rico.customerview.view.EvaluatorMoveView;
@@ -74,6 +75,9 @@ public class AllViewActivity extends BaseActivity {
                 break;
             case 11:
                 view = new PuzzleView(context);
+                break;
+            case 12:
+                view = new AnimatorSwitchView(context);
                 break;
             default:
                 view = new View(context);

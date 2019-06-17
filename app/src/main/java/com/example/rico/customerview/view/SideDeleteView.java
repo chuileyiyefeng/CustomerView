@@ -33,7 +33,7 @@ public class SideDeleteView extends ViewGroup {
     //    Java中多个实例的static变量会共享同一块内存区域
     //     用静态变量控制上一个侧滑的view
     private static boolean isOpen;
-    private boolean hasOpen, interceptParent;
+    private boolean hasOpen;
     private static SideDeleteView deleteView;
     private float touchSlop;
 
@@ -130,8 +130,8 @@ public class SideDeleteView extends ViewGroup {
                 if (hasOpen) {
                     return false;
                 }
-                interceptParent = Math.abs(downX - event.getX()) > Math.abs(downY - event.getY());
-                if (!interceptParent&&getScrollX()==0) {
+                boolean interceptParent = Math.abs(downX - event.getX()) > Math.abs(downY - event.getY());
+                if (!interceptParent &&getScrollX()==0) {
                     break;
                 }
                 moveDistance = (int) (lastMoveX - event.getX());
