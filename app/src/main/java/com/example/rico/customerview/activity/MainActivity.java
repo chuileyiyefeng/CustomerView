@@ -1,5 +1,6 @@
 package com.example.rico.customerview.activity;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
@@ -48,6 +49,7 @@ public class MainActivity extends BaseActivity implements BaseAdapter.ItemClick 
         adapter.addItem(new ItemInfo("侧滑删除", new Intent(context, SideDeleteActivity.class)));
         adapter.addItem(new ItemInfo("揭示动画", new Intent(context, RevealActivity.class)));
         adapter.addItem(new ItemInfo("上滑翻页", new Intent(context, FlipBoardActivity.class)));
+        adapter.addItem(new ItemInfo("switch动画", new Intent(context, AnimatorSwitchActivity.class)));
 
         adapter.addItem(new ItemInfo("小鱼游泳(静止)", 1));
         adapter.addItem(new ItemInfo("path填充模式", 2));
@@ -60,7 +62,7 @@ public class MainActivity extends BaseActivity implements BaseAdapter.ItemClick 
         adapter.addItem(new ItemInfo("翻页view", 9));
         adapter.addItem(new ItemInfo("网状view", 10));
         adapter.addItem(new ItemInfo("拼图view", 11));
-        adapter.addItem(new ItemInfo("switch动画", 12));
+
 
 
         adapter.addItemClick(this);

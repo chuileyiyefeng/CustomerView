@@ -76,9 +76,6 @@ public class AllViewActivity extends BaseActivity {
             case 11:
                 view = new PuzzleView(context);
                 break;
-            case 12:
-                view = new AnimatorSwitchView(context);
-                break;
             default:
                 view = new View(context);
                 break;

@@ -31,6 +31,7 @@
         <activity android:name=".activity.SideDeleteActivity" />
         <activity android:name=".activity.RevealActivity" />
         <activity android:name=".activity.FlipBoardActivity" />
+        <activity android:name=".activity.AnimatorSwitchActivity" />
     </application>
 
 </manifest>
