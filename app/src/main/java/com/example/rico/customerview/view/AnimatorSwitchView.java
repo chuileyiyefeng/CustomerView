@@ -51,12 +51,6 @@ public class AnimatorSwitchView extends BaseCustomerView {
         touchSloop = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-    }
-
     float left, top, radius;
     RectF rectF;
     Path path, clipPath;

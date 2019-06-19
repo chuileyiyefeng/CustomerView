@@ -14,6 +14,7 @@ import com.example.rico.customerview.view.EvaluatorMoveView;
 import com.example.rico.customerview.view.FillTypeView;
 import com.example.rico.customerview.view.FishSwimView;
 import com.example.rico.customerview.view.HandWritingView;
+import com.example.rico.customerview.view.MiniSunView;
 import com.example.rico.customerview.view.NetColorView;
 import com.example.rico.customerview.view.PageTurningView;
 import com.example.rico.customerview.view.PuzzleView;
@@ -75,6 +76,9 @@ public class AllViewActivity extends BaseActivity {
                 break;
             case 11:
                 view = new PuzzleView(context);
+                break;
+            case 12:
+                view = new MiniSunView(context);
                 break;
             default:
                 view = new View(context);

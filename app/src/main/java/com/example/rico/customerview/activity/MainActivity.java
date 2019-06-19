@@ -62,6 +62,7 @@ public class MainActivity extends BaseActivity implements BaseAdapter.ItemClick 
         adapter.addItem(new ItemInfo("翻页view", 9));
         adapter.addItem(new ItemInfo("网状view", 10));
         adapter.addItem(new ItemInfo("拼图view", 11));
+        adapter.addItem(new ItemInfo("动感小太阳", 12));
 
 
 
