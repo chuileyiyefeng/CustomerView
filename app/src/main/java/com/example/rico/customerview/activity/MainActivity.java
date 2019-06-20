@@ -37,7 +37,7 @@ public class MainActivity extends BaseActivity implements BaseAdapter.ItemClick 
         rv.setAdapter(adapter);
         Context context = this.getApplicationContext();
         adapter.addItem(new ItemInfo("圆角ImageView", new Intent(context, CornerImageActivity.class)));
-        adapter.addItem(new ItemInfo("文字滚动view", new Intent(context, TextMoveActivity.class)));
+        adapter.addItem(new ItemInfo("文字滚动", new Intent(context, TextMoveActivity.class)));
         adapter.addItem(new ItemInfo("drawBitmap动画", new Intent(context, DrawBitmapActivity.class)));
         adapter.addItem(new ItemInfo("雷达网图", new Intent(context, RadarActivity.class)));
         adapter.addItem(new ItemInfo("贝塞尔曲线", new Intent(context, BezierMoveActivity.class)));
@@ -59,10 +59,10 @@ public class MainActivity extends BaseActivity implements BaseAdapter.ItemClick 
         adapter.addItem(new ItemInfo("气泡波浪", 6));
         adapter.addItem(new ItemInfo("Evaluator(Value)", 7));
         adapter.addItem(new ItemInfo("Evaluator(Object)", 8));
-        adapter.addItem(new ItemInfo("翻页view", 9));
+        adapter.addItem(new ItemInfo("翻页", 9));
         adapter.addItem(new ItemInfo("网状view", 10));
-        adapter.addItem(new ItemInfo("拼图view", 11));
-        adapter.addItem(new ItemInfo("动感小太阳", 12));
+        adapter.addItem(new ItemInfo("拼图", 11));
+        adapter.addItem(new ItemInfo("太阳动画", 12));
 
 
 
