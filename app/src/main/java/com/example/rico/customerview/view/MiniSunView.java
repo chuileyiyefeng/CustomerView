@@ -7,11 +7,13 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.RectF;
+import android.graphics.Shader;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.DecelerateInterpolator;
 
@@ -38,7 +40,7 @@ public class MiniSunView extends BaseCustomerView {
         whitePaint.setColor(getResources().getColor(R.color.white));
 
         circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        circlePaint.setColor(getResources().getColor(R.color.gold));
+        circlePaint.setColor(getResources().getColor(R.color.khaki));
 
         arcPaint = new Paint();
         arcPaint.setStrokeCap(Paint.Cap.ROUND);
@@ -46,48 +48,93 @@ public class MiniSunView extends BaseCustomerView {
         arcPaint.setColor(circlePaint.getColor());
 
         lightPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        lightPaint.setColor(getResources().getColor(R.color.line_color));
-        sunRectF = new RectF();
+//        lightPaint.setColor(getResources().getColor(R.color.line_color));
+
+        cloudPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        cloudPaint.setColor(getResources().getColor(R.color.beige));
+
+        cloudShadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        cloudShadowPaint.setColor(getResources().getColor(R.color.line_color));
+
+        rectPath1 = new Path();
+        rectPath2 = new Path();
+        cloudPath = new Path();
+        rotatePointF = new PointF();
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        setBackgroundColor(getResources().getColor(R.color.aliceblue));
         radius = Math.min(w, h) / 4;
         tinyRadius = radius / 25;
         arcPaint.setStrokeWidth(tinyRadius);
         centerP = new Point(w / 2, h / 2);
         initArcAngle();
-//        gradient = new LinearGradient(0,0,w,h, null);
+        float f = (float) (radius / Math.cos(Math.toRadians(45)));
+        gradient = new LinearGradient(-f, -f, f, f, getResources().getColor(R.color.lemonchiffon), getResources().getColor(R.color.red), Shader.TileMode.CLAMP);
+        lightPaint.setShader(gradient);
+
+        float distance = radius / 20;
+//       圆的排序点为从上到下
+        cloudRadius[0] = distance * 6;
+        cloudRadius[1] = distance * 5;
+        cloudRadius[2] = distance * 6;
+        cloudRadius[3] = distance * 6;
+        cloudRadius[4] = distance * 5;
+
+        cloudPoint[0] = new PointF(cloudRadius[2] + cloudRadius[0] / 2, -cloudRadius[2]);
+        cloudPoint[1] = new PointF(cloudPoint[0].x + cloudRadius[0] + cloudRadius[1] - distance, -cloudRadius[1] - distance);
+        cloudPoint[2] = new PointF(cloudRadius[2], 0);
+        cloudPoint[3] = new PointF(cloudPoint[2].x + cloudRadius[2] + cloudRadius[3] - distance, 0);
+        cloudPoint[4] = new PointF(cloudPoint[2].x + cloudRadius[2] + cloudRadius[3] * 2 - distance * 2, distance);
+
+        clipCloudPath = new Path();
+        clipCloudPath.addRect(cloudPoint[2].x - cloudRadius[2], cloudPoint[2].y + distance, cloudPoint[4].x + cloudRadius[4], distance + cloudRadius[2], Path.Direction.CW);
+
     }
 
     //    大圆的半径,圆环的宽度，中间白色圆的半径,太阳半径
     float radius, tinyRadius, smallRadius, sunRadius;
     Point centerP;
-    //    初始小白点paint，大圆的paint，圆弧的paint，阳光的paint
-    Paint whitePaint, circlePaint, arcPaint, lightPaint;
+    //    初始小白点paint，大圆的paint，圆弧的paint，阳光的paint，云的paint,云阴影的paint
+    Paint whitePaint, circlePaint, arcPaint, lightPaint, cloudPaint, cloudShadowPaint;
 
     ValueAnimator circleAnim, arcAnim, sunAnim, lightAnim;
     final int BORDER = 1, ARC = 2, SUN = 3, LIGHT = 4;
     int animType;
     //    圆环扫过的角度
     float sweepAngle;
+    long duration = 300;
 
     //    渐变gradient
     LinearGradient gradient;
 
 
-    //    太阳光区域
-    RectF sunRectF;
+    //    太阳光区域,云的path,需要裁剪的云的path
+    Path rectPath1, rectPath2, cloudPath, clipCloudPath;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
+                cancelAllAnim();
                 startBorderAnim();
                 break;
         }
         return true;
+    }
+
+    private void cancelAllAnim() {
+        cancelAnim(circleAnim, arcAnim, sunAnim, lightAnim);
+    }
+
+    private void cancelAnim(Animator... animator) {
+        for (Animator animator1 : animator) {
+            if (animator1 != null) {
+                animator1.cancel();
+            }
+        }
     }
 
     //    从小到大的圆环动画
@@ -96,6 +143,7 @@ public class MiniSunView extends BaseCustomerView {
         if (circleAnim == null) {
             circleAnim = ValueAnimator.ofFloat(tinyRadius, radius);
             circleAnim.setInterpolator(new DecelerateInterpolator());
+            circleAnim.setDuration(duration);
             circleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
@@ -110,7 +158,7 @@ public class MiniSunView extends BaseCustomerView {
                     startArcAnim();
                 }
             });
-            circleAnim.setDuration(300);
+
         }
         circleAnim.setFloatValues(tinyRadius, radius);
         circleAnim.start();
@@ -122,7 +170,7 @@ public class MiniSunView extends BaseCustomerView {
         if (arcAnim == null) {
             arcAnim = ValueAnimator.ofFloat(rotateBound);
             arcAnim.setInterpolator(new DecelerateInterpolator());
-            arcAnim.setDuration(500);
+            arcAnim.setDuration(duration);
             arcAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
@@ -135,7 +183,6 @@ public class MiniSunView extends BaseCustomerView {
                 public void onAnimationEnd(Animator animation) {
                     animType = 0;
                     startSunAnim();
-
                 }
             });
         }
@@ -145,26 +192,36 @@ public class MiniSunView extends BaseCustomerView {
 
     boolean lightShow;
     float lastValue, rectRadius;
+    //    矩形对角线长度
+    float rectDiagonal;
 
     //    太阳出现动画
     private void startSunAnim() {
         animType = SUN;
         lightShow = false;
+        rectPath1.reset();
+        rectPath2.reset();
         rectRadius = (float) (radius * Math.sqrt(2) / 2);
         if (sunAnim == null) {
-            sunAnim = ValueAnimator.ofFloat(radius / 8 * 7, radius / 8 * 9, radius, rectRadius);
-            sunAnim.setInterpolator(new DecelerateInterpolator());
-            sunAnim.setDuration(500);
+            sunAnim = ValueAnimator.ofFloat(radius / 10 * 9, radius / 10 * 11, radius, rectRadius);
+            sunAnim.setDuration(duration * 2);
             sunAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float value = (float) animation.getAnimatedValue();
                     if (value < radius && value < lastValue) {
                         lightShow = true;
-//                         100-(100...50) 0...50+50
                         float f = (radius - value) + rectRadius;
-                        f = f - radius / 12;
-                        sunRectF.set(-f, -f, f, f);
+                        f = f - radius / 10;
+                        rectPath1.moveTo(-f, -f);
+                        rectPath1.lineTo(f, -f);
+                        rectPath1.lineTo(f, f);
+                        rectPath1.lineTo(-f, f);
+                        rectDiagonal = (float) (f / Math.cos(Math.toRadians(45)));
+                        rectPath2.moveTo(-rectDiagonal, 0);
+                        rectPath2.lineTo(0, -rectDiagonal);
+                        rectPath2.lineTo(rectDiagonal, 0);
+                        rectPath2.lineTo(0, rectDiagonal);
                     } else {
                         sunRadius = value;
                     }
@@ -175,39 +232,85 @@ public class MiniSunView extends BaseCustomerView {
             sunAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-//                    animType = 0;
-//                    lightShow = false;
-//                    startLightAnim();
+                    animType = 0;
+                    lightShow = false;
+                    startLightAnim();
                 }
             });
         }
-        sunAnim.setFloatValues(radius / 8 * 7, radius / 8 * 9, radius, rectRadius);
+        sunAnim.setFloatValues(radius / 10 * 9, radius / 10 * 11, radius, rectRadius);
         sunAnim.start();
     }
+
+    float lightAngle;
+    PointF rotatePointF;
+    //    云是否完整出现
+    boolean cloudIsFull;
 
     //    阳光旋转动画
     private void startLightAnim() {
         animType = LIGHT;
+        lightAngle = 0;
+        //        重置云朵半径
+        for (int i = 0; i < smallCloudRadius.length; i++) {
+            smallCloudRadius[i] = 0;
+        }
+        cloudIsFull = false;
         if (lightAnim == null) {
-            lightAnim = ValueAnimator.ofFloat(radius - 20, radius);
+            lightAnim = ValueAnimator.ofFloat(cloudRadius[2]);
             lightAnim.setInterpolator(new DecelerateInterpolator());
-            lightAnim.setDuration(500);
+            lightAnim.setDuration(duration);
+            lightAnim.setRepeatCount(ValueAnimator.INFINITE);
             lightAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    sunRadius = (float) animation.getAnimatedValue();
+//                    太阳光相关代码
+                    float x, y;
+                    lightAngle += 0.2f;
+                    if (lightAngle >= 45) {
+                        lightAngle = 0;
+                    }
+                    rectPath1.reset();
+                    rectPath2.reset();
+                    changeRotatePoint(lightAngle);
+                    x = rotatePointF.x;
+                    y = rotatePointF.y;
+                    rectPath1.moveTo(x, y);
+                    rectPath1.lineTo(-y, x);
+                    rectPath1.lineTo(-x, -y);
+                    rectPath1.lineTo(y, -x);
+                    changeRotatePoint(lightAngle + 45);
+                    x = rotatePointF.x;
+                    y = rotatePointF.y;
+                    rectPath2.moveTo(x, y);
+                    rectPath2.lineTo(-y, x);
+                    rectPath2.lineTo(-x, -y);
+                    rectPath2.lineTo(y, -x);
+
+//                    云朵相关代码
+                    float value = (float) animation.getAnimatedValue();
+                    if (!cloudIsFull) {
+                        cloudIsFull = value == cloudRadius[2];
+                    }
+                    if (!cloudIsFull) {
+                        cloudPath.reset();
+                        for (int i = 0; i < cloudRadius.length; i++) {
+                            if (value <= cloudRadius[i]) {
+                                smallCloudRadius[i] = value;
+                            }
+                            Path path = new Path();
+                            PointF p = cloudPoint[i];
+                            path.addCircle(p.x, p.y, smallCloudRadius[i], Path.Direction.CW);
+                            cloudPath.op(path, Path.Op.UNION);
+                        }
+                        cloudPath.op(clipCloudPath, Path.Op.DIFFERENCE);
+//                    云多阴影
+                    }
                     invalidate();
                 }
             });
-            lightAnim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    animType = 0;
-                }
-            });
-            lightAnim.setRepeatCount(ValueAnimator.INFINITE);
         }
-        lightAnim.setFloatValues(radius - 20, radius);
+        lightAnim.setFloatValues(cloudRadius[2]);
         lightAnim.start();
     }
 
@@ -225,14 +328,16 @@ public class MiniSunView extends BaseCustomerView {
                 drawSun(canvas);
                 break;
             case LIGHT:
+                drawLight(canvas);
                 break;
         }
     }
 
+
     //    画圆环
     private void drawBorder(Canvas canvas) {
-        canvas.drawCircle(0, 0, smallRadius, circlePaint);
-        canvas.drawCircle(0, 0, tinyRadius, whitePaint);
+        canvas.drawCircle(0, 0, radius, circlePaint);
+        canvas.drawCircle(0, 0, smallRadius, whitePaint);
     }
 
     //    初始的五个角度
@@ -240,7 +345,8 @@ public class MiniSunView extends BaseCustomerView {
     //    五个圆弧的绘画区域
     RectF[] arcRectS = new RectF[5];
     //    圆环滑动总角度
-    float rotateBound = 240;
+    float rotateBound = 180;
+
 
     //    设置圆弧的绘制区域，因为旋转圆环要把画布居中，所以圆弧的中心区域也在中心点
     private void initArcAngle() {
@@ -261,6 +367,7 @@ public class MiniSunView extends BaseCustomerView {
         canvas.drawCircle(0, 0, radius - tinyRadius, whitePaint);
         float currentSweep, startAngle;
         for (int i = 0; i < angles.length; i++) {
+            canvas.save();
             startAngle = angles[i];
             currentSweep = sweepAngle;
             if (sweepAngle > rotateBound / 2) {
@@ -272,8 +379,9 @@ public class MiniSunView extends BaseCustomerView {
                 currentSweep = sweepAngle - rotateBound;
             }
             currentSweep = i % 2 == 0 ? -currentSweep : currentSweep;
-            canvas.rotate(i % 2 == 0 ? -sweepAngle : sweepAngle);
+            canvas.rotate(i % 2 == 0 ? -sweepAngle / 2 : sweepAngle / 2);
             canvas.drawArc(arcRectS[i], startAngle, currentSweep, false, arcPaint);
+            canvas.restore();
         }
     }
 
@@ -281,10 +389,46 @@ public class MiniSunView extends BaseCustomerView {
     //    画太阳
     private void drawSun(Canvas canvas) {
         if (lightShow) {
-            canvas.drawRect(sunRectF, lightPaint);
-            canvas.rotate(45);
-            canvas.drawRect(sunRectF, lightPaint);
+            canvas.drawPath(rectPath1, lightPaint);
+            canvas.drawPath(rectPath2, lightPaint);
         }
         canvas.drawCircle(0, 0, sunRadius, circlePaint);
+    }
+
+
+    //    制造云的五个圆圆心
+    PointF[] cloudPoint = new PointF[5];
+    //    五个云的半径,从小到大的云的半径
+    float[] cloudRadius = new float[5], smallCloudRadius = new float[5];
+    //    画太阳光
+
+    private void drawLight(Canvas canvas) {
+        canvas.drawPath(rectPath1, lightPaint);
+        canvas.drawPath(rectPath2, lightPaint);
+        canvas.drawCircle(0, 0, radius, circlePaint);
+        canvas.drawPath(cloudPath, cloudPaint);
+    }
+
+    //    重置太阳光矩形点的位置
+    private void changeRotatePoint(float rotateAngle) {
+        float x = (float) (rectDiagonal * Math.cos(Math.toRadians(rotateAngle)));
+        float y = (float) (rectDiagonal * Math.sin(Math.toRadians(rotateAngle)));
+        rotatePointF.set(x, y);
+    }
+
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        removeAnim(circleAnim, arcAnim, sunAnim, lightAnim);
+    }
+
+    //    关闭动画
+    private void removeAnim(Animator... animator) {
+        for (Animator animator1 : animator) {
+            if (animator1 != null) {
+                animator1.cancel();
+            }
+        }
     }
 }

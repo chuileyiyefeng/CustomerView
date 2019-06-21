@@ -71,14 +71,14 @@ public class HexagonPathView extends View {
         canvas.translate(width / 2, height / 2);
         int count = dataList.size();
         int fullAngle = 360;
-        double avera = fullAngle / count;
+        double area = fullAngle / count;
         int everyLess = allRadius / levelCount;
         //        画多边形
 
         //       角度旋转时候精度丢失的总共角度
-        float lackAngle = fullAngle - (float) avera * count;
+        float lackAngle = fullAngle - (float) area * count;
         //        修正后的角度
-        avera = (float) avera + lackAngle / count;
+        area = (float) area + lackAngle / count;
         //        画多边形
         for (int k = 0; k <= allRadius; k += everyLess) {
             canvas.save();
@@ -86,11 +86,11 @@ public class HexagonPathView extends View {
             if (radius<everyLess) {
                 break;
             }
-            double sideLength = (radius * Math.sin(Math.toRadians(avera / 2)) * 2 + 0.5);
-            int y = (int) (radius * Math.cos(Math.toRadians(avera / 2)) + 0.5);
+            double sideLength = (radius * Math.sin(Math.toRadians(area / 2)) * 2 + 0.5);
+            int y = (int) (radius * Math.cos(Math.toRadians(area / 2)) + 0.5);
             for (int i = 0; i < count; i++) {
                 canvas.drawLine((int) (-sideLength / 2 + 0.5), y, (int) (sideLength / 2 + 0.5), y, borderPaint);
-                canvas.rotate((float) avera);
+                canvas.rotate((float) area);
             }
             canvas.restore();
         }
@@ -99,9 +99,9 @@ public class HexagonPathView extends View {
         for (int i = 0; i < count; i++) {
 
             if (i == 0) {
-                canvas.rotate((float) (90 + avera / 2));
+                canvas.rotate((float) (90 + area / 2));
             } else {
-                canvas.rotate((float) avera);
+                canvas.rotate((float) area);
             }
             canvas.drawLine(everyLess, 0, allRadius, 0, borderPaint);
 
@@ -114,8 +114,8 @@ public class HexagonPathView extends View {
         int firstX = 0, firstY = 0;
         for (int i = 0; i < count; i++) {
             double currentLength = everyLess+(allRadius-everyLess) * dataList.get(i).percent;
-            double sin = Math.sin(Math.toRadians(avera / 2 + avera * i));
-            double cos = Math.cos(Math.toRadians(avera / 2 + avera * i));
+            double sin = Math.sin(Math.toRadians(area / 2 + area * i));
+            double cos = Math.cos(Math.toRadians(area / 2 + area * i));
             int x = (int) (currentLength * sin + 0.5);
             int y = (int) (currentLength * cos + 0.5);
             int textX = (int) ((allRadius + dpToPx(10)) * sin + 0.5);

@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.example.rico.customerview.R;
-import com.example.rico.customerview.view.AnimatorSwitchView;
 import com.example.rico.customerview.view.ArcSeekBarView;
 import com.example.rico.customerview.view.EvaluatorAttrView;
 import com.example.rico.customerview.view.EvaluatorMoveView;
