@@ -26,6 +26,8 @@ import java.util.Random;
  * 太阳天气动画
  */
 public class MiniSunView extends BaseCustomerView {
+
+
     public MiniSunView(Context context) {
         super(context);
     }
@@ -37,7 +39,7 @@ public class MiniSunView extends BaseCustomerView {
     @Override
     protected void init(Context context) {
         whitePaint = new Paint();
-        whitePaint.setColor(getResources().getColor(R.color.white));
+        whitePaint.setColor(getResources().getColor(R.color.aliceblue));
 
         circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         circlePaint.setColor(getResources().getColor(R.color.khaki));
@@ -56,10 +58,13 @@ public class MiniSunView extends BaseCustomerView {
         cloudShadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         cloudShadowPaint.setColor(getResources().getColor(R.color.line_color));
 
+        circlePath = new Path();
         rectPath1 = new Path();
         rectPath2 = new Path();
         cloudPath = new Path();
+        cloudShadowPath = new Path();
         rotatePointF = new PointF();
+
     }
 
     @Override
@@ -68,6 +73,7 @@ public class MiniSunView extends BaseCustomerView {
         setBackgroundColor(getResources().getColor(R.color.aliceblue));
         radius = Math.min(w, h) / 4;
         tinyRadius = radius / 25;
+        circlePath.addCircle(0, 0, radius, Path.Direction.CW);
         arcPaint.setStrokeWidth(tinyRadius);
         centerP = new Point(w / 2, h / 2);
         initArcAngle();
@@ -78,20 +84,23 @@ public class MiniSunView extends BaseCustomerView {
         float distance = radius / 20;
 //       圆的排序点为从上到下
         cloudRadius[0] = distance * 6;
-        cloudRadius[1] = distance * 5;
-        cloudRadius[2] = distance * 6;
+        cloudRadius[1] = distance * 6;
+        cloudRadius[2] = distance * 5;
         cloudRadius[3] = distance * 6;
-        cloudRadius[4] = distance * 5;
+        cloudRadius[4] = distance * 4;
 
-        cloudPoint[0] = new PointF(cloudRadius[2] + cloudRadius[0] / 2, -cloudRadius[2]);
-        cloudPoint[1] = new PointF(cloudPoint[0].x + cloudRadius[0] + cloudRadius[1] - distance, -cloudRadius[1] - distance);
-        cloudPoint[2] = new PointF(cloudRadius[2], 0);
-        cloudPoint[3] = new PointF(cloudPoint[2].x + cloudRadius[2] + cloudRadius[3] - distance, 0);
-        cloudPoint[4] = new PointF(cloudPoint[2].x + cloudRadius[2] + cloudRadius[3] * 2 - distance * 2, distance);
-
+        cloudPoint[0] = new PointF(cloudRadius[0], 0);
+        cloudPoint[1] = new PointF(cloudPoint[0].x + cloudRadius[1] + distance, 0);
+        cloudPoint[2] = new PointF(cloudPoint[0].x + cloudRadius[1] * 2 + cloudRadius[2] - distance * 2, distance);
+        cloudPoint[3] = new PointF(cloudPoint[0].x + cloudRadius[3] - distance, -cloudRadius[0]);
+        cloudPoint[4] = new PointF(cloudPoint[3].x + cloudRadius[1] + distance, -cloudRadius[1]);
         clipCloudPath = new Path();
-        clipCloudPath.addRect(cloudPoint[2].x - cloudRadius[2], cloudPoint[2].y + distance, cloudPoint[4].x + cloudRadius[4], distance + cloudRadius[2], Path.Direction.CW);
-
+        clipCloudRectF = new RectF(cloudPoint[0].x - cloudRadius[2], cloudPoint[0].y + distance * 2, cloudPoint[2].x + cloudRadius[2], radius);
+        clipCloudPath.addRect(clipCloudRectF, Path.Direction.CW);
+        cloudShadowPath.moveTo(cloudPoint[0].x - cloudRadius[0] / 2, cloudPoint[0].y);
+        cloudShadowPath.lineTo(cloudPoint[2].x, cloudPoint[2].y);
+        cloudShadowPath.lineTo(cloudPoint[2].x, clipCloudRectF.bottom);
+        cloudShadowPath.close();
     }
 
     //    大圆的半径,圆环的宽度，中间白色圆的半径,太阳半径
@@ -109,10 +118,10 @@ public class MiniSunView extends BaseCustomerView {
 
     //    渐变gradient
     LinearGradient gradient;
-
-
-    //    太阳光区域,云的path,需要裁剪的云的path
-    Path rectPath1, rectPath2, cloudPath, clipCloudPath;
+    //    太阳光区域,云的path,需要裁剪的云的path,云朵阴影的绘制path
+    Path circlePath, rectPath1, rectPath2, cloudPath, clipCloudPath, cloudShadowPath;
+    //    云朵阴影
+    RectF clipCloudRectF;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -255,6 +264,7 @@ public class MiniSunView extends BaseCustomerView {
         for (int i = 0; i < smallCloudRadius.length; i++) {
             smallCloudRadius[i] = 0;
         }
+        isClip = false;
         cloudIsFull = false;
         if (lightAnim == null) {
             lightAnim = ValueAnimator.ofFloat(cloudRadius[2]);
@@ -292,6 +302,7 @@ public class MiniSunView extends BaseCustomerView {
                     if (!cloudIsFull) {
                         cloudIsFull = value == cloudRadius[2];
                     }
+//                    云一朵一朵出来
                     if (!cloudIsFull) {
                         cloudPath.reset();
                         for (int i = 0; i < cloudRadius.length; i++) {
@@ -304,7 +315,9 @@ public class MiniSunView extends BaseCustomerView {
                             cloudPath.op(path, Path.Op.UNION);
                         }
                         cloudPath.op(clipCloudPath, Path.Op.DIFFERENCE);
-//                    云多阴影
+//                    云层阴影
+                    } else {
+                        clipCloudShadow();
                     }
                     invalidate();
                 }
@@ -312,6 +325,20 @@ public class MiniSunView extends BaseCustomerView {
         }
         lightAnim.setFloatValues(cloudRadius[2]);
         lightAnim.start();
+    }
+
+    boolean isClip;
+
+    private void clipCloudShadow() {
+        if (!isClip) {
+            cloudShadowPath.reset();
+            cloudShadowPath.moveTo(cloudPoint[0].x - cloudRadius[0] / 2, cloudPoint[0].y);
+            cloudShadowPath.lineTo(cloudPoint[2].x, cloudPoint[2].y);
+            cloudShadowPath.lineTo(cloudPoint[2].x, clipCloudRectF.bottom);
+            cloudShadowPath.close();
+            cloudShadowPath.op(circlePath, Path.Op.INTERSECT);
+            isClip = true;
+        }
     }
 
     @Override
@@ -336,7 +363,7 @@ public class MiniSunView extends BaseCustomerView {
 
     //    画圆环
     private void drawBorder(Canvas canvas) {
-        canvas.drawCircle(0, 0, radius, circlePaint);
+        canvas.drawPath(circlePath, circlePaint);
         canvas.drawCircle(0, 0, smallRadius, whitePaint);
     }
 
@@ -363,7 +390,7 @@ public class MiniSunView extends BaseCustomerView {
 
     //    画圆弧
     private void drawArc(Canvas canvas) {
-        canvas.drawCircle(0, 0, radius, circlePaint);
+        canvas.drawPath(circlePath, circlePaint);
         canvas.drawCircle(0, 0, radius - tinyRadius, whitePaint);
         float currentSweep, startAngle;
         for (int i = 0; i < angles.length; i++) {
@@ -405,7 +432,11 @@ public class MiniSunView extends BaseCustomerView {
     private void drawLight(Canvas canvas) {
         canvas.drawPath(rectPath1, lightPaint);
         canvas.drawPath(rectPath2, lightPaint);
-        canvas.drawCircle(0, 0, radius, circlePaint);
+        canvas.drawPath(circlePath, circlePaint);
+        if (cloudIsFull) {
+
+            canvas.drawPath(cloudShadowPath, whitePaint);
+        }
         canvas.drawPath(cloudPath, cloudPaint);
     }
 
