@@ -137,6 +137,9 @@ public class MiniSunView extends BaseCustomerView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (animIsRunning()) {
+            return false;
+        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
                 cancelAllAnim();
@@ -148,6 +151,15 @@ public class MiniSunView extends BaseCustomerView {
 
     private void cancelAllAnim() {
         cancelAnim(circleAnim, arcAnim, sunAnim, lightAnim);
+    }
+    public  boolean animIsRunning(){
+        if (circleAnim!=null&&circleAnim.isRunning()) {
+            return true;
+        }
+        if (arcAnim!=null&&arcAnim.isRunning()) {
+            return true;
+        }
+        return sunAnim != null && sunAnim.isRunning();
     }
 
     private void cancelAnim(Animator... animator) {

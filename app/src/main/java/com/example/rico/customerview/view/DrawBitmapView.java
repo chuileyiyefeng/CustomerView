@@ -1,5 +1,6 @@
 package com.example.rico.customerview.view;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -7,15 +8,12 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 
 import com.example.rico.customerview.R;
-
-import java.lang.ref.WeakReference;
 
 /**
  * Created by Tmp on 2018/12/18.
@@ -24,6 +22,8 @@ import java.lang.ref.WeakReference;
 public class DrawBitmapView extends View {
     Paint paint;
     RectF dst;
+    Rect rect;
+    Bitmap bitmap;
 
     public DrawBitmapView(Context context) {
         super(context);
@@ -36,10 +36,9 @@ public class DrawBitmapView extends View {
         initView();
     }
 
-    Bitmap bitmap;
 
     public void setBitmap(Bitmap bitmap) {
-        if (isDraw || bitmap == null) {
+        if (bitmap == null) {
             return;
         }
         int bitmapWidth = bitmap.getWidth();
@@ -50,7 +49,7 @@ public class DrawBitmapView extends View {
         Matrix matrix = new Matrix();
         matrix.postScale(scale, scale);
         this.bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmapWidth, bitmapHeight, matrix, true);
-        invalidate();
+        startAnimator();
     }
 
     public void clearBitmap() {
@@ -61,12 +60,35 @@ public class DrawBitmapView extends View {
         invalidate();
     }
 
+    ValueAnimator animator;
+
+    private void startAnimator() {
+        rect.set(0, 0, 0, 0);
+        if (animator == null) {
+            animator = ValueAnimator.ofFloat(bitmap.getWidth());
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float value = (float) animation.getAnimatedValue();
+                    rightX = (int) value;
+                    rect.set(0, 0, rightX, bitmap.getHeight());
+                    dst.set(-bitmap.getWidth() / 2, -bitmap.getHeight() / 2, -bitmap.getWidth() / 2 + rightX, bitmap.getHeight() / 2);
+                    invalidate();
+                }
+            });
+            animator.setDuration(500);
+            animator.setInterpolator(new DecelerateInterpolator());
+        }
+        animator.setObjectValues(bitmap.getWidth());
+        animator.start();
+    }
+
     private void initView() {
+        rect = new Rect();
+        dst = new RectF();
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(getResources().getColor(R.color.bottom_bg));
         paint.setStyle(Paint.Style.FILL);
-        handler = new MyHandler(this);
-
     }
 
     int width, height, radius;
@@ -76,11 +98,9 @@ public class DrawBitmapView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         width = w;
         height = h;
-        radius = Math.min(w,h)/2;
+        radius = Math.min(w, h) / 2;
     }
 
-    MyHandler handler;
-    boolean isDraw;
     int rightX;
 
     @Override
@@ -89,33 +109,8 @@ public class DrawBitmapView extends View {
         canvas.translate(width / 2, height / 2);
         canvas.drawCircle(0, 0, radius, paint);
         if (bitmap != null) {
-            rightX = rightX + bitmap.getWidth() / 10;
-            isDraw = true;
-            Rect src = new Rect(0, 0, rightX, bitmap.getHeight());
-            dst = new RectF(-bitmap.getWidth() / 2, -bitmap.getHeight() / 2, -bitmap.getWidth() / 2 + rightX, bitmap.getHeight() / 2);
-            canvas.drawBitmap(bitmap, src, dst, paint);
-            if (rightX < bitmap.getWidth()) {
-                handler.sendEmptyMessageDelayed(1, 6);
-            } else {
-                isDraw = false;
-            }
-        } else {
-            rightX = 0;
+            canvas.drawBitmap(bitmap, rect, dst, paint);
         }
     }
 
-    private static class MyHandler extends Handler {
-        WeakReference<DrawBitmapView> weakReference;
-
-        public MyHandler(DrawBitmapView drawBitmapView) {
-            weakReference = new WeakReference<>(drawBitmapView);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            DrawBitmapView view = weakReference.get();
-            view.invalidate();
-        }
-    }
 }

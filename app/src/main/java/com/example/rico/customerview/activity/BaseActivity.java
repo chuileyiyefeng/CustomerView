@@ -20,7 +20,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(bindLayout());
         doBusiness();
-        setStatusBarColor(R.color.gray_thumb);
+        setStatusBarColor(R.color.white);
         setStatusTextDark(true);
     }
 

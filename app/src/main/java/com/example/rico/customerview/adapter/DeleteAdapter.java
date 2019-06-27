@@ -28,7 +28,7 @@ public class DeleteAdapter extends BaseDeleteAdapter<String> {
 
     @Override
     protected void bindHolder(@NonNull BaseDeleteViewHolder holder, final int i) {
-        holder.setText(R.id.tv, getItem(i));
+        holder.setText(R.id.tv_content, getItem(i));
         View deleteView=holder.deleteView;
         TextView delete=deleteView.findViewById(R.id.tv_delete);
         TextView top=deleteView.findViewById(R.id.tv_top);

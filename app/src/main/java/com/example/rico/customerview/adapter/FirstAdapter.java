@@ -21,6 +21,6 @@ public class FirstAdapter extends BaseAdapter<ItemInfo> {
 
     @Override
     protected void bindHolder(@NonNull BaseViewHolder holder, int i) {
-        holder.setText(R.id.tv, getItem(i).itemName);
+        holder.setText(R.id.tv_content, getItem(i).itemName);
     }
 }

@@ -10,7 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,6 +32,7 @@
         <activity android:name=".activity.RevealActivity" />
         <activity android:name=".activity.FlipBoardActivity" />
         <activity android:name=".activity.AnimatorSwitchActivity" />
+        <!--<activity android:name=".activity.HomeActivity" />-->
     </application>
 
 </manifest>

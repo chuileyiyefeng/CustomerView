@@ -17,7 +17,14 @@ public class ItemInfo{
     }
 
     public ItemInfo(String itemName, int type) {
+        SomeThing.type++;
         this.itemName = itemName;
         this.type = type;
+    }
+
+    public ItemInfo(String itemName) {
+        SomeThing.type++;
+        this.itemName = itemName;
+        this.type = SomeThing.type;
     }
 }
