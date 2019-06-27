@@ -25,8 +25,8 @@ public class MainActivity extends BaseActivity implements BaseAdapter.ItemClick 
     @Override
     public void doBusiness() {
         initView();
-        setStatusBarColor(R.color.gray_thumb);
-        setStatusTextDark(true);
+//        setStatusBarColor(R.color.gray_thumb);
+//        setStatusTextDark(true);
     }
 
 

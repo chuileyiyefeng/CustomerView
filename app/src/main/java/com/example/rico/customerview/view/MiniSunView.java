@@ -39,7 +39,7 @@ public class MiniSunView extends BaseCustomerView {
     @Override
     protected void init(Context context) {
         whitePaint = new Paint();
-        whitePaint.setColor(getResources().getColor(R.color.lightskyblue));
+        whitePaint.setColor(getResources().getColor(R.color.azure));
 
         circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         circlePaint.setColor(getResources().getColor(R.color.gold));
@@ -58,7 +58,7 @@ public class MiniSunView extends BaseCustomerView {
         cloudShadowPaint.setColor(getResources().getColor(R.color.goldenrod));
 
         sunShadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        sunShadowPaint.setColor(getResources().getColor(R.color.colorLine));
+        sunShadowPaint.setColor(getResources().getColor(R.color.colorBtnClick));
 
         circlePath = new Path();
         rectPath1 = new Path();
@@ -72,7 +72,7 @@ public class MiniSunView extends BaseCustomerView {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        setBackgroundColor(getResources().getColor(R.color.lightskyblue));
+        setBackgroundColor(getResources().getColor(R.color.azure));
         radius = Math.min(w, h) / 4;
         tinyRadius = radius / 25;
         circlePath.addCircle(0, 0, radius, Path.Direction.CW);
@@ -80,7 +80,7 @@ public class MiniSunView extends BaseCustomerView {
         centerP = new Point(w / 2, h / 2);
         initArcAngle();
         float f = (float) (radius / Math.cos(Math.toRadians(45)));
-        gradient = new LinearGradient(-f, -f, f, f, getResources().getColor(R.color.floralwhite), getResources().getColor(R.color.burlywood), Shader.TileMode.CLAMP);
+        gradient = new LinearGradient(-f, -f, f, f, getResources().getColor(R.color.ivory), getResources().getColor(R.color.goldenrod), Shader.TileMode.CLAMP);
         lightPaint.setShader(gradient);
 
         float distance = radius / 28f;
@@ -299,7 +299,7 @@ public class MiniSunView extends BaseCustomerView {
     private void startLightAnim() {
         animType = LIGHT;
         lightAngle = 0;
-        cloudPosition = 1;
+        cloudPosition = 0;
         currentCloudRadius = 0;
         //        重置云朵半径
         for (int i = 0; i < smallCloudRadius.length; i++) {
@@ -343,17 +343,23 @@ public class MiniSunView extends BaseCustomerView {
 //                    云一朵一朵出来 第一朵的云半径画满之后画第二朵云以此类推
                     if (!cloudIsFull) {
                         cloudPath.reset();
-                        currentCloudRadius += cloudRadius[cloudPosition] / 10;
-                        for (int i = 0; i < cloudPosition; i++) {
-                            if (currentCloudRadius <= cloudRadius[i]) {
-                                smallCloudRadius[i] = currentCloudRadius;
+                        currentCloudRadius +=cloudRadius[cloudPosition]/8;
+                        boolean b=false;
+                        for (int i = 0; i < cloudPosition + 1; i++) {
+                            smallCloudRadius[i] = cloudRadius[i];
+                            if (currentCloudRadius <= cloudRadius[cloudPosition]) {
+                                smallCloudRadius[cloudPosition] = currentCloudRadius;
+                            }else {
+                                b=true;
                             }
                             Path path = new Path();
                             PointF p = cloudPoint[i];
                             path.addCircle(p.x, p.y, smallCloudRadius[i], Path.Direction.CW);
                             cloudPath.op(path, Path.Op.UNION);
                         }
-                        if (currentCloudRadius >= cloudRadius[cloudPosition] && cloudPosition < cloudRadius.length) {
+                        cloudIsFull=cloudPosition==cloudRadius.length-1&&b;
+                        if (currentCloudRadius >= cloudRadius[cloudPosition] && cloudPosition < cloudRadius.length - 1) {
+                            currentCloudRadius = 0;
                             cloudPosition++;
                         }
                         cloudPath.op(clipCloudPath, Path.Op.DIFFERENCE);
