@@ -10,16 +10,16 @@ import android.view.View;
 /**
  * Created by Tmp on 2019/3/5.
  */
-public class ItemDecoration extends RecyclerView.ItemDecoration {
+public class MyItemDecoration extends RecyclerView.ItemDecoration {
     private Paint mPaint;
     private int mDividerHeight = 2;
 
-    public ItemDecoration() {
+    public MyItemDecoration() {
         mPaint = new Paint();
         mPaint.setColor(Color.parseColor("#BBBBBB"));
     }
 
-    public ItemDecoration(int dividerHeight, int color) {
+    public MyItemDecoration(int dividerHeight, int color) {
         mDividerHeight = dividerHeight;
         mPaint = new Paint();
         mPaint.setColor(color);
@@ -42,23 +42,20 @@ public class ItemDecoration extends RecyclerView.ItemDecoration {
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         super.onDrawOver(c, parent, state);
         int childCount = parent.getChildCount();
-        // 画水平线
+
         for (int i = 0; i < childCount; i++) {
             View child = parent.getChildAt(i);
+            // 画水平线
             int left = child.getLeft();
             int top = child.getBottom();
             int right = child.getRight();
             int bottom = top + mDividerHeight;
             c.drawRect(left, top, right, bottom, mPaint);
-        }
-        //        画竖直线
-        for (int i = 0; i < childCount; i++) {
-            View child = parent.getChildAt(i);
-            int left = child.getRight();
-            int top = child.getTop();
-            int right = child.getRight() + mDividerHeight;
-            int bottom = child.getBottom();
-            c.drawRect(left, top, right, bottom, mPaint);
+
+            //        画竖直线
+            int top2 = child.getTop();
+            int right2 = child.getRight() + mDividerHeight;
+            c.drawRect(right, top2, right2, top, mPaint);
         }
     }
 }

@@ -32,7 +32,7 @@
         <activity android:name=".activity.RevealActivity" />
         <activity android:name=".activity.FlipBoardActivity" />
         <activity android:name=".activity.AnimatorSwitchActivity" />
-        <!--<activity android:name=".activity.HomeActivity" />-->
+        <activity android:name=".activity.WaterfallsFlowActivity" />
     </application>
 
 </manifest>

@@ -2,14 +2,12 @@ package com.example.rico.customerview.activity;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.adapter.BaseDeleteAdapter;
 import com.example.rico.customerview.adapter.DeleteAdapter;
-import com.example.rico.customerview.view.ItemDecoration;
+import com.example.rico.customerview.view.MyItemDecoration;
 
 /**
  * Created by Tmp on 2019/5/16.
@@ -28,7 +26,7 @@ public class SideDeleteActivity extends BaseActivity {
     public void doBusiness() {
         rvDelete = findViewById(R.id.rv_delete);
         rvDelete.setLayoutManager(new LinearLayoutManager(this));
-        rvDelete.addItemDecoration(new ItemDecoration());
+        rvDelete.addItemDecoration(new MyItemDecoration());
         adapter = new DeleteAdapter(this);
         for (int i = 0; i < 10; i++) {
             adapter.addItem("第一");
