@@ -76,7 +76,7 @@ public class DrawBitmapView extends View {
                     invalidate();
                 }
             });
-            animator.setDuration(500);
+            animator.setDuration(300);
             animator.setInterpolator(new DecelerateInterpolator());
         }
         animator.setObjectValues(bitmap.getWidth());

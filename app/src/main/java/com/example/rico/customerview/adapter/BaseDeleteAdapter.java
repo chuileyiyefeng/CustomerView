@@ -3,6 +3,7 @@ package com.example.rico.customerview.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ public abstract class BaseDeleteAdapter<T> extends RecyclerView.Adapter<BaseDele
         BaseDeleteViewHolder holder = new BaseDeleteViewHolder(parentView);
         holder.contentView = parentView.getChildAt(0);
         holder.deleteView = parentView.getChildAt(1);
+        Log.e("BaseDeleteHolder", "onCreateViewHolder: " + "createHolder");
         return holder;
     }
 

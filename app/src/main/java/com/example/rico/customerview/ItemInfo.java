@@ -16,15 +16,8 @@ public class ItemInfo{
         this.itemName = itemName;
     }
 
-    public ItemInfo(String itemName, int type) {
-        SomeThing.type++;
+    public ItemInfo(String itemName,int type) {
         this.itemName = itemName;
         this.type = type;
-    }
-
-    public ItemInfo(String itemName) {
-        SomeThing.type++;
-        this.itemName = itemName;
-        this.type = SomeThing.type;
     }
 }

@@ -25,12 +25,6 @@ public class DrawBitmapActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        if (b) {
-            drawV.setBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_complete));
-        }else {
-            drawV.clearBitmap();
-        }
-        b=!b;
+        drawV.setBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_complete));
     }
-    boolean b=true;
 }

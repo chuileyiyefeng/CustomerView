@@ -2,15 +2,8 @@ package com.example.rico.customerview.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.rico.customerview.ItemInfo;
 import com.example.rico.customerview.R;
@@ -22,23 +15,24 @@ import com.example.rico.customerview.adapter.FirstAdapter;
 /**
  * Created by Tmp on 2019/6/27.
  */
-public class HomeFragment3 extends Fragment implements BaseAdapter.ItemClick {
-    View view;
+public class HomeFragment3 extends BaseFragment implements BaseAdapter.ItemClick {
     RecyclerView rv;
     FirstAdapter adapter;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.activity_main, container, false);
-        rv = view.findViewById(R.id.rv);
+    int bindLayout() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    protected void initView() {
+        rv = (RecyclerView) findViewById(R.id.rv);
         adapter = new FirstAdapter(getActivity());
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
         rv.setAdapter(adapter);
         Context context = getActivity();
         adapter.addItem(new ItemInfo("揭示动画", new Intent(context, RevealActivity.class)));
         adapter.addItemClick(this);
-        return view;
     }
 
     @Override
@@ -50,4 +44,5 @@ public class HomeFragment3 extends Fragment implements BaseAdapter.ItemClick {
             startActivity(new Intent(getActivity(), AllViewActivity.class).putExtra("type", info.type));
         }
     }
+
 }

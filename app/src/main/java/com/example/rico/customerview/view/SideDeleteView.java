@@ -97,10 +97,7 @@ public class SideDeleteView extends ViewGroup {
     @Override
     public boolean performClick() {
 //        如果是禁用父类拦截或者有sideView打开
-        if (isScroll || hasOpen) {
-            return false;
-        }
-        return super.performClick();
+        return !isScroll && !hasOpen && super.performClick();
     }
 
     boolean isScroll;

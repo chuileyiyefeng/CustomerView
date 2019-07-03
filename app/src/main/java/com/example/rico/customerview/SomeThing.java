@@ -27,9 +27,9 @@ public class SomeThing {
 //    getExternalFilesDir(null) = /mnt/sdcard/Android/data/com.my.app/files
 //    getFilesDir() = /data/data/com.my.app/files
 
-    //    重置动画时长，假如手动关闭动画，动画将不会再运行
-    public static int type;
 
+
+    //    重置动画时长，假如手动关闭动画，动画将不会再运行
     public static void resetDurationScale() {
         try {
             getField().setFloat(null, 1);

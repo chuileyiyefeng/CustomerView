@@ -29,11 +29,10 @@ public class HomeActivity extends BaseActivity {
     public void doBusiness() {
         tab = findViewById(R.id.tab);
         vp = findViewById(R.id.vp);
-        SomeThing.type = 0;
         ArrayList<String> strings = new ArrayList<>();
         strings.add("view");
         strings.add("viewGroup");
-        strings.add("layoutManager");
+        strings.add("other");
         for (int i = 0; i < strings.size(); i++) {
             tab.addTab(tab.newTab());
         }
