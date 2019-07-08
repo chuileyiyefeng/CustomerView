@@ -1,5 +1,6 @@
 package com.example.rico.customerview.activity;
 
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.rico.customerview.R;
@@ -23,9 +24,10 @@ public class WaterfallsFlowActivity extends BaseActivity {
     public void doBusiness() {
         rv = findViewById(R.id.rv);
         adapter = new LayoutManagerAdapter(this);
+//        rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setLayoutManager(new MyLayoutManager());
         rv.setAdapter(adapter);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             adapter.addItem("战争女神 ");
             adapter.addItem("蒙多战争女神战争女神战争女神战争女神战争女神战争女神战争女神战争女神战争女神");
             adapter.addItem("德玛西亚皇子");
