@@ -1,9 +1,6 @@
 package com.example.rico.customerview.view;
 
-import android.graphics.RectF;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -12,20 +9,13 @@ import android.view.ViewGroup;
  */
 public class MyLayoutManager extends RecyclerView.LayoutManager {
 
-
+    //    getChildCount是查看当前屏幕的item数量
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
         return new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
-    //    储存view区域的集合
-    private SparseArray<RectF> rectArray;
-    //    储存view的集合
-    private SparseArray<View> viewArray;
-
-
     //    第一个可见的view，最后一个可见的view 下标
-    int firstPos, lastPos;
 
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
@@ -34,19 +24,18 @@ public class MyLayoutManager extends RecyclerView.LayoutManager {
         if (getItemCount() == 0 && state.isPreLayout()) {
             return;
         }
-        firstPos = 0;
-        lastPos = getItemCount();
-        rectArray = new SparseArray<>();
-        viewArray = new SparseArray<>();
+        int lastPos = getItemCount();
+
         int childOffset = getPaddingTop();
         int paddingLeft = getPaddingLeft();
         int parentHeight = getHeight() - getPaddingBottom();
-        for (int i = firstPos; i < lastPos; i++) {
+        for (int i = 0; i < lastPos; i++) {
             View childView = recycler.getViewForPosition(i);
             addView(childView);
             measureChildWithMargins(childView, 0, 0);
             int width = getDecoratedMeasuredWidth(childView);
             int height = getDecoratedMeasuredHeight(childView);
+
             layoutDecorated(childView, paddingLeft, childOffset, width - getPaddingRight(), childOffset + height);
             childOffset += height;
             if (childOffset > parentHeight) {
@@ -55,13 +44,13 @@ public class MyLayoutManager extends RecyclerView.LayoutManager {
         }
     }
 
+
     @Override
     public boolean canScrollVertically() {
         return true;
     }
 
-    int scrollY;
-    private boolean b = true;
+    private int scrollY;
 
     @Override
     public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
@@ -69,7 +58,7 @@ public class MyLayoutManager extends RecyclerView.LayoutManager {
             return 0;
         }
 
-//        getDecoratedLeft(childView) 子view的左边，基于recyclerView的位置，以此类推 左上右下
+//    ---注释别删---   getDecoratedLeft(childView) 子view的左边，基于recyclerView的位置，以此类推 左上右下
 
 //        向上滑
         if (dy > 0) {
@@ -91,16 +80,13 @@ public class MyLayoutManager extends RecyclerView.LayoutManager {
 //            赋值dy为-scrollY，还原滑动为0（就是拉到顶部时的状态）
             dy = -scrollY;
         }
-        fillViews(recycler, state, dy);
+        dy = fillViews(recycler, state, dy);
         offsetChildrenVertical(-dy);
         scrollY += dy;
         return dy;
     }
 
-    private void fillViews(RecyclerView.Recycler recycler, RecyclerView.State state, int dy) {
-        if (state.isPreLayout()) {
-            return;
-        }
+    private int fillViews(RecyclerView.Recycler recycler, RecyclerView.State state, int dy) {
 //        先做回收越界view的操作
         int top = getPaddingTop();
         if (getChildCount() > 0) {
@@ -113,14 +99,13 @@ public class MyLayoutManager extends RecyclerView.LayoutManager {
 //                    回收之后firstPosition要++
                     if (dy > 0 && getDecoratedBottom(childView) - dy < top) {
                         removeAndRecycleView(childView, recycler);
-                        firstPos++;
+//                        firstPos++;
                     } else if (dy < 0) {
 //                        dy<0表示此时向下滑
 //                        回收底部不在屏幕范围内的view
 //                        当此时view的顶部比recyclerView的底部还要大时，回收这个子view
                         if (getDecoratedTop(childView) - dy > getHeight() - getPaddingBottom()) {
                             removeAndRecycleView(childView, recycler);
-                            lastPos--;
                         }
                     }
                 }
@@ -131,19 +116,16 @@ public class MyLayoutManager extends RecyclerView.LayoutManager {
         int left = getPaddingLeft();
         if (dy > 0) {
 //            这时候假设从firstPos下标的item布局到最后一个item
-            int minPos = firstPos;
-
+            int minPos = 0;
             if (getChildCount() > 0) {
                 View lastView = getChildAt(getChildCount() - 1);
                 if (lastView != null) {
 //                    此时是向上滑的，以当前可见的最后一个view的下标加一为起始下标，然后添加view
                     minPos = getPosition(lastView) + 1;
-//                    这是下一个view的top,所以要用getBottom
                     top = getDecoratedBottom(lastView);
                 }
             }
-            for (int i = minPos; i < getItemCount()-1; i++) {
-                //找recycler要一个childItemView,我们不管它是从scrap里取，还是从RecyclerViewPool里取，亦或是onCreateViewHolder里拿。
+            for (int i = minPos; i < getItemCount(); i++) {
                 View view = recycler.getViewForPosition(i);
                 addView(view);
                 measureChildWithMargins(view, 0, 0);
@@ -152,20 +134,44 @@ public class MyLayoutManager extends RecyclerView.LayoutManager {
 //                滑动dy距离后，当前的view顶部依旧比recyclerView的底部大，这时候回收这个view
                 if (top - dy > getHeight() - getPaddingBottom()) {
                     removeAndRecycleView(view, recycler);
-                    lastPos = i;
                 } else {
-                    layoutDecorated(view, left, top, left+width, top +scrollY+ height);
-                    RectF rectF = new RectF(getPaddingLeft(), top, width - getPaddingRight(), top + height);
-                    rectArray.put(i, rectF);
+                    layoutDecorated(view, left, top, left + width, top + height);
                 }
                 top += height;
             }
+            View lastChild = getChildAt(getChildCount() - 1);
+            if (getPosition(lastChild) == getItemCount() - 1) {
+                int gap = getHeight() - getPaddingBottom() - getDecoratedBottom(lastChild);
+                if (gap > 0) {
+                    dy -= gap;
+                }
+            }
+        } else {
+//           此时向下滑，要把已回收的view显示出来
+            int maxPos;
+//            firstPos = 0;
+            if (getChildCount() > 0) {
+                View firstView = getChildAt(0);
+                if (firstView != null) {
+                    maxPos = getPosition(firstView) - 1;
+                    top = getDecoratedTop(firstView);
+                    if (maxPos > -1) {
+                        for (int i = maxPos; i >= 0; i--) {
+                            if (top - dy > getPaddingTop()) {
+                                View lastView = recycler.getViewForPosition(i);
+                                measureChildWithMargins(lastView, 0, 0);
+                                int height = getDecoratedMeasuredHeight(lastView);
+                                int width = getDecoratedMeasuredWidth(lastView);
+                                addView(lastView, 0);
+                                layoutDecoratedWithMargins(lastView, left, top - height, left + width, top);
+                                top -= height;
+                            }
+                        }
+                    }
+                }
+            }
         }
+        return dy;
     }
 
-    // childView在竖直方向所占的空间
-    private int getDecoratedMeasurementVertical(View view) {
-        final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) view.getLayoutParams();
-        return getDecoratedMeasuredHeight(view) + params.topMargin + params.bottomMargin;
-    }
 }

@@ -2,10 +2,11 @@ package com.example.rico.customerview.activity;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
 import com.example.rico.customerview.R;
+import com.example.rico.customerview.adapter.BaseAdapter;
 import com.example.rico.customerview.adapter.LayoutManagerAdapter;
-import com.example.rico.customerview.view.MyItemDecoration;
 import com.example.rico.customerview.view.MyLayoutManager;
 
 /**
@@ -28,7 +29,7 @@ public class WaterfallsFlowActivity extends BaseActivity {
         rv.setLayoutManager(new MyLayoutManager());
         rv.setAdapter(adapter);
         for (int i = 0; i < 5; i++) {
-            adapter.addItem("战争女神 ");
+            adapter.addItem("战争女神 " + i);
             adapter.addItem("蒙多战争女神战争女神战争女神战争女神战争女神战争女神战争女神战争女神战争女神");
             adapter.addItem("德玛西亚皇子");
             adapter.addItem("殇之木乃伊");
@@ -42,5 +43,11 @@ public class WaterfallsFlowActivity extends BaseActivity {
             adapter.addItem("永恒梦魇");
             adapter.addItem("诺克萨斯之手");
         }
+        adapter.addItemClick(new BaseAdapter.ItemClick() {
+            @Override
+            public void itemClick(int position) {
+                Toast.makeText(WaterfallsFlowActivity.this, "show" + position, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
