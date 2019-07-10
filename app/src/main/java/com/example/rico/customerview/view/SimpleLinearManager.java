@@ -6,8 +6,9 @@ import android.view.ViewGroup;
 
 /**
  * Created by Tmp on 2019/7/3.
+ * 简单的竖直linearLayoutManager
  */
-public class MyLayoutManager extends RecyclerView.LayoutManager {
+public class SimpleLinearManager extends RecyclerView.LayoutManager {
 
     //    getChildCount是查看当前屏幕的item数量
     @Override
@@ -16,7 +17,7 @@ public class MyLayoutManager extends RecyclerView.LayoutManager {
     }
 
     //    第一个可见的view，最后一个可见的view 下标
-    int firstPos, lastPos;
+    private int firstPos, lastPos;
 
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
@@ -81,13 +82,13 @@ public class MyLayoutManager extends RecyclerView.LayoutManager {
 //            赋值dy为-scrollY，还原滑动为0（就是拉到顶部时的状态）
             dy = -scrollY;
         }
-        dy = fillViews(recycler, state, dy);
+        dy = fillViews(recycler, dy);
         offsetChildrenVertical(-dy);
         scrollY += dy;
         return dy;
     }
 
-    private int fillViews(RecyclerView.Recycler recycler, RecyclerView.State state, int dy) {
+    private int fillViews(RecyclerView.Recycler recycler, int dy) {
 //        先做回收越界view的操作
         int top = getPaddingTop();
         if (getChildCount() > 0) {
@@ -142,15 +143,16 @@ public class MyLayoutManager extends RecyclerView.LayoutManager {
                 top += height;
             }
             View lastChild = getChildAt(getChildCount() - 1);
-            if (getPosition(lastChild) == getItemCount() - 1) {
-                int gap = getHeight() - getPaddingBottom() - getDecoratedBottom(lastChild);
-                if (gap > 0) {
-                    dy -= gap;
+            if (lastChild != null) {
+                if (getPosition(lastChild) == getItemCount() - 1) {
+                    int gap = getHeight() - getPaddingBottom() - getDecoratedBottom(lastChild);
+                    if (gap > 0) {
+                        dy -= gap;
+                    }
                 }
             }
         } else {
 //           此时向下滑，要把已回收的view显示出来
-
             int maxPos;
 //            firstPos = 0;
             if (getChildCount() > 0) {
@@ -176,7 +178,7 @@ public class MyLayoutManager extends RecyclerView.LayoutManager {
         }
 
         View firstView = getChildAt(0);
-        if (firstView!=null) {
+        if (firstView != null) {
             firstPos = getPosition(firstView);
             firstTop = getDecoratedTop(firstView) - getPaddingTop();
         }
