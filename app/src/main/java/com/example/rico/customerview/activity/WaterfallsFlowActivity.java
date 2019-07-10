@@ -28,20 +28,20 @@ public class WaterfallsFlowActivity extends BaseActivity {
 //        rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setLayoutManager(new MyLayoutManager());
         rv.setAdapter(adapter);
-        for (int i = 0; i < 5; i++) {
-            adapter.addItem("战争女神 " + i);
+        for (int i = 0; i < 10; i++) {
+            adapter.addItem("战争女神 " + 0);
             adapter.addItem("蒙多战争女神战争女神战争女神战争女神战争女神战争女神战争女神战争女神战争女神");
-            adapter.addItem("德玛西亚皇子");
-            adapter.addItem("殇之木乃伊");
-            adapter.addItem("狂战士");
-            adapter.addItem("布里茨克拉克");
-            adapter.addItem("冰晶凤凰");
-            adapter.addItem("德邦总管");
-            adapter.addItem("野兽之灵乌迪尔");
-            adapter.addItem("塞恩");
-            adapter.addItem("诡术妖姬");
-            adapter.addItem("永恒梦魇");
-            adapter.addItem("诺克萨斯之手");
+            adapter.addItem("德玛西亚皇子"+1);
+            adapter.addItem("殇之木乃伊"+2);
+            adapter.addItem("狂战士"+3);
+            adapter.addItem("布里茨克拉克"+4);
+            adapter.addItem("冰晶凤凰"+5);
+            adapter.addItem("德邦总管"+6);
+            adapter.addItem("野兽之灵乌迪尔"+7);
+            adapter.addItem("塞恩"+8);
+            adapter.addItem("诡术妖姬"+9);
+            adapter.addItem("永恒梦魇"+10);
+            adapter.addItem("诺克萨斯之手"+11);
         }
         adapter.addItemClick(new BaseAdapter.ItemClick() {
             @Override
