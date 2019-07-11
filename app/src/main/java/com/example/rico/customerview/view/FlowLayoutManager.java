@@ -136,7 +136,7 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
                     maxHeight = height;
                 }
             }
-        } else {
+        } else  {
 
         }
     }
