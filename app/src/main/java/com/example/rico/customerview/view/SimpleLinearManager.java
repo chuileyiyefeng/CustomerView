@@ -10,7 +10,32 @@ import android.view.ViewGroup;
  */
 public class SimpleLinearManager extends RecyclerView.LayoutManager {
 
+//    LayoutManager的布局Api
+    //找recycler要一个childItemView,我们不管它是从scrap里取，还是从RecyclerViewPool里取，亦或是onCreateViewHolder里拿。
+//    View view = recycler.getViewForPosition(xxx);  //获取postion为xxx的View
+//    addView(view);//将View添加至RecyclerView中，
+//    addView(child, 0);//将View添加至RecyclerView中，childIndex为0，但是View的位置还是由layout的位置决定，该方法在逆序layout子View时有大用
+//    measureChildWithMargins(scrap, 0, 0);//测量View,这个方法会考虑到View的ItemDecoration以及Margin
+
+    //    //将ViewLayout出来，显示在屏幕上，内部会自动追加上该View的ItemDecoration和Margin。此时我们的View已经可见了
+//    layoutDecoratedWithMargins(view, leftOffset, topOffset,
+//                               leftOffset + getDecoratedMeasuredWidth(view),
+//    topOffset + getDecoratedMeasuredHeight(view));
     //    getChildCount是查看当前屏幕的item数量
+
+//    LayoutManager的回收Api
+//    detachAndScrapAttachedViews(recycler);//detach轻量回收所有View
+//
+//    detachAndScrapView(view, recycler);//detach轻量回收指定View
+//
+//    // recycle真的回收一个View ，该View再次回来需要执行onBindViewHolder方法
+//    removeAndRecycleView(View child, Recycler recycler)
+//    removeAndRecycleAllViews(Recycler recycler);
+//    detachView(view);//超级轻量回收一个View,马上就要添加回来
+//    attachView(view);//将上个方法detach的View attach回来
+//    recycler.recycleView(viewCache.valueAt(i));//detachView 后 没有attachView的话 就要真的回收掉他们
+
+
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
         return new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -21,7 +46,6 @@ public class SimpleLinearManager extends RecyclerView.LayoutManager {
 
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
-
         // 先判断itemCount是否为空，state.isPreLayout()是判断之前布局时动画有没有处理结束
         if (getItemCount() == 0 && state.isPreLayout()) {
             return;
@@ -112,7 +136,6 @@ public class SimpleLinearManager extends RecyclerView.LayoutManager {
                         }
                     }
                 }
-
             }
         }
 //        重新布局view

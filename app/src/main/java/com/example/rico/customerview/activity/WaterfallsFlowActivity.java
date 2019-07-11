@@ -1,11 +1,14 @@
 package com.example.rico.customerview.activity;
 
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.widget.Toast;
 
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.adapter.BaseAdapter;
 import com.example.rico.customerview.adapter.LayoutManagerAdapter;
+import com.example.rico.customerview.view.FlowLayoutManager;
 import com.example.rico.customerview.view.SimpleLinearManager;
 
 /**
@@ -25,7 +28,8 @@ public class WaterfallsFlowActivity extends BaseActivity {
         rv = findViewById(R.id.rv);
         adapter = new LayoutManagerAdapter(this);
 //        rv.setLayoutManager(new LinearLayoutManager(this));
-        rv.setLayoutManager(new SimpleLinearManager());
+        rv.setLayoutManager(new FlowLayoutManager());
+//        rv.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
         rv.setAdapter(adapter);
         for (int i = 0; i < 10; i++) {
             adapter.addItem("战争女神 " + 0);
