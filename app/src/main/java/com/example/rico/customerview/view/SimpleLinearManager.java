@@ -1,6 +1,7 @@
 package com.example.rico.customerview.view;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -152,18 +153,18 @@ public class SimpleLinearManager extends RecyclerView.LayoutManager {
                 }
             }
             for (int i = minPos; i < getItemCount(); i++) {
-                View view = recycler.getViewForPosition(i);
-                addView(view);
-                measureChildWithMargins(view, 0, 0);
-                int width = getDecoratedMeasuredWidth(view);
-                int height = getDecoratedMeasuredHeight(view);
 //                滑动dy距离后，当前的view顶部依旧比recyclerView的底部大，这时候回收这个view
                 if (top - dy > getHeight() - getPaddingBottom()) {
-                    removeAndRecycleView(view, recycler);
+                    break;
                 } else {
+                    View view = recycler.getViewForPosition(i);
+                    measureChildWithMargins(view, 0, 0);
+                    int width = getDecoratedMeasuredWidth(view);
+                    int height = getDecoratedMeasuredHeight(view);
+                    addView(view);
                     layoutDecorated(view, left, top, left + width, top + height);
+                    top += height;
                 }
-                top += height;
             }
             View lastChild = getChildAt(getChildCount() - 1);
             if (lastChild != null) {
@@ -193,6 +194,8 @@ public class SimpleLinearManager extends RecyclerView.LayoutManager {
                                 addView(lastView, 0);
                                 layoutDecoratedWithMargins(lastView, left, top - height, left + width, top);
                                 top -= height;
+                            }else {
+                                break;
                             }
                         }
                     }

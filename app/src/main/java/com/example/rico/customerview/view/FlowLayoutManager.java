@@ -23,12 +23,10 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
     //    屏幕上显示的第一个child的下标，最后一个child的下标
     private int firstPos, lastPos;
 
-    //    scrollY的距离
-    int scrollY;
+
     //    RecyclerView的宽高
     private int parentWidth, parentHeight;
 
-    private SparseArray<Rect> rectArray;
 
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
@@ -36,11 +34,10 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
             return;
         }
         detachAndScrapAttachedViews(recycler);
-        rectArray = new SparseArray<>();
         parentWidth = getWidth() - getPaddingLeft() - getPaddingRight();
         parentHeight = getHeight() - getPaddingTop() - getPaddingBottom();
         lastPos = getItemCount();
-
+        rectArray = new SparseArray<>();
         int left = getPaddingLeft();
         int top = getPaddingTop();
         int maxHeight = 0;
@@ -55,21 +52,29 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
                 left += width;
                 maxHeight = Math.max(maxHeight, height);
             } else {
+                if (top + maxHeight > getHeight() - getPaddingBottom()) {
+                    lastPos = i;
+                    break;
+                }
                 top += maxHeight;
                 layout(i, childView, getPaddingLeft(), top, width, height);
                 left = width;
                 maxHeight = height;
-                if (top + maxHeight > getHeight() - getPaddingBottom()) {
-                    lastPos = i;
-                }
             }
         }
     }
+    int scrollY;
+    private SparseArray<Rect> rectArray;
 
-    private void layout(int position, View childView, int left, int top, int right, int bottom) {
-        layoutDecorated(childView, left, top, left + right, top + bottom);
-        Rect rect = new Rect(left, top + scrollY, left + right, top + bottom + scrollY);
-        rectArray.put(position, rect);
+    private void layout(int i, View childView, int left, int top, int width, int height) {
+        layoutDecorated(childView, left, top, left + width, top + height);
+        Rect rect = rectArray.get(i);
+        if (rect == null) {
+            rect = new Rect(left, top+scrollY, left + width, top+scrollY + height);
+            rectArray.put(i, rect);
+        } else {
+            rect.set(left, top+scrollY, left + width, top+scrollY + height);
+        }
     }
 
     @Override
@@ -83,9 +88,9 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
         if (getItemCount() == 0) {
             return 0;
         }
-        scrollY += dy;
-        offsetChildrenVertical(-dy);
         fillViews(recycler, dy);
+        offsetChildrenVertical(-dy);
+        scrollY+=dy;
         return dy;
     }
 
@@ -98,10 +103,10 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
             View childView = getChildAt(i);
             assert childView != null;
             if (dy > 0 && getDecoratedBottom(childView) - dy < top) {
-                detachAndScrapView(childView, recycler);
+                removeAndRecycleView(childView, recycler);
                 firstPos++;
             } else if (dy < 0 && getDecoratedTop(childView) - dy > bottom) {
-                detachAndScrapView(childView, recycler);
+                removeAndRecycleView(childView, recycler);
                 lastPos--;
             }
         }
@@ -117,27 +122,45 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
             int maxHeight = 0;
             for (int i = minPos; i < getItemCount(); i++) {
                 View childView = recycler.getViewForPosition(i);
-                addView(childView);
                 measureChildWithMargins(childView, 0, 0);
                 int width = getDecoratedMeasuredWidth(childView);
                 int height = getDecoratedMeasuredHeight(childView);
                 if (left + width <= parentWidth) {
+                    addView(childView);
                     layout(i, childView, left, top, width, height);
                     left += width;
                     maxHeight = Math.max(maxHeight, height);
                 } else {
                     if (top + maxHeight - dy > bottom) {
-                        detachAndScrapView(childView, recycler);
-                        continue;
+                        removeAndRecycleView(childView, recycler);
+                        break;
                     }
+                    addView(childView);
                     top += maxHeight;
                     layout(i, childView, getPaddingLeft(), top, width, height);
                     left = width;
                     maxHeight = height;
                 }
             }
-        } else  {
-
+        } else {
+            int maxPos = getItemCount() - 1;
+            firstPos = 0;
+            if (getChildCount() > 0) {
+                View firstView = getChildAt(0);
+                maxPos = getPosition(firstView) - 1;
+            }
+            for (int i = maxPos; i >= firstPos; i--) {
+                Rect rect = rectArray.get(i);
+                if (rect.bottom - scrollY - dy < getPaddingTop()) {
+                    firstPos = i + 1;
+                    break;
+                } else {
+                    View child = recycler.getViewForPosition(i);
+                    addView(child, 0);//将View添加至RecyclerView中，childIndex为1，但是View的位置还是由layout的位置决定
+                    measureChildWithMargins(child, 0, 0);
+                    layoutDecoratedWithMargins(child, rect.left, rect.top - scrollY, rect.right, rect.bottom - scrollY);
+                }
+            }
         }
     }
 }
