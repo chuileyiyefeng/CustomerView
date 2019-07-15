@@ -25,7 +25,7 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
 
 
     //    RecyclerView的宽高
-    private int parentWidth, parentHeight;
+    private int parentWidth;
 
 
     @Override
@@ -35,7 +35,6 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
         }
         detachAndScrapAttachedViews(recycler);
         parentWidth = getWidth() - getPaddingLeft() - getPaddingRight();
-        parentHeight = getHeight() - getPaddingTop() - getPaddingBottom();
         lastPos = getItemCount();
         rectArray = new SparseArray<>();
         int left = getPaddingLeft();
@@ -63,17 +62,18 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
             }
         }
     }
-    int scrollY;
+
+    private int scrollY;
     private SparseArray<Rect> rectArray;
 
     private void layout(int i, View childView, int left, int top, int width, int height) {
         layoutDecorated(childView, left, top, left + width, top + height);
         Rect rect = rectArray.get(i);
         if (rect == null) {
-            rect = new Rect(left, top+scrollY, left + width, top+scrollY + height);
+            rect = new Rect(left, top + scrollY, left + width, top + scrollY + height);
             rectArray.put(i, rect);
         } else {
-            rect.set(left, top+scrollY, left + width, top+scrollY + height);
+            rect.set(left, top + scrollY, left + width, top + scrollY + height);
         }
     }
 
@@ -88,20 +88,42 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
         if (getItemCount() == 0) {
             return 0;
         }
-        fillViews(recycler, dy);
+        //        向上滑
+        if (dy > 0) {
+            View lastChild = getChildAt(getChildCount() - 1);
+//            如果最后一个子view的位置等于itemCount的长度减一，就是view滑到底了
+            if (lastChild != null) {
+                if (getPosition(lastChild) == getItemCount() - 1) {
+                    int gap = getHeight() - getPaddingBottom() - getDecoratedBottom(lastChild);
+                    if (gap > 0) {
+                        dy = -gap;
+                    } else if (gap == 0) {
+                        dy = 0;
+                    }
+                }
+            }
+        } else if (scrollY + dy < 0) {
+            //        向下滑
+//            假如之前向上滑了一段距离，scrollY为50，这时候dy滑动为-100的话，就会滑动到比view顶部还要高的位置
+//            赋值dy为-scrollY，还原滑动为0（就是拉到顶部时的状态）
+            dy = -scrollY;
+        }
+        dy = fillViews(recycler, dy);
         offsetChildrenVertical(-dy);
-        scrollY+=dy;
+        scrollY += dy;
         return dy;
     }
 
-    private void fillViews(RecyclerView.Recycler recycler, int dy) {
+    private int fillViews(RecyclerView.Recycler recycler, int dy) {
         int top = getPaddingTop();
         int bottom = getHeight() - getPaddingBottom();
         int left = getPaddingLeft();
         //        先回收，后布局
         for (int i = getChildCount() - 1; i >= 0; i--) {
             View childView = getChildAt(i);
-            assert childView != null;
+            if (childView == null) {
+                return dy;
+            }
             if (dy > 0 && getDecoratedBottom(childView) - dy < top) {
                 removeAndRecycleView(childView, recycler);
                 firstPos++;
@@ -142,12 +164,17 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
                     maxHeight = height;
                 }
             }
+
         } else {
             int maxPos = getItemCount() - 1;
             firstPos = 0;
             if (getChildCount() > 0) {
                 View firstView = getChildAt(0);
-                maxPos = getPosition(firstView) - 1;
+                if (firstView != null) {
+                    maxPos = getPosition(firstView) - 1;
+                } else {
+                    return dy;
+                }
             }
             for (int i = maxPos; i >= firstPos; i--) {
                 Rect rect = rectArray.get(i);
@@ -162,5 +189,7 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
                 }
             }
         }
+
+        return dy;
     }
 }
