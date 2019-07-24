@@ -1,16 +1,13 @@
 package com.example.rico.customerview.activity;
 
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.widget.Toast;
 
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.adapter.BaseAdapter;
 import com.example.rico.customerview.adapter.LayoutManagerAdapter;
-import com.example.rico.customerview.view.FlowLayoutManager;
-import com.example.rico.customerview.view.SimpleLinearManager;
+import com.example.rico.customerview.layoutManager.BannerLayoutManager;
+import com.example.rico.customerview.layoutManager.FlowLayoutManager;
 
 /**
  * Created by Tmp on 2019/7/3.

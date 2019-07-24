@@ -24,7 +24,7 @@ public class FlowActivity extends BaseActivity {
     @Override
     public void doBusiness() {
         list = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
             list.add("战争女神 ");
             list.add("蒙多战争女神战争女神战争女神战争女神战争女神");
             list.add("德玛西亚皇子");
@@ -43,10 +43,11 @@ public class FlowActivity extends BaseActivity {
         flow.setMargin(5, 5);
         for (int i = 0; i < list.size(); i++) {
             TextView view = new TextView(this);
-            view.setTextColor(Color.parseColor("#43a2fb"));
-            view.setPadding(10, 5, 10, 5);
+//            view.setTextColor(getResources().getColor(R.color.black));
+            int dis= (int) (getResources().getDisplayMetrics().density*10);
+            view.setPadding(dis, dis, dis, dis);
             view.setText(list.get(i));
-            view.setTextSize(20);
+            view.setTextSize(14);
             view.setBackgroundResource(R.drawable.blue_border);
             if (list.get(i).equals("塞恩")) {
                 view.setVisibility(View.GONE);
