@@ -1,6 +1,7 @@
 package com.example.rico.customerview.layoutManager;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -22,6 +23,7 @@ public class BannerLayoutManager extends RecyclerView.LayoutManager {
             return;
         }
         parentRight = getWidth() - getPaddingRight();
+        centerX = parentRight / 2;
         lastPos = getItemCount();
         int left = 0;
         detachAndScrapAttachedViews(recycler);
@@ -31,6 +33,9 @@ public class BannerLayoutManager extends RecyclerView.LayoutManager {
             measureChildWithMargins(child, 0, 0);
             int height = getDecoratedMeasuredHeight(child);
             int width = getDecoratedMeasuredWidth(child);
+            if (i == 0) {
+                left = (parentRight - width) / 2;
+            }
             layoutDecorated(child, left, 0, left + width, height);
             left += width;
             if (left > parentRight) {
@@ -38,6 +43,7 @@ public class BannerLayoutManager extends RecyclerView.LayoutManager {
                 break;
             }
         }
+        scaleView();
     }
 
     @Override
@@ -45,7 +51,7 @@ public class BannerLayoutManager extends RecyclerView.LayoutManager {
         return true;
     }
 
-    int firstPos, lastPos, parentRight;
+    private int firstPos, lastPos, parentRight, centerX;
     private int scrollX;
 
     @Override
@@ -56,9 +62,11 @@ public class BannerLayoutManager extends RecyclerView.LayoutManager {
         if (dx > 0) {
             View lastView = getChildAt(getChildCount() - 1);
             if (lastView != null) {
+                int width = getDecoratedMeasuredWidth(lastView);
+                int right = parentRight - ((parentRight - width) / 2);
                 if (getPosition(lastView) == getItemCount() - 1) {
-                    if (getDecoratedRight(lastView) - dx < parentRight) {
-                        dx = getDecoratedRight(lastView) - parentRight;
+                    if (getDecoratedRight(lastView) - dx < right) {
+                        dx = getDecoratedRight(lastView) - right;
                     }
                 }
             }
@@ -99,7 +107,7 @@ public class BannerLayoutManager extends RecyclerView.LayoutManager {
                     measureChildWithMargins(child, 0, 0);
                     int height = getDecoratedMeasuredHeight(child);
                     int width = getDecoratedMeasuredWidth(child);
-                    addView(child,0);
+                    addView(child, 0);
                     layoutDecorated(child, left - width, getPaddingTop(), left, getPaddingTop() + height);
                 }
             }
@@ -118,7 +126,34 @@ public class BannerLayoutManager extends RecyclerView.LayoutManager {
                 }
             }
         }
-
+        scaleView();
         return dx;
+    }
+
+    private void scaleView() {
+        float scaleF = 0.8f;
+        for (int i = 0; i < getChildCount(); i++) {
+            View view = getChildAt(i);
+            int width = getDecoratedMeasuredWidth(view);
+            //        分两种情况，从右边到中间为变大，即是 scaleF到1.0f,从中间到左边即是1.0f到scaleF
+            int centerViewX = view.getLeft() + width / 2;
+//        子view的中心点到控件中心的距离
+            float distance = Math.abs(centerX - centerViewX);
+
+//        子view的中心点到控件中心的距离所占总view宽度的百分比
+            double percent = distance / (getWidth() / 2);
+            double lastWidth = width * (1 - scaleF);
+            float realScaleF = (float) ((width - percent * lastWidth) / width);
+            if (realScaleF < scaleF) {
+                realScaleF = scaleF;
+            } else if (realScaleF > 1.0f) {
+                realScaleF = 1.0f;
+            }
+            Log.e("centerViewX", "scaleView: " + percent + "  " + realScaleF);
+//        X是1-100 而Y的值是80到100
+            view.setScaleX(realScaleF);
+            view.setScaleY(realScaleF);
+//            break;
+        }
     }
 }

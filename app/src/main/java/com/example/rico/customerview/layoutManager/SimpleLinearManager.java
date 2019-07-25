@@ -56,6 +56,7 @@ public class SimpleLinearManager extends RecyclerView.LayoutManager {
         int paddingLeft = getPaddingLeft();
         int parentHeight = getHeight() - getPaddingBottom();
         for (int i = firstPos; i < lastPos; i++) {
+
             View childView = recycler.getViewForPosition(i);
             addView(childView);
             measureChildWithMargins(childView, 0, 0);

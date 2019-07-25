@@ -1,5 +1,6 @@
 package com.example.rico.customerview.activity;
 
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.rico.customerview.R;
@@ -22,7 +23,12 @@ public class BannerLayoutActivity extends BaseActivity {
     public void doBusiness() {
         rv = findViewById(R.id.rv);
         adapter = new BannerAdapter(this);
-        rv.setLayoutManager(new BannerLayoutManager());
+        RecyclerView.LayoutManager manager = new BannerLayoutManager();
+        rv.setLayoutManager(manager);
+//        rv.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+//        LinearSnapHelper helper = new LinearSnapHelper();
+//        helper.findSnapView(manager);
+//        helper.attachToRecyclerView(rv);
         rv.setAdapter(adapter);
         for (int i = 0; i < 10; i++) {
             adapter.addItem("this is item " + i);
