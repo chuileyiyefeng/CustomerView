@@ -149,7 +149,6 @@ public class BannerLayoutManager extends RecyclerView.LayoutManager {
             } else if (realScaleF > 1.0f) {
                 realScaleF = 1.0f;
             }
-            Log.e("centerViewX", "scaleView: " + percent + "  " + realScaleF);
 //        X是1-100 而Y的值是80到100
             view.setScaleX(realScaleF);
             view.setScaleY(realScaleF);

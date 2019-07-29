@@ -9,6 +9,7 @@ import com.example.rico.customerview.ItemInfo;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.activity.AllViewActivity;
 import com.example.rico.customerview.activity.BannerLayoutActivity;
+import com.example.rico.customerview.activity.CardLayoutActivity;
 import com.example.rico.customerview.activity.RevealActivity;
 import com.example.rico.customerview.activity.WaterfallsFlowActivity;
 import com.example.rico.customerview.adapter.BaseAdapter;
@@ -35,7 +36,8 @@ public class HomeFragment3 extends BaseFragment implements BaseAdapter.ItemClick
         Context context = getActivity();
         adapter.addItem(new ItemInfo("揭示动画", new Intent(context, RevealActivity.class)));
         adapter.addItem(new ItemInfo("瀑布流", new Intent(context, WaterfallsFlowActivity.class)));
-        adapter.addItem(new ItemInfo("Banner", new Intent(context, BannerLayoutActivity.class)));
+        adapter.addItem(new ItemInfo("Banner样式RecyclerView", new Intent(context, BannerLayoutActivity.class)));
+        adapter.addItem(new ItemInfo("卡片RecyclerView", new Intent(context, CardLayoutActivity.class)));
         adapter.addItemClick(this);
     }
 

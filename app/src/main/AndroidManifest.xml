@@ -34,6 +34,7 @@
         <activity android:name=".activity.AnimatorSwitchActivity" />
         <activity android:name=".activity.WaterfallsFlowActivity" />
         <activity android:name=".activity.BannerLayoutActivity" />
+        <activity android:name=".activity.CardLayoutActivity" />
     </application>
 
 </manifest>

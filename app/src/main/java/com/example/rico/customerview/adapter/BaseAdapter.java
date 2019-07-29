@@ -19,6 +19,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
     protected Context context;
     private List<T> list;
 
+
     BaseAdapter(Context context) {
         this.context = context;
         list = new ArrayList<>();
@@ -27,13 +28,13 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
 
     protected abstract int bindLayout();
 
-    int createTime;
+    private int createTime;
 
     @NonNull
     @Override
     public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         createTime++;
-        Log.e("createHolder", "onCreateViewHolder: "+createTime );
+        Log.e("createHolder", "onCreateViewHolder: " + createTime);
         return new BaseViewHolder(LayoutInflater.from(context).inflate(bindLayout(), viewGroup, false));
     }
 
@@ -66,6 +67,11 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
         int currentSize = getItemCount();
         list.addAll(collections);
         notifyItemRangeInserted(currentSize, getItemCount());
+    }
+
+    public void removePosition(int position) {
+        list.remove(position);
+       notifyItemRemoved(position);
     }
 
     public T getItem(int position) {
