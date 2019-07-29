@@ -22,6 +22,6 @@ public class CardAdapter extends BaseAdapter<String> {
 
     @Override
     protected void bindHolder(@NonNull BaseViewHolder holder, int i) {
-
+            holder.setText(R.id.tv,getItem(i));
     }
 }

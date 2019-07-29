@@ -71,7 +71,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
 
     public void removePosition(int position) {
         list.remove(position);
-       notifyItemRemoved(position);
+        notifyDataSetChanged();
     }
 
     public T getItem(int position) {
