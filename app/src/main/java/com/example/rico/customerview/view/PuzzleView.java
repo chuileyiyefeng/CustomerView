@@ -38,7 +38,7 @@ public class PuzzleView extends BaseCustomerView {
     //    图片距离顶部的距离
     int distance;
     //    行数、列数
-    int rowCount = 3, columnCount = 4;
+    int rowCount = 2, columnCount = 3;
     Random random;
     //    大图片
     Bitmap bitmap;
@@ -73,7 +73,7 @@ public class PuzzleView extends BaseCustomerView {
         setBackgroundColor(getResources().getColor(R.color.button_bg));
         bitmap = getNewBitmap(context);
         distance = (height - bitmap.getHeight()) / 2;
-//        整个图片分为三行五列的小图片
+//        整个图片分为小图片
         minWidth = bitmap.getWidth() / columnCount;
         minHeight = bitmap.getHeight() / rowCount;
         for (int i = 0; i < rowCount; i++) {
@@ -320,7 +320,6 @@ public class PuzzleView extends BaseCustomerView {
             Bitmap bitmap=bitmapList.get(i).bitmap;
             if (bitmap!=null&&!bitmap.isRecycled()) {
                 bitmap.recycle();
-                bitmap=null;
             }
         }
         bitmapList.clear();

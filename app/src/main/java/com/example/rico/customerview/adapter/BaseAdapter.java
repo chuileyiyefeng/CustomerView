@@ -87,5 +87,4 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
     public interface ItemClick {
         void itemClick(int position);
     }
-
 }

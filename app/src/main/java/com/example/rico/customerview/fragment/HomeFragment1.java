@@ -13,6 +13,7 @@ import com.example.rico.customerview.activity.BezierMoveActivity;
 import com.example.rico.customerview.activity.CornerImageActivity;
 import com.example.rico.customerview.activity.DrawBitmapActivity;
 import com.example.rico.customerview.activity.FlipBoardActivity;
+import com.example.rico.customerview.activity.PuzzleActivity;
 import com.example.rico.customerview.activity.RadarActivity;
 import com.example.rico.customerview.activity.TextMoveActivity;
 import com.example.rico.customerview.adapter.BaseAdapter;
@@ -44,7 +45,7 @@ public class HomeFragment1 extends BaseFragment implements BaseAdapter.ItemClick
         adapter.addItem(new ItemInfo("贝塞尔曲线", new Intent(context, BezierMoveActivity.class)));
         adapter.addItem(new ItemInfo("上滑翻页", new Intent(context, FlipBoardActivity.class)));
         adapter.addItem(new ItemInfo("switch动画", new Intent(context, AnimatorSwitchActivity.class)));
-
+        adapter.addItem(new ItemInfo("拼图", new Intent(context, PuzzleActivity.class)));
 
         adapter.addItem(new ItemInfo("小鱼游泳(静止)", 1));
         adapter.addItem(new ItemInfo("path填充模式", 2));
@@ -56,8 +57,7 @@ public class HomeFragment1 extends BaseFragment implements BaseAdapter.ItemClick
         adapter.addItem(new ItemInfo("Evaluator(Object)", 8));
         adapter.addItem(new ItemInfo("翻页", 9));
         adapter.addItem(new ItemInfo("网状view", 10));
-        adapter.addItem(new ItemInfo("拼图", 11));
-        adapter.addItem(new ItemInfo("太阳动画", 12));
+        adapter.addItem(new ItemInfo("太阳动画", 11));
         adapter.addItemClick(this);
     }
 

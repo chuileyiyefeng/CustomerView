@@ -74,9 +74,6 @@ public class AllViewActivity extends BaseActivity {
                 view = new NetColorView(context);
                 break;
             case 11:
-                view = new PuzzleView(context);
-                break;
-            case 12:
                 view = new MiniSunView(context);
                 break;
             default:

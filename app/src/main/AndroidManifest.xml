@@ -35,6 +35,7 @@
         <activity android:name=".activity.WaterfallsFlowActivity" />
         <activity android:name=".activity.BannerLayoutActivity" />
         <activity android:name=".activity.CardLayoutActivity" />
+        <activity android:name=".activity.PuzzleActivity" />
     </application>
 
 </manifest>
