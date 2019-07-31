@@ -15,7 +15,6 @@ public class BannerLayoutManager extends RecyclerView.LayoutManager {
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
         return new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
-
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         if (getItemCount() == 0) {
@@ -25,9 +24,9 @@ public class BannerLayoutManager extends RecyclerView.LayoutManager {
         parentRight = getWidth() - getPaddingRight();
         centerX = parentRight / 2;
         lastPos = getItemCount();
-        int left = 0;
+        int left = firstLeft;
         detachAndScrapAttachedViews(recycler);
-        for (int i = 0; i < lastPos; i++) {
+        for (int i = firstPos; i < lastPos; i++) {
             View child = recycler.getViewForPosition(i);
             addView(child);
             measureChildWithMargins(child, 0, 0);
@@ -51,7 +50,7 @@ public class BannerLayoutManager extends RecyclerView.LayoutManager {
         return true;
     }
 
-    private int firstPos, lastPos, parentRight, centerX;
+    private int firstPos, lastPos, parentRight, centerX,firstLeft;
     private int scrollX;
 
     @Override
@@ -127,6 +126,11 @@ public class BannerLayoutManager extends RecyclerView.LayoutManager {
             }
         }
         scaleView();
+        View firstView = getChildAt(0);
+        if (firstView != null) {
+            firstPos = getPosition(firstView);
+            firstLeft = getDecoratedLeft(firstView) - getPaddingLeft();
+        }
         return dx;
     }
 

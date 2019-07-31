@@ -72,7 +72,7 @@ public class ViewSwimView extends RelativeLayout {
 
     public void setRadius(float currentValue) {
         alpha = (int) (100 * (1 - currentValue) / 2);
-        radius = 100 * currentValue+10;
+        radius = 100 * currentValue+20;
         invalidate();
 
     }
@@ -133,7 +133,6 @@ public class ViewSwimView extends RelativeLayout {
 
     private ObjectAnimator animator;
     private Path movePath;
-    private PathMeasure pathMeasure;
     double allLength;
 
     private void startMove() {
@@ -141,11 +140,10 @@ public class ViewSwimView extends RelativeLayout {
             animator.cancel();
         }
         movePath.reset();
-        final float[] tan = new float[2];
+
         View childView = getChildAt(0);
         movePath.moveTo(centerX - childView.getWidth() / 2, centerY - childView.getHeight() / 2);
         movePath.lineTo(downX - childView.getWidth() / 2, downY - childView.getHeight() / 2);
-        pathMeasure = new PathMeasure(movePath, false);
         animator = ObjectAnimator.ofFloat(getChildAt(0), "x", "y", movePath);
         float xSquare = Math.abs(centerX - downX) * Math.abs(centerX - downX);
         float ySquare = Math.abs(centerY - downY) * Math.abs(centerY - downY);
@@ -153,13 +151,6 @@ public class ViewSwimView extends RelativeLayout {
 
         animator.setDuration((long) (3000 * distance / allLength));
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float value = animation.getAnimatedFraction();
-                pathMeasure.getPosTan(pathMeasure.getLength() * value, null, tan);
-            }
-        });
         animator.start();
     }
 

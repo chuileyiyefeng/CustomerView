@@ -16,7 +16,7 @@ public class MyItemDecoration extends RecyclerView.ItemDecoration {
 
     public MyItemDecoration() {
         mPaint = new Paint();
-        mPaint.setColor(Color.parseColor("#BBBBBB"));
+        mPaint.setColor(Color.parseColor("#dddddd"));
     }
 
     public MyItemDecoration(int dividerHeight, int color) {

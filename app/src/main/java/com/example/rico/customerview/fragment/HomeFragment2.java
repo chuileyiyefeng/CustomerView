@@ -2,6 +2,7 @@ package com.example.rico.customerview.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -15,6 +16,7 @@ import com.example.rico.customerview.activity.RotateActivity;
 import com.example.rico.customerview.activity.SideDeleteActivity;
 import com.example.rico.customerview.adapter.BaseAdapter;
 import com.example.rico.customerview.adapter.FirstAdapter;
+import com.example.rico.customerview.view.MyItemDecoration;
 
 /**
  * Created by Tmp on 2019/6/27.
@@ -32,7 +34,8 @@ public class HomeFragment2 extends BaseFragment implements BaseAdapter.ItemClick
     protected void initView() {
         rv = (RecyclerView) findViewById(R.id.rv);
         adapter = new FirstAdapter(getActivity());
-        rv.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rv.addItemDecoration(new MyItemDecoration());
+        rv.setLayoutManager(new GridLayoutManager(getActivity(),2));
         rv.setAdapter(adapter);
         Context context = getActivity();
         adapter.addItem(new ItemInfo("无限循环view", new Intent(context, CircleLayoutActivity.class)));

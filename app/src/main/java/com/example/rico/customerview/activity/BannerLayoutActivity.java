@@ -16,7 +16,7 @@ public class BannerLayoutActivity extends BaseActivity {
 
     @Override
     public int bindLayout() {
-        return R.layout.activity_main;
+        return R.layout.activity_recycler;
     }
 
     @Override
@@ -25,14 +25,11 @@ public class BannerLayoutActivity extends BaseActivity {
         adapter = new BannerAdapter(this);
         RecyclerView.LayoutManager manager = new BannerLayoutManager();
         rv.setLayoutManager(manager);
-//        rv.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
-//        LinearSnapHelper helper = new LinearSnapHelper();
-//        helper.findSnapView(manager);
-//        helper.attachToRecyclerView(rv);
         rv.setAdapter(adapter);
         for (int i = 0; i < 10; i++) {
             adapter.addItem("this is item " + i);
         }
+        new LinearSnapHelper().attachToRecyclerView(rv);
     }
 
 }

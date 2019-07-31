@@ -38,7 +38,7 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
         lastPos = getItemCount();
         rectArray = new SparseArray<>();
         int left = getPaddingLeft();
-        int top = getPaddingTop();
+        int top = getPaddingTop()+firstTop;
         int maxHeight = 0;
         for (int i = firstPos; i < lastPos; i++) {
             View childView = recycler.getViewForPosition(i);
@@ -63,7 +63,7 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
         }
     }
 
-    private int scrollY;
+    private int scrollY,firstTop;
     private SparseArray<Rect> rectArray;
 
     private void layout(int i, View childView, int left, int top, int width, int height) {
@@ -189,7 +189,11 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
                 }
             }
         }
-
+        View firstView = getChildAt(0);
+        if (firstView != null) {
+            firstPos = getPosition(firstView);
+            firstTop = getDecoratedTop(firstView) - getPaddingTop();
+        }
         return dy;
     }
 }

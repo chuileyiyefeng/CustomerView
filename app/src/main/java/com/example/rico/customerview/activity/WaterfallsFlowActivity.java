@@ -18,7 +18,7 @@ public class WaterfallsFlowActivity extends BaseActivity {
 
     @Override
     public int bindLayout() {
-        return R.layout.activity_main;
+        return R.layout.activity_recycler;
     }
 
     @Override
