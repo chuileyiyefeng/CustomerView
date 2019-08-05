@@ -21,11 +21,11 @@ public class BannerLayoutManager extends RecyclerView.LayoutManager {
             removeAndRecycleAllViews(recycler);
             return;
         }
+        detachAndScrapAttachedViews(recycler);
         parentRight = getWidth() - getPaddingRight();
         centerX = parentRight / 2;
         lastPos = getItemCount();
         int left = firstLeft;
-        detachAndScrapAttachedViews(recycler);
         for (int i = firstPos; i < lastPos; i++) {
             View child = recycler.getViewForPosition(i);
             addView(child);

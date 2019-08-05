@@ -44,7 +44,7 @@ public class CornerImageView extends AppCompatImageView {
         width = w;
         height = h;
         getRadius();
-        rectFCrop = new RectF(getPaddingLeft(), getPaddingTop(), width - getPaddingRight(), height - getPaddingBottom());
+        RectF rectFCrop = new RectF(getPaddingLeft(), getPaddingTop(), width - getPaddingRight(), height - getPaddingBottom());
         path.addRoundRect(rectFCrop, radii, Path.Direction.CW);
     }
 
@@ -57,7 +57,6 @@ public class CornerImageView extends AppCompatImageView {
     }
 
     private Path path;
-    private RectF rectFCrop;
     float[] radii;
 
     protected void init() {

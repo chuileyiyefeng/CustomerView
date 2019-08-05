@@ -37,6 +37,7 @@
         <activity android:name=".activity.CardLayoutActivity" />
         <activity android:name=".activity.PuzzleActivity" />
         <activity android:name=".activity.BannerExchangeActivity" />
+        <activity android:name=".activity.CurveActivity" />
     </application>
 
 </manifest>

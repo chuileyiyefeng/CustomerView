@@ -3,7 +3,6 @@ package com.example.rico.customerview.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.rico.customerview.ItemInfo;
@@ -12,6 +11,7 @@ import com.example.rico.customerview.activity.AllViewActivity;
 import com.example.rico.customerview.activity.AnimatorSwitchActivity;
 import com.example.rico.customerview.activity.BezierMoveActivity;
 import com.example.rico.customerview.activity.CornerImageActivity;
+import com.example.rico.customerview.activity.CurveActivity;
 import com.example.rico.customerview.activity.DrawBitmapActivity;
 import com.example.rico.customerview.activity.FlipBoardActivity;
 import com.example.rico.customerview.activity.PuzzleActivity;
@@ -38,7 +38,7 @@ public class HomeFragment1 extends BaseFragment implements BaseAdapter.ItemClick
         rv = (RecyclerView) findViewById(R.id.rv);
         adapter = new FirstAdapter(getActivity());
         rv.addItemDecoration(new MyItemDecoration());
-        rv.setLayoutManager(new GridLayoutManager(getActivity(),2));
+        rv.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         rv.setAdapter(adapter);
         Context context = getActivity();
         adapter.addItem(new ItemInfo("圆角ImageView", new Intent(context, CornerImageActivity.class)));
@@ -49,6 +49,7 @@ public class HomeFragment1 extends BaseFragment implements BaseAdapter.ItemClick
         adapter.addItem(new ItemInfo("上滑翻页", new Intent(context, FlipBoardActivity.class)));
         adapter.addItem(new ItemInfo("switch动画", new Intent(context, AnimatorSwitchActivity.class)));
         adapter.addItem(new ItemInfo("拼图", new Intent(context, PuzzleActivity.class)));
+        adapter.addItem(new ItemInfo("曲线统计图", new Intent(context, CurveActivity.class)));
 
         adapter.addItem(new ItemInfo("小鱼游泳(静止)", 1));
         adapter.addItem(new ItemInfo("path填充模式", 2));

@@ -2,7 +2,6 @@ package com.example.rico.customerview.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
@@ -34,22 +33,26 @@ public class CornerLinearLayout extends LinearLayout {
 
     int width;
     int height;
-    int radiusX = 20, radiusY = 20;
+    int radiusX = 0, radiusY = 0;
     private Path path;
     float[] radii;
-
 
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        setBackgroundColor(Color.TRANSPARENT);
         width = w;
         height = h;
         getRadius();
-        RectF rectFCrop = new RectF(getPaddingLeft(), getPaddingTop(), width - getPaddingRight(), height - getPaddingBottom());
-        path.addRoundRect(rectFCrop, radii, Path.Direction.CW);
+        rectFCrop = new RectF();
     }
+
+    @Override
+    public float getScaleX() {
+        return super.getScaleX();
+    }
+
+    RectF rectFCrop;
 
     //    设置圆角大小
     private void getRadius() {
@@ -59,9 +62,13 @@ public class CornerLinearLayout extends LinearLayout {
                 radiusX, radiusY};
     }
 
+    //    viewGroup有背景的时候调用onDraw，然后调用dispatchDraw,没有背景直接调用dispatchDraw
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void dispatchDraw(Canvas canvas) {
+        path.reset();
+        rectFCrop.set(0, 0, width, height);
+        path.addRoundRect(rectFCrop, radiusX, radiusY, Path.Direction.CCW);
         canvas.clipPath(path);
-        super.onDraw(canvas);
+        super.dispatchDraw(canvas);
     }
 }
