@@ -16,8 +16,8 @@ import com.example.rico.customerview.view.HandWritingView;
 import com.example.rico.customerview.view.MiniSunView;
 import com.example.rico.customerview.view.NetColorView;
 import com.example.rico.customerview.view.PageTurningView;
-import com.example.rico.customerview.view.PuzzleView;
 import com.example.rico.customerview.view.RegionClickView;
+import com.example.rico.customerview.view.RingView;
 import com.example.rico.customerview.view.WaveBubbleView;
 
 /**
@@ -76,6 +76,18 @@ public class AllViewActivity extends BaseActivity {
             case 11:
                 view = new MiniSunView(context);
                 break;
+            case 12:
+                view = new RingView(context);
+                RingView view1 = (RingView) view;
+                view1.addData(R.color.colorAccent, 50)
+                        .addData(R.color.button_bg, 90)
+                        .addData(R.color.gray_normal, 70)
+                        .addData(R.color.blue_thumb, 66)
+                        .addData(R.color.darkgray, 52)
+                        .addData(R.color.blueviolet, 11)
+                        .refreshView();
+                llALl.addView(view1);
+                return;
             default:
                 view = new View(context);
                 break;

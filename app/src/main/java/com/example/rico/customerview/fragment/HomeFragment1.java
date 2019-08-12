@@ -62,6 +62,7 @@ public class HomeFragment1 extends BaseFragment implements BaseAdapter.ItemClick
         adapter.addItem(new ItemInfo("翻页", 9));
         adapter.addItem(new ItemInfo("网状view", 10));
         adapter.addItem(new ItemInfo("太阳动画", 11));
+        adapter.addItem(new ItemInfo("圆环统计图", 12));
         adapter.addItemClick(this);
     }
 

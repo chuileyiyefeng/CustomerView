@@ -5,8 +5,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+
+import java.util.ArrayList;
 
 /**
  * Created by Tmp on 2019/8/5.
@@ -60,17 +63,23 @@ public class CurveView extends BaseCustomerView {
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         contentPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        DashPathEffect pathEffect = new DashPathEffect(new float[]{20, 20}, 20);
         textPaint.setColor(Color.parseColor("#BBBBBB"));
         linePaint.setColor(Color.parseColor("#BBBBBB"));
         contentPaint.setColor(Color.parseColor("#FF4081"));
+
+        linePaint.setPathEffect(pathEffect);
+        linePaint.setStyle(Paint.Style.STROKE);
     }
-    int baseLineDp=70,baseHeadDp=20;
+
+    int baseLineDp = 70, baseHeadDp = 20;
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int defaultWidth = MeasureSpec.getSize(widthMeasureSpec);
         int width = MeasureSpec.makeMeasureSpec(defaultWidth / defaultTimes * realTimes, MeasureSpec.EXACTLY);
 //        这里加70的原因：分为50和20两个部分，50为底部文字，20为顶部ui
-        int height = MeasureSpec.makeMeasureSpec(dpToPx(maxNumerical + baseLineDp+baseHeadDp), MeasureSpec.EXACTLY);
+        int height = MeasureSpec.makeMeasureSpec(dpToPx(maxNumerical + baseLineDp + baseHeadDp), MeasureSpec.EXACTLY);
         baseLineHeight = dpToPx(baseLineDp);
         setMeasuredDimension(width, height);
     }
@@ -87,7 +96,7 @@ public class CurveView extends BaseCustomerView {
         int height = getMeasuredHeight();
         int baseHeight = height - baseLineHeight;
         //        画基线
-        canvas.drawLine(0, baseHeight, width, baseHeight, linePaint);
+        canvas.drawLine(0, baseHeight, width, baseHeight, textPaint);
 //        画虚线
         int drawTime;
         if (maxNumerical % percentHeight == 0) {
@@ -99,7 +108,11 @@ public class CurveView extends BaseCustomerView {
             int addHeight = dpToPx(percentHeight);
             for (int i = 1; i <= drawTime; i++) {
                 int realHeight = baseHeight - addHeight * i;
-                canvas.drawLine(0, realHeight, width, realHeight, linePaint);
+                Path path = new Path();
+                path.moveTo(0, realHeight);
+                path.lineTo(width, realHeight);
+                canvas.drawPath(path, linePaint);
+//                canvas.drawLine(, , linePaint);
             }
         }
     }
@@ -108,7 +121,26 @@ public class CurveView extends BaseCustomerView {
         return (int) (getResources().getDisplayMetrics().density * dp + 0.5f);
     }
 
-    public void addData(String str, int numerical) {
+    private ArrayList<CurveData> list;
 
+    public class CurveData {
+        int numerical;
+        String name;
+
+        public int getNumerical() {
+            return numerical;
+        }
+
+        public void setNumerical(int numerical) {
+            this.numerical = numerical;
+        }
+
+        public String getName() {
+            return name == null ? "" : name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 }
