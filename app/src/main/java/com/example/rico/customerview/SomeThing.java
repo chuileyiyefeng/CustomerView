@@ -28,7 +28,6 @@ public class SomeThing {
 //    getFilesDir() = /data/data/com.my.app/files
 
 
-
     //    重置动画时长，假如手动关闭动画，动画将不会再运行
     public static void resetDurationScale() {
         try {
@@ -44,4 +43,6 @@ public class SomeThing {
         field.setAccessible(true);
         return field;
     }
+
+//    画文字居中时候，文字的y值   baseLine是居中线的y值   float y=baseLine+(metrics.bottom - metrics.top)/2 - metrics.bottom;
 }

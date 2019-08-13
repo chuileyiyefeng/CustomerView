@@ -139,6 +139,9 @@ public class RingView extends BaseCustomerView {
         double cos = Math.cos(Math.toRadians(angle));
         Path rectPath = new Path();
 //                4个原始点 minR,0  maxR,0  maxR,stoke minR,stoke
+
+        //  这里minR修改一下值，修正下精度
+        float minR=this.minR-stoke;
         float value1 = (float) (minR * cos);
         float value2 = (float) (minR * sin);
 
