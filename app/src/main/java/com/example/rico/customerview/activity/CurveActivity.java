@@ -12,7 +12,7 @@ public class CurveActivity extends BaseActivity {
     }
 
     @Override
-    public void doBusiness() {
+    public void  doBusiness() {
 
     }
 }
