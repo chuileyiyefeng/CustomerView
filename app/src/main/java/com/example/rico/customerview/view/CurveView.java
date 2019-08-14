@@ -18,6 +18,7 @@ import android.view.ViewConfiguration;
 import com.example.rico.customerview.CurveData;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Tmp on 2019/8/5.
@@ -38,33 +39,43 @@ public class CurveView extends BaseCustomerView {
         super(context, attrs, defStyleAttr);
     }
 
-    //    文字画笔，线画笔，虚线画笔，曲线画笔，点画笔，渐变画笔
-    Paint textPaint, linePaint, dottedLinePaint, curvePaint, gDPaint, pointPaint, pointPaint2;
-    private Paint.FontMetrics metrics;
+    //    文字画笔，线画笔，虚线画笔，曲线画笔，渐变画笔，点画笔 1 2，点击显示的文字画笔
+    Paint textPaint, linePaint, dottedLinePaint,
+            curvePaint, gDPaint, pointPaint, pointPaint2, detailPaint;
+    private Paint.FontMetrics textMetrics, detailMetrics;
     //    view的高度为统计图里最大的数值
     int maxNumerical;
-
-    //    底部线的高度，每多少数值增加一条横向虚线
-    int percentHeight = 100;
     //    数据集合
     private ArrayList<CurveData> list;
+
+    private int baseLineDp, baseHeadDp;
+    private int everyLength;
+    private ArrayList<PointF> pointList;
+    float scale;
+    float everyHeight;
+    int everyLevel;
+
+    // 框的高度
+    float rectHeight;
+    // 指示点区域突出的高度
+    float protrudingHeight = 20;
 
     @Override
     protected void init(Context context) {
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textPaint.setColor(Color.parseColor("#6E7984"));
-        textPaint.setTextSize(spToPx());
-        metrics = textPaint.getFontMetrics();
-
-        linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        linePaint.setColor(Color.parseColor("#D4D8DF"));
-        // float两个参数：虚线长度、虚线间距
-        DashPathEffect pathEffect = new DashPathEffect(new float[]{6, 10}, 20);
-        linePaint.setPathEffect(pathEffect);
-        linePaint.setStyle(Paint.Style.STROKE);
+        textPaint.setTextSize(spToPx(12));
+        textMetrics = textPaint.getFontMetrics();
 
         dottedLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         dottedLinePaint.setColor(Color.parseColor("#D4D8DF"));
+        // float两个参数：虚线长度、虚线间距
+        DashPathEffect pathEffect = new DashPathEffect(new float[]{6, 10}, 20);
+        dottedLinePaint.setPathEffect(pathEffect);
+        dottedLinePaint.setStyle(Paint.Style.STROKE);
+
+        linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        linePaint.setColor(Color.parseColor("#D4D8DF"));
 
         curvePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         curvePaint.setColor(Color.parseColor("#F0008A"));
@@ -81,45 +92,56 @@ public class CurveView extends BaseCustomerView {
         gDPaint.setAlpha(180);
         gDPaint.setStyle(Paint.Style.FILL);
 
+        detailPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        detailPaint.setTextSize(spToPx(14));
+        detailPaint.setColor(Color.parseColor("#ffffff"));
+        detailMetrics = detailPaint.getFontMetrics();
+        rectHeight = (detailMetrics.bottom - detailMetrics.top) * 2;
         list = new ArrayList<>();
-        list.add(new CurveData(300, "一月"));
-        list.add(new CurveData(400, "二月"));
-        list.add(new CurveData(200, "三月"));
-        list.add(new CurveData(600, "四月"));
-        list.add(new CurveData(200, "五月"));
-        list.add(new CurveData(280, "六月"));
-        list.add(new CurveData(650, "七月"));
-        list.add(new CurveData(320, "八月"));
-        list.add(new CurveData(150, "九月"));
-        list.add(new CurveData(300, "十月"));
-        list.add(new CurveData(121, "十一月"));
-        list.add(new CurveData(221, "十二月"));
         pointList = new ArrayList<>();
         touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+        gtPath = new Path();
+        curvePath = new Path();
     }
 
-    private int baseLineDp;
-    private int everyLength = 200;
-    private ArrayList<PointF> pointList;
+    public void setData(List<CurveData> dataList) {
+        list.clear();
+        list.addAll(dataList);
+    }
+
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+        int oWidth = MeasureSpec.getSize(widthMeasureSpec);
         for (int i = 0; i < list.size(); i++) {
             maxNumerical = Math.max(list.get(i).getNumerical(), maxNumerical);
-
         }
-        baseLineDp = (int) ((metrics.bottom - metrics.top) * 3);
+        everyLevel = getEveryLevel(maxNumerical);
+        baseLineDp = (int) ((textMetrics.bottom - textMetrics.top) * 3);
+        everyLength = oWidth / 6;
         int width = MeasureSpec.makeMeasureSpec(everyLength * (list.size()), MeasureSpec.EXACTLY);
-//        这里加另外高度的原因：分为两个部分，baseLineDp为底部文字，baseHeadDp为顶部ui
-        int baseHeadDp = percentHeight;
-        int height = MeasureSpec.makeMeasureSpec(maxNumerical + baseLineDp + baseHeadDp, MeasureSpec.EXACTLY);
+        baseHeadDp = 20;
+
+        scale = (height - baseHeadDp - baseLineDp - rectHeight - protrudingHeight) / maxNumerical;
+        everyHeight = everyLevel * scale;
         setMeasuredDimension(width, height);
+    }
+
+    private int getEveryLevel(int maxNumerical) {
+        for (int i = 1; i < 6; i++) {
+            if (maxNumerical > Math.pow(10, i) && maxNumerical < Math.pow(10, i + 1)) {
+                maxNumerical = (int) Math.pow(10, i);
+                return maxNumerical;
+            }
+        }
+        return 100;
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        LinearGradient gradient = new LinearGradient(0, height - baseLineDp - maxNumerical, 0, height - baseLineDp, arcColors, null, Shader.TileMode.CLAMP);
+        LinearGradient gradient = new LinearGradient(0, height - baseLineDp - maxNumerical * scale, 0, height - baseLineDp, arcColors, null, Shader.TileMode.CLAMP);
         gDPaint.setShader(gradient);
     }
 
@@ -132,8 +154,9 @@ public class CurveView extends BaseCustomerView {
 
     float downX, downY;
     float touchSlop;
-    float clickArea = dpToPx(10);
-    int clickPosition;
+    float clickArea = dpToPx(14);
+    final int noClick = -1;
+    int clickPosition = noClick;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -146,14 +169,15 @@ public class CurveView extends BaseCustomerView {
                 float upX = event.getX();
                 float upY = event.getY();
                 if (Math.abs(downX - upX) <= touchSlop && Math.abs(downY - upY) <= touchSlop) {
+                    clickPosition = noClick;
                     for (int i = 0; i < pointList.size(); i++) {
                         PointF pointF = pointList.get(i);
                         if (Math.abs(pointF.x - upX) <= clickArea && Math.abs(pointF.y - upY) <= clickArea) {
                             clickPosition = i;
-                            invalidate();
                             break;
                         }
                     }
+                    invalidate();
                     return true;
                 } else {
                     return false;
@@ -172,22 +196,23 @@ public class CurveView extends BaseCustomerView {
         drawClickInfo(canvas);
     }
 
+
     //    画线
     private void drawLine(Canvas canvas) {
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
         int baseHeight = height - baseLineDp;
         //        画基线
-        canvas.drawLine(0, baseHeight, width, baseHeight, dottedLinePaint);
+        canvas.drawLine(0, baseHeight, width, baseHeight, linePaint);
 //        画虚线
-        int drawTime = maxNumerical / percentHeight;
+        int drawTime = maxNumerical % everyLevel == 0 ? maxNumerical / everyLevel : maxNumerical / everyLevel + 1;
         if (drawTime > 0) {
             for (int i = 1; i <= drawTime; i++) {
-                int realHeight = baseHeight - percentHeight * i;
-                Path path = new Path();
-                path.moveTo(0, realHeight);
-                path.lineTo(width, realHeight);
-                canvas.drawPath(path, linePaint);
+                int realHeight = (int) (baseHeight - everyHeight * i);
+                Path dottedPath = new Path();
+                dottedPath.moveTo(0, realHeight);
+                dottedPath.lineTo(width, realHeight);
+                canvas.drawPath(dottedPath, dottedLinePaint);
             }
         }
     }
@@ -203,22 +228,18 @@ public class CurveView extends BaseCustomerView {
 
     //    画曲线,顺便画渐变的path
     Path gtPath;
+    Path curvePath;
 
     private void drawCurve(Canvas canvas) {
         pointList.clear();
+        gtPath.reset();
+        curvePath.reset();
         for (int i = 0; i < list.size(); i++) {
             CurveData data = list.get(i);
             PointF point = new PointF();
             point.x = (i + 0.5f) * everyLength;
-            point.y = height - baseLineDp - data.getNumerical();
+            point.y = height - baseLineDp - data.getNumerical() * scale;
             pointList.add(point);
-            canvas.drawCircle(point.x, point.y, 8, pointPaint);
-            canvas.drawCircle(point.x, point.y, 5, pointPaint2);
-        }
-        if (gtPath == null) {
-            gtPath = new Path();
-        } else {
-            gtPath.reset();
         }
         for (int i = 0; i < pointList.size() - 1; i++) {
             PointF startP = pointList.get(i);
@@ -230,12 +251,6 @@ public class CurveView extends BaseCustomerView {
             p3.x = wt;
             p4.y = endP.y;
             p4.x = wt;
-            Path path = new Path();
-            path.moveTo(startP.x, startP.y);
-            path.cubicTo(p3.x, p3.y, p4.x, p4.y, endP.x, endP.y);
-            canvas.drawPath(path, curvePaint);
-
-
             // 渐变的path比曲线path低的距离
             int distanceY = 10;
             // 渐变的path比曲线path窄的距离
@@ -246,21 +261,24 @@ public class CurveView extends BaseCustomerView {
                 distanceX = -10;
             }
             if (i == 0) {
+                curvePath.moveTo(startP.x, startP.y);
                 gtPath.moveTo(startP.x, height - baseLineDp);
                 gtPath.lineTo(startP.x, startP.y + distanceY);
             }
+            curvePath.cubicTo(p3.x, p3.y, p4.x, p4.y, endP.x, endP.y);
             gtPath.cubicTo(p3.x + distanceX, p3.y + distanceY, p4.x + distanceX, p4.y + distanceY, endP.x, endP.y + distanceY);
             if (i == pointList.size() - 2) {
                 gtPath.lineTo(endP.x, height - baseLineDp);
                 gtPath.close();
             }
         }
+        canvas.drawPath(curvePath, curvePaint);
         canvas.drawPath(gtPath, gDPaint);
     }
 
     // 画底部文字
     private void drawText(Canvas canvas) {
-        float y = height - (baseLineDp / 2 - metrics.bottom);
+        float y = height - (baseLineDp / 2 - textMetrics.bottom);
         for (int i = 0; i < list.size(); i++) {
             CurveData data = list.get(i);
             float textLength = textPaint.measureText(data.getName());
@@ -271,14 +289,43 @@ public class CurveView extends BaseCustomerView {
 
     // 画指点击信息
     private void drawClickInfo(Canvas canvas) {
-
+        //  说明点到指示点区域了
+        float textMargin = 20;
+        float protrudingWidth = 20;
+        if (clickPosition != noClick) {
+            PointF pointF = pointList.get(clickPosition);
+            Path rectPath = new Path();
+            float x = pointF.x;
+            float y = pointF.y - baseHeadDp;
+            rectPath.moveTo(x, y);
+            String text = list.get(clickPosition).getData();
+            float textLength = detailPaint.measureText(text);
+            float rectWidth = textLength + textMargin * 2;
+            //  框在左边
+            float starX, startY;
+            if (x + rectWidth >= width) {
+                rectWidth = -rectWidth;
+                protrudingWidth = -protrudingWidth;
+                starX = x - textLength - textMargin;
+            } else {
+                starX = x + textMargin;
+            }
+            rectPath.lineTo(x, y - rectHeight);
+            rectPath.lineTo(x + rectWidth, y - rectHeight);
+            rectPath.lineTo(x + rectWidth, y - protrudingHeight);
+            rectPath.lineTo(x + protrudingWidth, y - protrudingHeight);
+            canvas.drawPath(rectPath, pointPaint2);
+            float baseLine = (y * 2 - protrudingHeight - rectHeight) / 2;
+            startY = baseLine + (detailMetrics.bottom - detailMetrics.top) / 2 - detailMetrics.bottom;
+            canvas.drawText(text, starX, startY, detailPaint);
+        }
     }
 
     public int dpToPx(int dp) {
         return (int) (getResources().getDisplayMetrics().density * dp + 0.5f);
     }
 
-    private float spToPx() {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics());
+    private float spToPx(float size) {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, size, getResources().getDisplayMetrics());
     }
 }

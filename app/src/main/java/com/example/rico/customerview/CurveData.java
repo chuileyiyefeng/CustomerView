@@ -6,14 +6,24 @@ package com.example.rico.customerview;
 public class CurveData {
     private int numerical;
     private String name;
+    private String data;
 
     public CurveData(int numerical, String name) {
         this.numerical = numerical;
         this.name = name;
+        data=this.numerical+"kw";
     }
 
     public int getNumerical() {
         return numerical;
+    }
+
+    public String getData() {
+        return data == null ? "" : data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 
     public void setNumerical(int numerical) {
