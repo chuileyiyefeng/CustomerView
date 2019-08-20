@@ -42,7 +42,7 @@ public class SimpleLinearManager extends RecyclerView.LayoutManager {
     }
 
     //    第一个可见的view，最后一个可见的view 下标
-    private int firstPos, lastPos;
+    private int firstPos, lastPos,firstTop;
 
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
@@ -211,5 +211,5 @@ public class SimpleLinearManager extends RecyclerView.LayoutManager {
         return dy;
     }
 
-    private int firstTop;
+
 }

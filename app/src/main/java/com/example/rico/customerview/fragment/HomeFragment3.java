@@ -11,6 +11,7 @@ import com.example.rico.customerview.activity.AllViewActivity;
 import com.example.rico.customerview.activity.BannerExchangeActivity;
 import com.example.rico.customerview.activity.BannerLayoutActivity;
 import com.example.rico.customerview.activity.CardLayoutActivity;
+import com.example.rico.customerview.activity.ListLinkageActivity;
 import com.example.rico.customerview.activity.RevealActivity;
 import com.example.rico.customerview.activity.WaterfallsFlowActivity;
 import com.example.rico.customerview.adapter.BaseAdapter;
@@ -42,6 +43,7 @@ public class HomeFragment3 extends BaseFragment implements BaseAdapter.ItemClick
         adapter.addItem(new ItemInfo("Banner RecyclerView", new Intent(context, BannerLayoutActivity.class)));
         adapter.addItem(new ItemInfo("卡片RecyclerView", new Intent(context, CardLayoutActivity.class)));
         adapter.addItem(new ItemInfo("Banner花式RecyclerView", new Intent(context, BannerExchangeActivity.class)));
+        adapter.addItem(new ItemInfo("列表联动选择", new Intent(context, ListLinkageActivity.class)));
         adapter.addItemClick(this);
     }
 

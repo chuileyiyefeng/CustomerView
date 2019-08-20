@@ -4,10 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/blue_y" />
 
     <com.example.rico.customerview.view.CurveLinearLayout
         android:id="@+id/ll_curve"

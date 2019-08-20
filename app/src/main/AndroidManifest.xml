@@ -38,6 +38,7 @@
         <activity android:name=".activity.PuzzleActivity" />
         <activity android:name=".activity.BannerExchangeActivity" />
         <activity android:name=".activity.CurveActivity" />
+        <activity android:name=".activity.ListLinkageActivity" />
     </application>
 
 </manifest>
