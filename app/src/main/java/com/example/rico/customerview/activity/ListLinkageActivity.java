@@ -1,10 +1,8 @@
 package com.example.rico.customerview.activity;
 
-import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.WheelChildData;
@@ -22,7 +20,7 @@ public class ListLinkageActivity extends BaseActivity {
     RecyclerView rv;
     ListLinkageAdapter adapter;
     LinearSnapHelper helper;
-    WheelLayoutManager manager;
+    RecyclerView.LayoutManager manager;
     WheelLayoutView wheelLL;
 
     @Override
@@ -30,54 +28,37 @@ public class ListLinkageActivity extends BaseActivity {
         return R.layout.activity_list_linkage;
     }
 
-    int allState;
-    private ArrayList<WheelData> wheelDataList;
-
     @Override
     public void doBusiness() {
         adapter = new ListLinkageAdapter(this);
         rv = findViewById(R.id.rv);
-        manager = new WheelLayoutManager();
+        manager = new WheelLayoutManager(this);
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
         helper = new LinearSnapHelper();
         helper.attachToRecyclerView(rv);
+
         ArrayList<String> strings = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            strings.add(i + "嘻嘻");
+            strings.add("哈哈"+i);
         }
         adapter.addData(strings);
-        rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                allState += newState;
-                View view = helper.findSnapView(manager);
-                int position = -1;
-                if (view != null) {
-                    position = recyclerView.getChildLayoutPosition(view);
-                }
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    allState = 0;
-                    Log.e("getText", "onScrollStateChanged: " + position);
-                }
-            }
-        });
         addWheel();
     }
 
+
     private void addWheel() {
         wheelLL = findViewById(R.id.wheel_ll);
-        wheelDataList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        ArrayList<WheelData> wheelDataList = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
             WheelData wheelData = new WheelData();
             wheelData.setData("父数据" + i);
             ArrayList<WheelChildData> childList = new ArrayList<>();
-            for (int k = 0; k < 5; k++) {
+            for (int k = 0; k < 10; k++) {
                 WheelChildData data = new WheelChildData();
-                data.setData("中间数据" + k);
+                data.setData("中数据" + k);
                 ArrayList<String> strings = new ArrayList<>();
-                for (int l = 0; l < 6; l++) {
+                for (int l = 0; l < 20; l++) {
                     strings.add("子数据" + l);
                 }
                 data.setStrings(strings);
@@ -87,9 +68,11 @@ public class ListLinkageActivity extends BaseActivity {
             wheelDataList.add(wheelData);
         }
         wheelLL.setData(wheelDataList);
-    }
-
-    private int realStopState() {
-        return RecyclerView.SCROLL_STATE_SETTLING * 2 + RecyclerView.SCROLL_STATE_DRAGGING;
+        wheelLL.setListener(new WheelLayoutView.SelectionListener() {
+            @Override
+            public void selected(String text, int position) {
+                Log.e("position", "selected: "+text );
+            }
+        });
     }
 }

@@ -1,5 +1,7 @@
 package com.example.rico.customerview.layoutManager;
 
+import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -8,8 +10,13 @@ import android.view.ViewGroup;
 /**
  * Created by Tmp on 2019/7/16.
  */
-public class BannerLayoutManager extends RecyclerView.LayoutManager {
+public class BannerLayoutManager extends LinearLayoutManager {
 
+
+    public BannerLayoutManager(Context context) {
+        super(context);
+        setOrientation(LinearLayoutManager.HORIZONTAL);
+    }
 
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {

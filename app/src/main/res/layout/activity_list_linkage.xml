@@ -14,5 +14,7 @@
     <com.example.rico.customerview.view.WheelLayoutView
         android:id="@+id/wheel_ll"
         android:layout_width="match_parent"
-        android:layout_height="150dp" />
+        android:layout_height="150dp"
+        android:layout_marginTop="20dp" />
+
 </LinearLayout>

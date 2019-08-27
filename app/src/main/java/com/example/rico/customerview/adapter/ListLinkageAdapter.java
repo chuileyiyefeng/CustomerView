@@ -21,23 +21,25 @@ public class ListLinkageAdapter extends RecyclerView.Adapter<ListLinkageAdapter.
 
     public ListLinkageAdapter(Context context) {
         this.context = context;
-        strings=new ArrayList<>();
+        strings = new ArrayList<>();
     }
-
+    public ListLinkageAdapter(Context context,ArrayList<String> strings) {
+        this.context = context;
+        this.strings=strings;
+    }
     public void addData(ArrayList<String> strings) {
-        this.strings = strings;
+        this.strings.clear();
+        this.strings.addAll(strings);
         notifyDataSetChanged();
     }
 
 
     public void clearAllItem() {
         strings.clear();
-        notifyDataSetChanged();
     }
 
     public void addItem(String str) {
         strings.add(str);
-        notifyDataSetChanged();
     }
 
     @NonNull

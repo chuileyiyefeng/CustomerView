@@ -1,7 +1,8 @@
 package com.example.rico.customerview.layoutManager;
 
+import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -9,48 +10,93 @@ import android.view.ViewGroup;
  * Created by Tmp on 2019/8/19.
  * 滚轮recyclerView layoutManager
  */
-public class WheelLayoutManager extends RecyclerView.LayoutManager {
+public class WheelLayoutManager extends LinearLayoutManager {
+    private String tag = "not";
 
+    private Context context;
 
-    @Override
-    public RecyclerView.LayoutParams generateDefaultLayoutParams() {
-        return new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    public WheelLayoutManager(Context context) {
+        super(context);
+        this.context = context;
+    }
+
+    public WheelLayoutManager(Context context, String tag) {
+        super(context);
+        this.tag = tag;
+        this.context = context;
     }
 
     @Override
+    public RecyclerView.LayoutParams generateDefaultLayoutParams() {
+        return new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+    }
+
+    public void scrollToPosition(int position) {
+        if (position == 0) {
+            firstPos = 0;
+        }
+        requestLayout();
+    }
+
+
+
+    @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
-        if (getItemCount() == 0) {
+        if (getItemCount() == 0 && state.isPreLayout()) {
             removeAndRecycleAllViews(recycler);
+            firstPos = 0;
+            firstTop = 0;
             return;
         }
         detachAndScrapAttachedViews(recycler);
         parentHeight = getHeight() - getPaddingBottom();
         centerY = parentHeight / 2;
-        int top = firstTop;
+        int top;
         int left = getPaddingLeft();
-        distanceHeight = 0;
         lastPos = getItemCount();
         int bottom = 0;
-        for (int i = firstPos; i < lastPos; i++) {
-            if (i > firstPos + 1) {
-                break;
-            }
-            View child = recycler.getViewForPosition(i);
-            addView(child);
-            measureChildWithMargins(child, 0, 0);
-            int height = getDecoratedMeasuredHeight(child);
-            int width = getDecoratedMeasuredWidth(child);
-            if (i == firstPos) {
-                top = firstTop + (parentHeight - height) / 2;
+        if (layoutType == halfType) {
+            firstTop = 0;
+            scrollY = 0;
+            for (int i = 0; i < lastPos; i++) {
+                View child = recycler.getViewForPosition(i);
+                addView(child);
+                measureChildWithMargins(child, 0, 0);
+                int height = getDecoratedMeasuredHeight(child);
+                int width = getDecoratedMeasuredWidth(child);
+                if (i == firstPos) {
+                    top = firstTop + (parentHeight - height) / 2;
+                } else {
+                    top = parentHeight - height;
+                    distanceHeight = top - bottom;
+                    lastPos = i;
+                }
                 bottom = top + height;
-            } else {
-                top = parentHeight - height;
-                distanceHeight = top - bottom;
-                bottom = top + height;
-                lastPos = i;
+                layoutDecorated(child, left, top, left + width, bottom);
             }
-            layoutDecorated(child, left, top, left + width, bottom);
+        } else {
+            for (int i = firstPos; i < lastPos; i++) {
+                View child = recycler.getViewForPosition(i);
+                addView(child);
+                measureChildWithMargins(child, 0, 0);
+                int height = getDecoratedMeasuredHeight(child);
+                int width = getDecoratedMeasuredWidth(child);
+                if (i == firstPos) {
+                    top = firstTop + getPaddingTop();
+
+                } else if (i == firstPos + 1) {
+                    top = bottom + distanceHeight;
+
+                } else {
+                    top = bottom + distanceHeight;
+
+                    lastPos = i;
+                }
+                bottom = top + height;
+                layoutDecorated(child, left, top, left + width, bottom);
+            }
         }
+
         scaleView();
     }
 
@@ -59,11 +105,17 @@ public class WheelLayoutManager extends RecyclerView.LayoutManager {
         return true;
     }
 
-    private int firstPos, lastPos, parentHeight, centerY, firstTop, distanceHeight;
+    public static final int allType = 1, halfType = 2;
+    private int firstPos, lastPos, parentHeight, centerY, firstTop, distanceHeight, layoutType = halfType;
     private int scrollY;
+
+    public void setLayoutType(int layoutType) {
+        this.layoutType = layoutType;
+    }
 
     @Override
     public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
+
         if (getItemCount() == 0) {
             return 0;
         }
@@ -94,14 +146,25 @@ public class WheelLayoutManager extends RecyclerView.LayoutManager {
             View child = getChildAt(i);
             if (child != null) {
                 if (dy > 0) {
-                    if (getDecoratedBottom(child) + dy < getPaddingBottom()) {
-                        removeAndRecycleView(child, recycler);
-                        firstPos++;
+                    if (getChildCount() == 2) {
+                        if (getDecoratedBottom(child) + distanceHeight+dy > parentHeight) {
+                            layoutType = allType;
+                        }
+                    } else {
+                        if (getDecoratedBottom(child) + dy < getPaddingBottom()) {
+                            removeAndRecycleView(child, recycler);
+                            firstPos++;
+                            layoutType = allType;
+                        }
                     }
+
                 } else if (dy < 0) {
                     if (getDecoratedTop(child) + dy > parentHeight) {
                         removeAndRecycleView(child, recycler);
                         lastPos--;
+                        if (lastPos==0) {
+                            layoutType=halfType;
+                        }
                     }
                 }
             }
@@ -152,7 +215,7 @@ public class WheelLayoutManager extends RecyclerView.LayoutManager {
             int height = getDecoratedMeasuredHeight(view);
             //        分两种情况，从右边到中间为变大，即是 scaleF到1.0f,从中间到左边即是1.0f到scaleF
             int centerViewY = view.getTop() + height / 2;
-            int viewCenter=(view.getTop()+view.getBottom());
+            int viewCenter = (view.getTop() + view.getBottom());
 //        子view的中心点到控件中心的距离
             float distance = Math.abs(centerY - centerViewY);
 
@@ -176,9 +239,5 @@ public class WheelLayoutManager extends RecyclerView.LayoutManager {
             realScaleF = 1.0f;
         }
         return realScaleF;
-    }
-
-    interface PositionSelectChanger {
-        void select(int position);
     }
 }

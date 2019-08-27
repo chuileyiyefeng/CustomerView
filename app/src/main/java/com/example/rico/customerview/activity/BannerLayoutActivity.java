@@ -23,7 +23,7 @@ public class BannerLayoutActivity extends BaseActivity {
     public void doBusiness() {
         rv = findViewById(R.id.rv);
         adapter = new BannerAdapter(this);
-        RecyclerView.LayoutManager manager = new BannerLayoutManager();
+        RecyclerView.LayoutManager manager = new BannerLayoutManager(this);
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
         for (int i = 0; i < 10; i++) {
