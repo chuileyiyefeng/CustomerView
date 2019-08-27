@@ -1,6 +1,6 @@
 package com.example.rico.customerview.activity;
 
-import com.example.rico.customerview.CurveData;
+import com.example.rico.customerview.bean.CurveData;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.CurveLinearLayout;
 
@@ -23,7 +23,7 @@ public class CurveActivity extends BaseActivity {
         curveLinear = findViewById(R.id.ll_curve);
         list=new ArrayList<>();
         list.add(new CurveData(300, "一月"));
-        list.add(new CurveData(1000, "二月"));
+        list.add(new CurveData(950, "二月"));
         list.add(new CurveData(200, "三月"));
         list.add(new CurveData(600, "四月"));
         list.add(new CurveData(200, "五月"));

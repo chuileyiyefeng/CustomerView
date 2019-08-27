@@ -15,7 +15,7 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
-import com.example.rico.customerview.CurveData;
+import com.example.rico.customerview.bean.CurveData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,7 +130,7 @@ public class CurveView extends BaseCustomerView {
 
     private int getEveryLevel(int maxNumerical) {
         for (int i = 1; i < 6; i++) {
-            if (maxNumerical > Math.pow(10, i) && maxNumerical < Math.pow(10, i + 1)) {
+            if (maxNumerical >= Math.pow(10, i) && maxNumerical <= Math.pow(10, i + 1)) {
                 maxNumerical = (int) Math.pow(10, i);
                 return maxNumerical;
             }

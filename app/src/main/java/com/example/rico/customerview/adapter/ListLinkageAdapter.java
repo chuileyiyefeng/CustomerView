@@ -36,10 +36,12 @@ public class ListLinkageAdapter extends RecyclerView.Adapter<ListLinkageAdapter.
 
     public void clearAllItem() {
         strings.clear();
+        notifyDataSetChanged();
     }
 
     public void addItem(String str) {
         strings.add(str);
+        notifyDataSetChanged();
     }
 
     @NonNull

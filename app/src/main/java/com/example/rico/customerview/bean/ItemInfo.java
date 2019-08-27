@@ -1,4 +1,4 @@
-package com.example.rico.customerview;
+package com.example.rico.customerview.bean;
 
 import android.content.Intent;
 import android.view.View;

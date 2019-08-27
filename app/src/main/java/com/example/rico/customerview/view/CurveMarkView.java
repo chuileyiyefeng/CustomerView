@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 
-import com.example.rico.customerview.CurveData;
+import com.example.rico.customerview.bean.CurveData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +49,7 @@ public class CurveMarkView extends BaseCustomerView {
         maxLength = textPaint.measureText(maxNumerical + "");
         baseLineDp = (int) ((metrics.bottom - metrics.top) * 3);
         int width = MeasureSpec.makeMeasureSpec((int) (maxLength * 2), MeasureSpec.EXACTLY);
-        baseHeadDp = 50;
+        baseHeadDp = 20;
         int height = MeasureSpec.getSize(heightMeasureSpec);
         scale = (height - baseHeadDp - baseLineDp - rectHeight - protrudingHeight) / maxNumerical;
         everyHeight = everyLevel * scale;
@@ -58,7 +58,7 @@ public class CurveMarkView extends BaseCustomerView {
 
     private int getEveryLevel(int maxNumerical) {
         for (int i = 1; i < 6; i++) {
-            if (maxNumerical>Math.pow(10,i)&&maxNumerical<Math.pow(10,i+1)) {
+            if (maxNumerical>=Math.pow(10,i)&&maxNumerical<=Math.pow(10,i+1)) {
                 maxNumerical= (int) Math.pow(10,i);
                 return  maxNumerical;
             }
@@ -97,7 +97,7 @@ public class CurveMarkView extends BaseCustomerView {
     }
 
 
-    //    画线
+    //    画文字
     private void drawText(Canvas canvas) {
         int height = getMeasuredHeight();
         int baseHeight = height - baseLineDp;
@@ -107,7 +107,7 @@ public class CurveMarkView extends BaseCustomerView {
             for (int i = 0; i <= drawTime; i++) {
                 String text = i * everyLevel + "";
                 float textLength = textPaint.measureText(text) + width / 4;
-                int realHeight = (int) (baseHeight - everyLevel * i * scale);
+                int realHeight = (int) (baseHeight - everyHeight*i);
                 canvas.drawText(text, width - textLength, realHeight + distance, textPaint);
             }
         }

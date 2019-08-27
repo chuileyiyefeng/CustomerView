@@ -1,14 +1,12 @@
 package com.example.rico.customerview.view;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 
-import com.example.rico.customerview.CurveData;
+import com.example.rico.customerview.bean.CurveData;
 
 import java.util.List;
 

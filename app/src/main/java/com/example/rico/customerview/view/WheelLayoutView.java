@@ -10,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.example.rico.customerview.WheelChildData;
-import com.example.rico.customerview.WheelData;
 import com.example.rico.customerview.adapter.ListLinkageAdapter;
+import com.example.rico.customerview.bean.WheelChildData;
+import com.example.rico.customerview.bean.WheelData;
 import com.example.rico.customerview.layoutManager.WheelLayoutManager;
 
 import java.util.ArrayList;
@@ -81,32 +81,29 @@ public class WheelLayoutView extends LinearLayout {
         private int selectPosition;
         private boolean isDragging;
 
-        private int getSelectPosition() {
-            return selectPosition;
-        }
-
         void setSelectPosition() {
             this.selectPosition = 0;
         }
 
-        WheelLayoutManager getManager() {
+        private int getSelectPosition() {
+            return selectPosition;
+        }
+
+        public WheelLayoutManager getManager() {
             return manager;
         }
 
-        public RecyclerView getRv() {
+        RecyclerView getRv() {
             return rv;
         }
 
-        public void setRv(RecyclerView rv) {
-            this.rv = rv;
-        }
 
         public ListLinkageAdapter getAdapter() {
             return adapter;
         }
 
         private ViewInfo(Context context) {
-            LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
+            LayoutParams params = new LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
             params.weight = 1.0f;
             rv = new RecyclerView(context);
             rv.setLayoutParams(params);

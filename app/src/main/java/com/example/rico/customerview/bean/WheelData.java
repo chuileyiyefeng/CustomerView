@@ -1,4 +1,4 @@
-package com.example.rico.customerview;
+package com.example.rico.customerview.bean;
 
 import java.util.ArrayList;
 

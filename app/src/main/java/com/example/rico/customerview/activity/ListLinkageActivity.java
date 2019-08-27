@@ -1,17 +1,28 @@
 package com.example.rico.customerview.activity;
 
+import android.content.res.AssetManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.example.rico.customerview.R;
-import com.example.rico.customerview.WheelChildData;
-import com.example.rico.customerview.WheelData;
+import com.example.rico.customerview.bean.ProvinceBean;
+import com.example.rico.customerview.bean.WheelChildData;
+import com.example.rico.customerview.bean.WheelData;
 import com.example.rico.customerview.adapter.ListLinkageAdapter;
 import com.example.rico.customerview.layoutManager.WheelLayoutManager;
 import com.example.rico.customerview.view.WheelLayoutView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Tmp on 2019/8/16.
@@ -40,7 +51,7 @@ public class ListLinkageActivity extends BaseActivity {
 
         ArrayList<String> strings = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            strings.add("哈哈"+i);
+            strings.add("哈哈" + i);
         }
         adapter.addData(strings);
         addWheel();
@@ -49,18 +60,22 @@ public class ListLinkageActivity extends BaseActivity {
 
     private void addWheel() {
         wheelLL = findViewById(R.id.wheel_ll);
+        String str = getJSON();
+        Type type = new TypeToken<List<ProvinceBean>>() {
+        }.getType();
+        List<ProvinceBean> provinceBeanList = new Gson().fromJson(str, type);
+
         ArrayList<WheelData> wheelDataList = new ArrayList<>();
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < provinceBeanList.size(); i++) {
             WheelData wheelData = new WheelData();
-            wheelData.setData("父数据" + i);
+            wheelData.setData(provinceBeanList.get(i).getName());
             ArrayList<WheelChildData> childList = new ArrayList<>();
-            for (int k = 0; k < 10; k++) {
+
+            for (int k = 0; k < provinceBeanList.get(i).getCity().size(); k++) {
                 WheelChildData data = new WheelChildData();
-                data.setData("中数据" + k);
-                ArrayList<String> strings = new ArrayList<>();
-                for (int l = 0; l < 20; l++) {
-                    strings.add("子数据" + l);
-                }
+                data.setData(provinceBeanList.get(i).getCity().get(k).getName());
+                ArrayList<String> strings =
+                        new ArrayList<>(provinceBeanList.get(i).getCity().get(k).getArea());
                 data.setStrings(strings);
                 childList.add(data);
             }
@@ -71,8 +86,30 @@ public class ListLinkageActivity extends BaseActivity {
         wheelLL.setListener(new WheelLayoutView.SelectionListener() {
             @Override
             public void selected(String text, int position) {
-                Log.e("position", "selected: "+text );
+                Log.e("position", "selected: " + text);
             }
         });
+    }
+
+    public String getJSON() {
+        AssetManager am = getAssets();
+        try {
+            // 从assets文件夹里获取fileName数据流解析
+            InputStream inputStream = am.open("json");
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader reader = new BufferedReader(inputStreamReader);
+            StringBuffer sb = new StringBuffer();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+                sb.append("\n");
+            }
+            return sb.toString();
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

@@ -3,7 +3,7 @@ package com.example.rico.customerview.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.example.rico.customerview.ItemInfo;
+import com.example.rico.customerview.bean.ItemInfo;
 import com.example.rico.customerview.R;
 
 /**

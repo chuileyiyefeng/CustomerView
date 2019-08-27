@@ -1,4 +1,4 @@
-package com.example.rico.customerview;
+package com.example.rico.customerview.bean;
 
 /**
  * Created by Tmp on 2019/8/13.

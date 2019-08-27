@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.example.rico.customerview.ItemInfo;
+import com.example.rico.customerview.bean.ItemInfo;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.activity.AllViewActivity;
 import com.example.rico.customerview.activity.BannerExchangeActivity;
