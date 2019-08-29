@@ -302,7 +302,7 @@ public class ScrollTextView extends BaseCustomerView {
     private static class MyHandler extends Handler {
         WeakReference<ScrollTextView> reference;
 
-        public MyHandler(ScrollTextView scrollTextView) {
+        private MyHandler(ScrollTextView scrollTextView) {
             reference = new WeakReference<>(scrollTextView);
         }
 

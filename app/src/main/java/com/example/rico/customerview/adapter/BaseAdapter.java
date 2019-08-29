@@ -34,7 +34,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
     @Override
     public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         createTime++;
-        Log.e("createHolder", "onCreateViewHolder: " + createTime);
+//        Log.e("createHolder", "onCreateViewHolder: " + createTime);
         return new BaseViewHolder(LayoutInflater.from(context).inflate(bindLayout(), viewGroup, false));
     }
 

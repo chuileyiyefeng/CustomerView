@@ -2,12 +2,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
     <com.example.rico.customerview.view.ScrollTextView
         android:id="@+id/text_view"
-        android:layout_gravity="center_vertical"
-        android:background="@color/colorLine"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="50dp"
+        android:background="@color/colorLine" />
+
+    <com.example.rico.customerview.view.VerticalScrollTextView
+        android:id="@+id/scroll_tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="50dp"
+        android:background="@color/colorLine" />
+
+    <TextView
+        android:textSize="25sp"
+        android:textColor="@color/text_normal"
+        android:background="@color/colorLine"
+        android:id="@+id/tv_start"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="100dp"
+        android:gravity="center"
+        android:text="开始" />
 </LinearLayout>

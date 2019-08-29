@@ -6,10 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.example.rico.customerview.R;
+import com.example.rico.customerview.adapter.ListLinkageAdapter;
 import com.example.rico.customerview.bean.ProvinceBean;
 import com.example.rico.customerview.bean.WheelChildData;
 import com.example.rico.customerview.bean.WheelData;
-import com.example.rico.customerview.adapter.ListLinkageAdapter;
 import com.example.rico.customerview.layoutManager.WheelLayoutManager;
 import com.example.rico.customerview.view.WheelLayoutView;
 import com.google.gson.Gson;
@@ -31,13 +31,14 @@ public class ListLinkageActivity extends BaseActivity {
     RecyclerView rv;
     ListLinkageAdapter adapter;
     LinearSnapHelper helper;
-    RecyclerView.LayoutManager manager;
+    WheelLayoutManager manager;
     WheelLayoutView wheelLL;
 
     @Override
     public int bindLayout() {
         return R.layout.activity_list_linkage;
     }
+
 
     @Override
     public void doBusiness() {
@@ -48,10 +49,9 @@ public class ListLinkageActivity extends BaseActivity {
         rv.setAdapter(adapter);
         helper = new LinearSnapHelper();
         helper.attachToRecyclerView(rv);
-
         ArrayList<String> strings = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            strings.add("哈哈" + i);
+            strings.add(" "+i+" 哈哈哈哈哈哈哈哈哈哈哈哈");
         }
         adapter.addData(strings);
         addWheel();
@@ -98,15 +98,13 @@ public class ListLinkageActivity extends BaseActivity {
             InputStream inputStream = am.open("json");
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader reader = new BufferedReader(inputStreamReader);
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 sb.append(line);
                 sb.append("\n");
             }
             return sb.toString();
-        } catch (UnsupportedEncodingException e1) {
-            e1.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
