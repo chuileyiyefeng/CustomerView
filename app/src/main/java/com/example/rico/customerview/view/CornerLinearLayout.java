@@ -33,7 +33,7 @@ public class CornerLinearLayout extends LinearLayout {
 
     int width;
     int height;
-    int radiusX = 0, radiusY = 0;
+    int radiusX = 45, radiusY = 45;
     private Path path;
     float[] radii;
 

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import com.example.rico.customerview.R;
+import com.example.rico.customerview.view.CornerLinearLayout;
 
 /**
  * Created by Tmp on 2019/7/30.
@@ -23,5 +24,7 @@ public class ExchangeItemAdapter extends BaseAdapter<Integer> {
     protected void bindHolder(@NonNull BaseViewHolder holder, int i) {
         ImageView iv = holder.itemView.findViewById(R.id.iv);
         iv.setImageResource(getItem(i));
+        CornerLinearLayout layout = holder.itemView.findViewById(R.id.con_l);
+        layout.setTag("" + i);
     }
 }

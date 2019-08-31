@@ -22,12 +22,14 @@ public class BannerLayoutManager extends LinearLayoutManager {
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
         return new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
+
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         if (getItemCount() == 0) {
             removeAndRecycleAllViews(recycler);
             return;
         }
+
         detachAndScrapAttachedViews(recycler);
         parentRight = getWidth() - getPaddingRight();
         centerX = parentRight / 2;
@@ -163,7 +165,6 @@ public class BannerLayoutManager extends LinearLayoutManager {
 //        X是1-100 而Y的值是80到100
             view.setScaleX(realScaleF);
             view.setScaleY(realScaleF);
-//            break;
         }
     }
 }

@@ -2,7 +2,6 @@ package com.example.rico.customerview.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -66,7 +65,7 @@ public class FlowView extends ViewGroup {
             int childHeight = child.getMeasuredHeight();
 //            当前子控件不超过规定宽度
             int left, top, right, bottom;
-            if (child.getVisibility()!=VISIBLE) {
+            if (child.getVisibility() != VISIBLE) {
                 list.add(null);
                 continue;
             }
@@ -121,7 +120,7 @@ public class FlowView extends ViewGroup {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            if (child.getVisibility()!=VISIBLE) {
+            if (child.getVisibility() != VISIBLE) {
                 continue;
             }
             //设置View的左边、上边、右边底边位置
@@ -142,7 +141,7 @@ public class FlowView extends ViewGroup {
     private class ChildPos {
         int left, top, right, bottom;
 
-        public ChildPos(int left, int top, int right, int bottom) {
+        private ChildPos(int left, int top, int right, int bottom) {
             this.left = left;
             this.top = top;
             this.right = right;

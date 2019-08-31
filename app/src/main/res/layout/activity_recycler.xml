@@ -2,11 +2,79 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ivory">
+    android:background="@color/ivory"
+    android:orientation="vertical">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
+
+        <com.example.rico.customerview.view.ExchangeView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.example.rico.customerview.view.CornerLinearLayout
+                android:layout_width="200dp"
+                android:layout_height="220dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/iv"
+                    android:layout_width="match_parent"
+                    android:layout_height="190dp"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/flip_1" />
+
+                <TextView
+                    android:id="@+id/tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/blue_y"
+                    android:gravity="center"
+                    android:text="这是变换测试"
+                    android:textColor="@color/white" />
+            </com.example.rico.customerview.view.CornerLinearLayout>
+
+            <com.example.rico.customerview.view.CornerLinearLayout
+                android:layout_width="200dp"
+                android:layout_height="220dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="190dp"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/flip_2" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/blue_y"
+                    android:gravity="center"
+                    android:text="这是变换测试"
+                    android:textColor="@color/white" />
+            </com.example.rico.customerview.view.CornerLinearLayout>
+
+            <com.example.rico.customerview.view.CornerLinearLayout
+                android:layout_width="200dp"
+                android:layout_height="220dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="190dp"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/flip_3" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/blue_y"
+                    android:gravity="center"
+                    android:text="这是变换测试"
+                    android:textColor="@color/white" />
+            </com.example.rico.customerview.view.CornerLinearLayout>
+        </com.example.rico.customerview.view.ExchangeView>
 
 </LinearLayout>

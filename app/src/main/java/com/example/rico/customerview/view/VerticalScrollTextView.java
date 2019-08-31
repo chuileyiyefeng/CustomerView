@@ -117,9 +117,24 @@ public class VerticalScrollTextView extends BaseCustomerView {
     }
 
     public void startAnimator() {
-        animator.start();
+        post(new Runnable() {
+            @Override
+            public void run() {
+                if (animator!=null) {
+                    animator.start();
+                }
+            }
+        });
     }
-
+    public void stopAnimator(){
+        currentY=centerY;
+        if (animator != null) {
+            animator.cancel();
+        }
+        if (waitAnimator != null) {
+            waitAnimator.cancel();
+        }
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {

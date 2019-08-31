@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.example.rico.customerview.activity.BannerExchangeActivity;
 import com.example.rico.customerview.bean.ItemInfo;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.activity.AllViewActivity;
@@ -15,6 +16,7 @@ import com.example.rico.customerview.activity.RotateActivity;
 import com.example.rico.customerview.activity.SideDeleteActivity;
 import com.example.rico.customerview.adapter.BaseAdapter;
 import com.example.rico.customerview.adapter.FirstAdapter;
+import com.example.rico.customerview.view.ExchangeView;
 import com.example.rico.customerview.view.MyItemDecoration;
 
 /**
@@ -42,6 +44,7 @@ public class HomeFragment2 extends BaseFragment implements BaseAdapter.ItemClick
         adapter.addItem(new ItemInfo("标签流式布局", new Intent(context, FlowActivity.class)));
         adapter.addItem(new ItemInfo("小鱼游泳(移动)", new Intent(context, FishSwimActivity.class)));
         adapter.addItem(new ItemInfo("侧滑删除", new Intent(context, SideDeleteActivity.class)));
+        adapter.addItem(new ItemInfo("标签切换",  new Intent(context, BannerExchangeActivity.class)));
 
         adapter.addItemClick(this);
     }

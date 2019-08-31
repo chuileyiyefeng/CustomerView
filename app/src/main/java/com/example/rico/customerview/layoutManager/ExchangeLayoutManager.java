@@ -1,14 +1,32 @@
 package com.example.rico.customerview.layoutManager;
 
+import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
+
+import java.util.ArrayList;
 
 /**
  * Created by Tmp on 2019/7/31.
  */
-public class ExchangeLayoutManager extends RecyclerView.LayoutManager {
-    private int parentWidth, parentHeight, middleLeft, defaultDis;
-    private float scale = 0.9f, alpha = 0.5f;
+public class ExchangeLayoutManager extends LinearLayoutManager {
+    private int centerX;
+
+    public ExchangeLayoutManager(Context context) {
+        super(context);
+        setOrientation(LinearLayoutManager.HORIZONTAL);
+    }
+
+    public ExchangeLayoutManager(Context context, int orientation, boolean reverseLayout) {
+        super(context, orientation, reverseLayout);
+    }
+
+    public ExchangeLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+    }
 
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
@@ -22,45 +40,39 @@ public class ExchangeLayoutManager extends RecyclerView.LayoutManager {
             return;
         }
         detachAndScrapAttachedViews(recycler);
-        parentWidth = getWidth();
-        parentHeight = getHeight();
-
+        integers = new ArrayList<>();
+        addPosition(0, 1, 2);
+        int parentWidth = getWidth();
+        int parentHeight = getHeight();
+        centerX = parentWidth / 2;
 //       这里只显示三个view
         for (int i = 0; i < getItemCount(); i++) {
             View child = recycler.getViewForPosition(i);
             measureChildWithMargins(child, 0, 0);
             int width = getDecoratedMeasuredWidth(child);
             int height = getDecoratedMeasuredHeight(child);
-            int left, right, top, bottom;
+            int left = getPaddingLeft(), right;
             switch (i) {
                 case 0:
                     left = getPaddingLeft();
-                    child.setScaleX(scale);
-                    child.setScaleY(scale);
                     addView(child);
-                    child.setAlpha(alpha);
                     break;
                 case 1:
-                    middleLeft = left = getPaddingLeft() + (parentWidth - width) / 2;
-                    defaultDis = middleLeft - getPaddingLeft();
+                    left = getPaddingLeft() + (parentWidth - width) / 2;
                     addView(child);
                     break;
                 case 2:
                     left = parentWidth - getPaddingRight() - width;
-                    child.setScaleX(scale);
-                    child.setScaleY(scale);
                     addView(child, 0);
-                    child.setAlpha(alpha);
-                    break;
-                default:
-                    left = getPaddingLeft();
                     break;
             }
             right = left + width;
             top = getPaddingTop() + (parentHeight - height) / 2;
             bottom = top + height;
             layoutDecorated(child, left, top, right, bottom);
+            scaleView(child);
         }
+
     }
 
     @Override
@@ -68,88 +80,94 @@ public class ExchangeLayoutManager extends RecyclerView.LayoutManager {
         return true;
     }
 
-    private int scrollX;
+    private int scrollX, top, bottom;
 
     @Override
     public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler, RecyclerView.State state) {
-        View child = recycler.getViewForPosition(1);
-        int left=getDecoratedLeft(child);
-        int right=getDecoratedRight(child);
-        if (left-dx>=getPaddingLeft()&&right+dx<=parentWidth-getPaddingRight()) {
-            dx = layoutChild(dx, recycler);
-            scrollX += dx;
-        }
+        offsetChildrenHorizontal(-dx);
+        dx = layoutChild(dx, recycler);
         return dx;
     }
 
     private int layoutChild(int dx, RecyclerView.Recycler recycler) {
+        // 先计算三个view的添加顺序
+        int nearestPos = 0, nearestDistance = getWidth();
         removeAndRecycleAllViews(recycler);
         for (int i = 0; i < getItemCount(); i++) {
             View child = recycler.getViewForPosition(i);
-            measureChildWithMargins(child, 0, 0);
             int width = getDecoratedMeasuredWidth(child);
-            int height = getDecoratedMeasuredHeight(child);
-            int left, right, top, bottom;
-            switch (i) {
-                case 0:
-                    if (scrollX + dx > 0) {
-                        left = getDecoratedLeft(child) + dx;
-                    } else {
-                        left = getDecoratedLeft(child) - dx;
-                    }
-                    addView(child);
-                    child.setAlpha(alpha);
-                    break;
-                case 1:
-                    left = getDecoratedLeft(child) - dx;
-                    if (dx > 0 && left < 0) {
-                        left = getPaddingLeft();
-                        dx = 0;
-                        scrollX = 0;
-                    } else if (dx < 0 && left > (parentWidth - getPaddingRight() - width)) {
-                        left = parentWidth - getPaddingRight() - width;
-                        dx = 0;
-                        scrollX = 0;
-                    }
-                    addView(child);
-
-                    break;
-                case 2:
-                    if (scrollX + dx > 0) {
-                        left = getDecoratedLeft(child) - dx;
-                    } else {
-                        left = getDecoratedLeft(child) + dx;
-                    }
-                    addView(child, 0);
-                    child.setAlpha(alpha);
-                    break;
-                default:
-                    left = getPaddingLeft();
-                    break;
+            int left = getDecoratedLeft(child);
+            int centerViewX = left + width / 2;
+            int currentDistance = Math.abs(centerViewX - centerX);
+            if (nearestDistance > currentDistance) {
+                nearestPos = i;
+                nearestDistance = currentDistance;
             }
-            float scale = getRealScale(left, child, dx);
-            child.setScaleX(scale);
-            child.setScaleY(scale);
-            right = left + width;
-            top = getPaddingTop() + (parentHeight - height) / 2;
-            bottom = top + height;
-            layoutDecorated(child, left, top, right, bottom);
+            layoutDecorated(child, left, top, left + width, bottom);
+            addView(child);
+        }
+        integers.clear();
+        switch (nearestPos) {
+            case 0:
+                addPosition(2, 1, 0);
+                break;
+            case 1:
+                addPosition(0, 2, 1);
+                break;
+            case 2:
+                addPosition(0, 1, 2);
+                break;
+        }
+        removeAndRecycleAllViews(recycler);
+        for (int i = 0; i < getItemCount(); i++) {
+            View child = recycler.getViewForPosition(integers.get(i));
+            int width = getDecoratedMeasuredWidth(child);
+            int left = getDecoratedLeft(child);
+            layoutDecorated(child, left, top, left + width, bottom);
+            child.setClickable(i == getItemCount() - 1);
+            addView(child);
+            scaleView(child);
+
         }
         return dx;
     }
 
-    private float getRealScale(int left, View child, int dx) {
+    private void addPosition(int j, int k, int l) {
+        integers.add(j);
+        integers.add(k);
+        integers.add(l);
+    }
 
-//                    当前滑动的距离占总要滑动距离的比例
-        float disPercent;
-        int currentDis = left - getPaddingLeft();
-        if (currentDis > defaultDis) {
-            currentDis = parentWidth - getPaddingRight() - getDecoratedRight(child) + dx;
-        } else {
-            currentDis = left - getPaddingLeft();
+    private ArrayList<Integer> integers;
+
+    private void scaleView(View view) {
+        int width = getDecoratedMeasuredWidth(view);
+        //        分两种情况，从右边到中间为变大，即是 scaleF到1.0f,从中间到左边即是1.0f到scaleF
+        int centerViewX = view.getLeft() + width / 2;
+//        子view的中心点到控件中心的距离
+        float distance = Math.abs(centerX - centerViewX);
+
+//        子view的中心点到控件中心的距离所占总view宽度的百分比
+        double percent = distance / (getWidth() / 2 - width / 2);
+
+        float scaleF = 0.8f;
+        float alpha = 0.7f;
+        float realScaleF = getReal(width, percent, scaleF);
+        float realAlpha = getReal(width, percent, alpha);
+//        X是1-100 而Y的值是80到100
+        view.setScaleX(realScaleF);
+        view.setScaleY(realScaleF);
+        view.setAlpha(realAlpha);
+    }
+
+    private float getReal(int width, double percent, float scaleF) {
+        double lastWidth = width * (1 - scaleF);
+        float realScaleF = (float) ((width - percent * lastWidth) / width);
+        if (realScaleF < scaleF) {
+            realScaleF = scaleF;
+        } else if (realScaleF > 1.0f) {
+            realScaleF = 1.0f;
         }
-//                    disPercent趋势为100%-0%
-        disPercent = (float) currentDis / defaultDis;
-        return 1 - (1 - scale) * (1 - disPercent);
+        return realScaleF;
     }
 }
