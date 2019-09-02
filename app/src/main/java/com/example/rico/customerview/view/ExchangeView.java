@@ -30,22 +30,19 @@ public class ExchangeView extends ViewGroup {
         init();
     }
 
-    private List<Rect> rectS;
+    private List<Rect> rectS, originRectList;
 
     private void init() {
         rectS = new ArrayList<>();
+        originRectList = new ArrayList<>();
         integers = new ArrayList<>();
+        setPosition(0, 2, 1);
     }
 
     private int parentWidth, centerX;
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    // 父控件的左padding 中间的view左边到父控件的距离
-    private int parentLeft, middleDistance;
+    // 父控件的左padding 中间的view左边到父控件的距离,每次滑动的最大距离
+    private int parentLeft, middleDistance, moveMaxDistance;
 
     // 滑动的的距离要比手指的距离小，这个变量的缩放比例
     float moveScale;
@@ -55,9 +52,8 @@ public class ExchangeView extends ViewGroup {
         super.onSizeChanged(w, h, oldw, oldh);
         // 默认的子控件布局为左、中间、右
         rectS.clear();
-        integers.clear();
+        originRectList.clear();
         parentLeft = getPaddingLeft();
-        addPosition(2, 1, 0);
         parentWidth = w;
         centerX = w / 2;
         for (int i = 0; i < getChildCount(); i++) {
@@ -83,55 +79,38 @@ public class ExchangeView extends ViewGroup {
             }
             rect.set(left, top, left + childWidth, top + childHeight);
             rectS.add(rect);
+            Rect newRect = new Rect(rect.left, rect.top, rect.right, rect.bottom);
+            originRectList.add(newRect);
         }
     }
 
-    private void addPosition(int j, int k, int l) {
+    //  三个参数是view叠加顺序
+    private void setPosition(int j, int k, int l) {
+        integers.clear();
         integers.add(j);
         integers.add(k);
         integers.add(l);
     }
 
-    int lastPosition = -1;
-
+    //  用view的TranslationZ属性来实现层叠效果
+    //  onLayout先排列view，然后置顶view
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        integers.clear();
-        int nearestPos = 0;
-        float nearestDistance = parentWidth;
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
             Rect rect = rectS.get(i);
             child.layout(rect.left, rect.top, rect.right, rect.bottom);
-            int left = child.getLeft();
-            float centerViewX = left + (float) centerX / 2;
-            float currentDistance = Math.abs(centerViewX - centerX);
-            if (nearestDistance > currentDistance) {
-                nearestPos = i;
-                nearestDistance = currentDistance;
-            }
             scaleView(child);
+            if (i == getChildCount() - 1) {
+                moveMaxDistance = (parentWidth - child.getMeasuredWidth()) / 2;
+            }
         }
-        // 这里按照view切换时候的效果来看添加顺序
-        switch (nearestPos) {
-            case 0:
-                addPosition(2, 1, 0);
-                break;
-            case 1:
-                addPosition(0, 2, 1);
-                break;
-            case 2:
-                addPosition(0, 1, 2);
-                break;
-        }
-        if (lastPosition != nearestPos) {
-            toTopView();
-            lastPosition = nearestPos;
-        }
+        toTopView();
     }
 
     // 置顶view，使用translation属性来实现顶部view效果
     private void toTopView() {
+        // 这里直接用i值来setTranslationZ
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(integers.get(i));
             child.setTranslationZ(i);
@@ -170,22 +149,79 @@ public class ExchangeView extends ViewGroup {
                 downY = event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                float distance = event.getX() - downX;
-                distance = distance * moveScale;
-                for (int i = 0; i < rectS.size(); i++) {
-                    Rect rect = rectS.get(i);
-                    int width = rect.right - rect.left;
-                    rect.left = (int) (rect.left + distance);
-                    rect.right = rect.left + width;
-                }
-                requestLayout();
-                downX = event.getX();
+                moveView(event);
                 break;
             case MotionEvent.ACTION_UP:
+                for (int i = 0; i < rectS.size(); i++) {
+                    Rect originRect = originRectList.get(i);
+                    Rect rect = rectS.get(i);
+                    int width = rect.right - rect.left;
+                    originRect.left = rect.left;
+                    originRect.right = rect.left + width;
+                }
                 break;
         }
         return true;
 
+    }
+
+    float lastDistance;
+    boolean trendRight;
+
+    // 改变view的位置
+    private void moveView(MotionEvent event) {
+        float distance = event.getX() - downX;
+        if (Math.abs(distance) > moveMaxDistance) {
+            return;
+        }
+//        distance = distance * moveScale;
+        //先判断哪个view要置顶
+        int nearestPos = 0, nearestDistance = getWidth();
+        // 移动趋势 小于0向右滑动反之向左滑动
+        float trend = lastDistance - distance;
+        trendRight=trend<0;
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            int width = child.getMeasuredWidth();
+            int left = (int) (child.getLeft() + trend);
+            int centerViewX = left + width / 2;
+            int currentDistance = Math.abs(centerViewX - centerX);
+            if (nearestDistance > currentDistance) {
+                nearestPos = i;
+                nearestDistance = currentDistance;
+            }
+        }
+        // 根据要置顶的view和移动趋势来判断view顺序
+        switch (nearestPos) {
+            case 0:
+                setPosition(2, 1, 0);
+                break;
+            case 1:
+                if (trend > 0) {
+                    setPosition(0, 2, 1);
+                } else {
+                    setPosition(2, 0, 1);
+                }
+                break;
+            case 2:
+                setPosition(0, 1, 2);
+                break;
+        }
+        //  通过view的层叠顺序来控制移动的距离
+        for (int i = 0; i < getChildCount(); i++) {
+            Rect originRect = originRectList.get(i);
+            Rect rect = rectS.get(i);
+            int width = rect.right - rect.left;
+            rect.left = (int) (originRect.left + distance);
+            boolean isBottomP = i == integers.get(0);
+            // 如果view在最底下，应该是反向移动
+            if (isBottomP) {
+//                rect.left = (int) (originRect.left - distance);
+            }
+            rect.right = rect.left + width;
+        }
+        lastDistance = distance;
+        requestLayout();
     }
 
     private float getReal(int width, double percent, float scaleF) {
