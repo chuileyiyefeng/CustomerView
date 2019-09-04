@@ -1,5 +1,8 @@
 package com.example.rico.customerview.view;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
@@ -7,6 +10,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,10 +46,12 @@ public class ExchangeView extends ViewGroup {
     private int parentWidth, centerX;
 
     // 父控件的左padding 中间的view左边到父控件的距离,每次滑动的最大距离
-    private int parentLeft, middleDistance, moveMaxDistance;
+    private int middleDistance, moveMaxDistance;
 
     // 滑动的的距离要比手指的距离小，这个变量的缩放比例
     float moveScale;
+    // 边界的view移动的距离比实际距离大
+    float disMoveScale;
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -53,7 +59,6 @@ public class ExchangeView extends ViewGroup {
         // 默认的子控件布局为左、中间、右
         rectS.clear();
         originRectList.clear();
-        parentLeft = getPaddingLeft();
         parentWidth = w;
         centerX = w / 2;
         for (int i = 0; i < getChildCount(); i++) {
@@ -69,6 +74,7 @@ public class ExchangeView extends ViewGroup {
                     left = getPaddingLeft();
                     break;
                 case 1:
+                    disMoveScale = (parentWidth - (left + childWidth)) / ((w - childWidth) / 2);
                     left = (w - childWidth) / 2;
                     middleDistance = left - getPaddingLeft();
                     moveScale = middleDistance / (float) w;
@@ -100,7 +106,11 @@ public class ExchangeView extends ViewGroup {
             View child = getChildAt(i);
             Rect rect = rectS.get(i);
             child.layout(rect.left, rect.top, rect.right, rect.bottom);
-            scaleView(child);
+            if (i == integers.get(0)) {
+                scaleViewMin(child);
+            } else {
+                scaleView(child);
+            }
             if (i == getChildCount() - 1) {
                 moveMaxDistance = (parentWidth - child.getMeasuredWidth()) / 2;
             }
@@ -117,6 +127,15 @@ public class ExchangeView extends ViewGroup {
         }
     }
 
+    float scaleF = 0.8f;
+    float alpha = 0.7f;
+
+    private void scaleViewMin(View view) {
+        view.setScaleX(scaleF);
+        view.setScaleY(scaleF);
+        view.setAlpha(alpha);
+    }
+
     private void scaleView(View view) {
         int width = view.getMeasuredWidth();
         //        分两种情况，从右边到中间为变大，即是 scaleF到1.0f,从中间到左边即是1.0f到scaleF
@@ -127,8 +146,7 @@ public class ExchangeView extends ViewGroup {
 //        子view的中心点到控件中心的距离所占总view宽度的百分比
         double percent = distance / (getWidth() / 2 - width / 2);
 
-        float scaleF = 0.8f;
-        float alpha = 0.7f;
+
         float realScaleF = getReal(width, percent, scaleF);
         float realAlpha = getReal(width, percent, alpha);
 //        X是1-100 而Y的值是80到100
@@ -143,6 +161,9 @@ public class ExchangeView extends ViewGroup {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (animator != null && animator.isRunning()) {
+            return false;
+        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 downX = event.getX();
@@ -152,60 +173,22 @@ public class ExchangeView extends ViewGroup {
                 moveView(event);
                 break;
             case MotionEvent.ACTION_UP:
-                for (int i = 0; i < rectS.size(); i++) {
-                    Rect originRect = originRectList.get(i);
-                    Rect rect = rectS.get(i);
-                    int width = rect.right - rect.left;
-                    originRect.left = rect.left;
-                    originRect.right = rect.left + width;
-                }
+                scrollToCenter();
                 break;
         }
         return true;
 
     }
 
-    float lastDistance;
-    boolean trendRight;
+    // 顶部view下标，最底部view下标
+    int topPos, bottomPos;
 
     // 改变view的位置
     private void moveView(MotionEvent event) {
         float distance = event.getX() - downX;
+        distance = distance * moveScale;
         if (Math.abs(distance) > moveMaxDistance) {
             return;
-        }
-//        distance = distance * moveScale;
-        //先判断哪个view要置顶
-        int nearestPos = 0, nearestDistance = getWidth();
-        // 移动趋势 小于0向右滑动反之向左滑动
-        float trend = lastDistance - distance;
-        trendRight=trend<0;
-        for (int i = 0; i < getChildCount(); i++) {
-            View child = getChildAt(i);
-            int width = child.getMeasuredWidth();
-            int left = (int) (child.getLeft() + trend);
-            int centerViewX = left + width / 2;
-            int currentDistance = Math.abs(centerViewX - centerX);
-            if (nearestDistance > currentDistance) {
-                nearestPos = i;
-                nearestDistance = currentDistance;
-            }
-        }
-        // 根据要置顶的view和移动趋势来判断view顺序
-        switch (nearestPos) {
-            case 0:
-                setPosition(2, 1, 0);
-                break;
-            case 1:
-                if (trend > 0) {
-                    setPosition(0, 2, 1);
-                } else {
-                    setPosition(2, 0, 1);
-                }
-                break;
-            case 2:
-                setPosition(0, 1, 2);
-                break;
         }
         //  通过view的层叠顺序来控制移动的距离
         for (int i = 0; i < getChildCount(); i++) {
@@ -213,15 +196,95 @@ public class ExchangeView extends ViewGroup {
             Rect rect = rectS.get(i);
             int width = rect.right - rect.left;
             rect.left = (int) (originRect.left + distance);
-            boolean isBottomP = i == integers.get(0);
-            // 如果view在最底下，应该是反向移动
-            if (isBottomP) {
-//                rect.left = (int) (originRect.left - distance);
+            if (originRect.right + distance > parentWidth || originRect.left + distance < getPaddingLeft()) {
+                rect.left = (int) (originRect.left - distance * disMoveScale);
+                bottomPos = i;
             }
             rect.right = rect.left + width;
         }
-        lastDistance = distance;
+        topPos = getNearestPos(bottomPos);
+        int over = 3 - bottomPos - topPos;
+        setPosition(bottomPos, over, topPos);
         requestLayout();
+    }
+
+    private ValueAnimator animator;
+
+    //松手后将view滚动到中间
+
+
+    private void scrollToCenter() {
+        changeData();
+        View topChild = getChildAt(topPos);
+        View bottomChild = getChildAt(bottomPos);
+        final int topDis = centerX - (topChild.getLeft() + topChild.getMeasuredWidth() / 2);
+        final int bottomDis = Math.min(bottomChild.getLeft(), parentWidth - bottomChild.getRight());
+        if (animator == null) {
+            animator = ValueAnimator.ofInt(0, Math.max(Math.abs(topDis), bottomDis));
+            animator.setDuration(300);
+            animator.setInterpolator(new DecelerateInterpolator());
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    int value = (int) animation.getAnimatedValue();
+                    // 这里直接算三个view距离他们要到的位置的距离
+                    for (int i = 0; i < rectS.size(); i++) {
+                        Rect rect = rectS.get(i);
+                        Rect oR = originRectList.get(i);
+                        if (i == bottomPos) {
+                            if (Math.abs(value) <= Math.abs(bottomDis)) {
+                                rect.left = oR.left - value;
+                                rect.right = oR.right - value;
+                            }
+                        } else {
+                            if (Math.abs(value) <= Math.abs(topDis)) {
+                                rect.left = oR.left + value;
+                                rect.right = oR.right + value;
+                            }
+                        }
+                    }
+                    requestLayout();
+                }
+            });
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    changeData();
+                }
+            });
+        } else {
+            animator.setIntValues(0, topDis);
+        }
+        animator.start();
+    }
+
+    // 数据变换
+    private void changeData() {
+        for (int i = 0; i < rectS.size(); i++) {
+            Rect rect = rectS.get(i);
+            Rect oR = originRectList.get(i);
+            oR.left = rect.left;
+            oR.right = rect.right;
+        }
+    }
+
+    // 获取离中心点最近的那个view,排除下标为notThis的view
+    private int getNearestPos(int notThis) {
+        int nearestPos = 0, nearestDistance = getWidth();
+        for (int i = 0; i < rectS.size(); i++) {
+            Rect rect = rectS.get(i);
+            int width = rect.right - rect.left;
+            int left = rect.left;
+            int centerViewX = left + width / 2;
+            int currentDistance = Math.abs(centerViewX - centerX);
+            if (nearestDistance >= currentDistance && i != notThis) {
+                nearestPos = i;
+                nearestDistance = currentDistance;
+            }
+        }
+
+        return nearestPos;
     }
 
     private float getReal(int width, double percent, float scaleF) {
@@ -242,5 +305,4 @@ public class ExchangeView extends ViewGroup {
     public LayoutParams generateLayoutParams(AttributeSet attrs) {
         return new MarginLayoutParams(getContext(), attrs);
     }
-
 }

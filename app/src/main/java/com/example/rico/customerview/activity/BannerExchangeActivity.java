@@ -36,5 +36,6 @@ public class BannerExchangeActivity extends BaseActivity {
                 Log.e("canClick", "itemClick: "+position );
             }
         });
+        //2022 6.12
     }
 }
