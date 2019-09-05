@@ -89,7 +89,7 @@ public class WheelLayoutView extends LinearLayout {
             return selectPosition;
         }
 
-        public WheelLayoutManager getManager() {
+        private WheelLayoutManager getManager() {
             return manager;
         }
 

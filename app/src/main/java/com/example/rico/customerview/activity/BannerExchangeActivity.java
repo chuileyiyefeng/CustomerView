@@ -2,9 +2,6 @@ package com.example.rico.customerview.activity;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.adapter.ExchangeItemAdapter;
@@ -36,6 +33,5 @@ public class BannerExchangeActivity extends BaseActivity {
                 Log.e("canClick", "itemClick: "+position );
             }
         });
-        //2022 6.12
     }
 }
