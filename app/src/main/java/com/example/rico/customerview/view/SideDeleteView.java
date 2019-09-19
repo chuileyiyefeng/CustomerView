@@ -2,7 +2,6 @@ package com.example.rico.customerview.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -128,7 +127,7 @@ public class SideDeleteView extends ViewGroup {
                     return false;
                 }
                 boolean interceptParent = Math.abs(downX - event.getX()) > Math.abs(downY - event.getY());
-                if (!interceptParent &&getScrollX()==0) {
+                if (!interceptParent && getScrollX() == 0) {
                     break;
                 }
                 moveDistance = (int) (lastMoveX - event.getX());
@@ -197,6 +196,14 @@ public class SideDeleteView extends ViewGroup {
         invalidate();
     }
 
+    public void closeSideQuick() {
+        deleteView = null;
+        scrollDx = 0;
+        scroller.startScroll(getScrollX(), 0, -getScrollX(), 0, 1);
+        isOpen = false;
+        invalidate();
+    }
+
     //    是否拦截
     boolean isIntercept;
 
@@ -225,4 +232,5 @@ public class SideDeleteView extends ViewGroup {
         }
 
     }
+
 }

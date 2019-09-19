@@ -10,8 +10,12 @@ import android.graphics.RectF;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import com.example.rico.customerview.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -78,7 +82,11 @@ public class RingView extends BaseCustomerView {
     @Override
     protected void onDraw(Canvas canvas) {
         for (int i = 0; i < pathList.size(); i++) {
-            paint.setColor(getResources().getColor(colors.get(i)));
+            if (pathList.size() == 1) {
+                paint.setColor(getResources().getColor(colors.get(hasData)));
+            } else {
+                paint.setColor(getResources().getColor(colors.get(i)));
+            }
             canvas.drawPath(pathList.get(i), paint);
         }
     }
@@ -91,15 +99,21 @@ public class RingView extends BaseCustomerView {
         return this;
     }
 
+    private int hasData, totalData;
 
     public void refreshView() {
         post(new Runnable() {
             @Override
             public void run() {
+                totalData=0;
                 float lastAngle = 0;
                 int clipPosition = 0;
                 for (int i = 0; i < numbers.size(); i++) {
                     int number = numbers.get(i);
+                    if (number != 0) {
+                        totalData++;
+                        hasData = i;
+                    }
                     float percentage = (float) number / allNumber;
                     float angle = 360 * percentage;
                     Path path = new Path();
@@ -125,6 +139,15 @@ public class RingView extends BaseCustomerView {
                         }
                     }
                     lastAngle += angle;
+                    pathList.add(path);
+                }
+                if (totalData == 1) {
+                    pathList.clear();
+                    Path path = new Path();
+                    path.addCircle(width / 2, height / 2, maxR, Path.Direction.CW);
+                    Path path1 = new Path();
+                    path1.addCircle(width / 2, height / 2, minR, Path.Direction.CW);
+                    path.op(path1, Path.Op.DIFFERENCE);
                     pathList.add(path);
                 }
                 invalidate();

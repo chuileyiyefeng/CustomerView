@@ -28,10 +28,5 @@
         android:gravity="center"
         android:text="编辑" />
 </LinearLayout>
-<!--<TextView xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--android:layout_width="80dp"-->
-<!--android:layout_height="match_parent"-->
-<!--android:background="@color/salmon"-->
-<!--android:gravity="center"-->
-<!--android:text="删除" />-->
+
 

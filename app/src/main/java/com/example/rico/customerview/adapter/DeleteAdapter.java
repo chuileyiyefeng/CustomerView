@@ -30,12 +30,15 @@ public class DeleteAdapter extends BaseDeleteAdapter<String> {
     protected void bindHolder(@NonNull BaseDeleteViewHolder holder, final int i) {
         holder.setText(R.id.tv_content, getItem(i));
         View deleteView=holder.deleteView;
-        TextView delete=deleteView.findViewById(R.id.tv_delete);
+        final TextView delete=deleteView.findViewById(R.id.tv_delete);
         TextView top=deleteView.findViewById(R.id.tv_top);
         TextView edit=deleteView.findViewById(R.id.tv_edit);
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (deleteListener!=null) {
+                    deleteListener.click(i);
+                }
                 Toast.makeText(context,"删除 "+i,Toast.LENGTH_SHORT).show();
             }
         });
@@ -51,5 +54,14 @@ public class DeleteAdapter extends BaseDeleteAdapter<String> {
                 Toast.makeText(context,"编辑 "+i,Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    DeleteListener deleteListener;
+
+    public void setDeleteListener(DeleteListener deleteListener) {
+        this.deleteListener = deleteListener;
+    }
+
+    public  interface  DeleteListener{
+        void  click(int position);
     }
 }

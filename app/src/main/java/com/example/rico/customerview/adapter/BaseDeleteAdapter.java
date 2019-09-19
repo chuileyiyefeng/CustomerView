@@ -30,7 +30,6 @@ public abstract class BaseDeleteAdapter<T> extends RecyclerView.Adapter<BaseDele
     protected abstract int bindContentLayout();
 
     protected abstract int bindDeleteLayout();
-
     @NonNull
     @Override
     public BaseDeleteViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -40,12 +39,13 @@ public abstract class BaseDeleteAdapter<T> extends RecyclerView.Adapter<BaseDele
         BaseDeleteViewHolder holder = new BaseDeleteViewHolder(parentView);
         holder.contentView = parentView.getChildAt(0);
         holder.deleteView = parentView.getChildAt(1);
-        Log.e("BaseDeleteHolder", "onCreateViewHolder: " + "createHolder");
         return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull BaseDeleteViewHolder holder, final int i) {
+        SideDeleteView parentView = (SideDeleteView) holder.itemView;
+        parentView.closeSideQuick();
         bindHolder(holder, i);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +68,12 @@ public abstract class BaseDeleteAdapter<T> extends RecyclerView.Adapter<BaseDele
         list.add(t);
         notifyItemInserted(list.size());
     }
-
+    public void removeItem(int position) {
+        list.remove(position);
+        notifyItemRemoved(position);
+        if (position != list.size())
+            notifyItemRangeChanged(position, list.size() - position);
+    }
     public void addItem(Collection<T> collections) {
         int currentSize = getItemCount();
         list.addAll(collections);

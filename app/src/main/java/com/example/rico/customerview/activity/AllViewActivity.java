@@ -80,11 +80,11 @@ public class AllViewActivity extends BaseActivity {
                 view = new RingView(context);
                 RingView view1 = (RingView) view;
                 view1.addData(R.color.colorAccent, 50)
-                        .addData(R.color.button_bg, 90)
-                        .addData(R.color.gray_normal, 70)
-                        .addData(R.color.blue_thumb, 66)
-                        .addData(R.color.darkgray, 52)
-                        .addData(R.color.blueviolet, 11)
+                        .addData(R.color.button_bg, 60)
+                        .addData(R.color.gray_normal, 88)
+                        .addData(R.color.blue_thumb, 50)
+                        .addData(R.color.darkgray, 12)
+                        .addData(R.color.blueviolet, 40)
                         .refreshView();
                 llALl.addView(view1);
                 return;
