@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+
 import com.example.rico.customerview.R;
 
 import java.util.ArrayList;
@@ -23,10 +24,12 @@ public class ListLinkageAdapter extends RecyclerView.Adapter<ListLinkageAdapter.
         this.context = context;
         strings = new ArrayList<>();
     }
-    public ListLinkageAdapter(Context context,ArrayList<String> strings) {
+
+    public ListLinkageAdapter(Context context, ArrayList<String> strings) {
         this.context = context;
-        this.strings=strings;
+        this.strings = strings;
     }
+
     public void addData(ArrayList<String> strings) {
         this.strings.clear();
         this.strings.addAll(strings);
@@ -42,6 +45,10 @@ public class ListLinkageAdapter extends RecyclerView.Adapter<ListLinkageAdapter.
     public void addItem(String str) {
         strings.add(str);
         notifyDataSetChanged();
+    }
+
+    public String getItem(int position) {
+        return strings.get(position);
     }
 
     @NonNull

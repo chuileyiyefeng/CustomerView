@@ -50,7 +50,7 @@ public class ListLinkageActivity extends BaseActivity {
         helper.attachToRecyclerView(rv);
         ArrayList<String> strings = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            strings.add(" "+i+" 哈哈哈哈哈哈哈哈哈哈哈哈");
+            strings.add(" " + i + " 哈哈哈哈哈哈哈哈哈哈哈哈");
         }
         adapter.addData(strings);
         addWheel();
@@ -82,12 +82,7 @@ public class ListLinkageActivity extends BaseActivity {
             wheelDataList.add(wheelData);
         }
         wheelLL.setData(wheelDataList);
-        wheelLL.setListener(new WheelLayoutView.SelectionListener() {
-            @Override
-            public void selected(String text, int position) {
-                Log.e("position", "selected: " + text);
-            }
-        });
+        wheelLL.setListener((parent, middle, child, parentPos, middlePos, childPos) -> Log.e("position", "selected: " + parent + middle + child));
     }
 
     public String getJSON() {

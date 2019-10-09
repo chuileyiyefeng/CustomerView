@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Created by Tmp on 2019/8/20.
  */
 public class WheelChildData {
-    String data;
+    public String data;
     ArrayList<String> strings;
 
     public ArrayList<String> getStrings() {

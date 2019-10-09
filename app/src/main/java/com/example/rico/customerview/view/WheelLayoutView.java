@@ -72,6 +72,63 @@ public class WheelLayoutView extends LinearLayout {
         }
     }
 
+    int parentPosition, middlePosition, childPosition;
+
+    public void setDefault(String defaultVale) {
+        ViewInfo parent = infoList.get(0);
+
+        for (int i = 0; i < parent.adapter.getItemCount(); i++) {
+            String str = parent.adapter.getItem(i);
+            if (defaultVale.contains(str)) {
+                parentPosition = i;
+                break;
+            }
+        }
+        parent.selectPosition = parentPosition;
+        parent.rv.post(() -> {
+            parent.rv.scrollToPosition(parentPosition);
+            scrollMiddle(defaultVale);
+        });
+    }
+
+    private void scrollMiddle(String defaultVale) {
+        ViewInfo middle = infoList.get(1);
+        ArrayList<WheelChildData> middleList = wheelDataList.get(parentPosition).getChildList();
+        for (int i = 0; i < middleList.size(); i++) {
+            if (defaultVale.contains(middleList.get(i).getData())) {
+                middlePosition = i;
+                break;
+            }
+        }
+        middle.selectPosition = middlePosition;
+        middle.adapter.clearAllItem();
+        for (int i = 0; i < middleList.size(); i++) {
+            middle.adapter.addItem(middleList.get(i).getData());
+        }
+        middle.rv.post(() -> {
+            middle.rv.scrollToPosition(middlePosition);
+            scrollChild(defaultVale);
+        });
+    }
+
+    private void scrollChild(String defaultVale) {
+        ViewInfo child = infoList.get(2);
+        ArrayList<String> childList = wheelDataList.get(parentPosition).getChildList().get(middlePosition).getStrings();
+        for (int i = 0; i < childList.size(); i++) {
+            String str = childList.get(i);
+            if (defaultVale.contains(str)) {
+                childPosition = i;
+                break;
+            }
+        }
+        child.selectPosition = childPosition;
+        child.adapter.clearAllItem();
+        for (int i = 0; i < childList.size(); i++) {
+            child.adapter.addItem(childList.get(i));
+        }
+        child.rv.post(() -> child.rv.scrollToPosition(childPosition));
+    }
+
     private class ViewInfo {
         private RecyclerView rv;
         private ListLinkageAdapter adapter;
@@ -89,7 +146,7 @@ public class WheelLayoutView extends LinearLayout {
             return selectPosition;
         }
 
-        private WheelLayoutManager getManager() {
+        public WheelLayoutManager getManager() {
             return manager;
         }
 
@@ -111,7 +168,7 @@ public class WheelLayoutView extends LinearLayout {
             addView(rv);
             childPosition = getChildCount() - 1;
             adapter = new ListLinkageAdapter(context);
-            manager = new WheelLayoutManager(context, "rv " + childPosition);
+            manager = new WheelLayoutManager(context);
             helper = new LinearSnapHelper();
             helper.attachToRecyclerView(rv);
             rv.setAdapter(adapter);
@@ -161,6 +218,12 @@ public class WheelLayoutView extends LinearLayout {
                         childInfo.getManager().setLayoutType(WheelLayoutManager.halfType);
                         middleInfo.setSelectPosition();
                         childInfo.setSelectPosition();
+                        if (listener != null) {
+                            middleList = wheelDataList.get(parentInfo.getSelectPosition()).getChildList();
+                            childList = middleList.get(middleInfo.getSelectPosition()).getStrings();
+                            listener.selected(wheelDataList.get(parentInfo.getSelectPosition()).data, middleList.get(0).data, childList.get(0)
+                                    , parentInfo.getSelectPosition(), middleInfo.getSelectPosition(), position);
+                        }
                         break;
                     case 1:
                         middleList = wheelDataList.get(parentInfo.getSelectPosition()).getChildList();
@@ -172,12 +235,19 @@ public class WheelLayoutView extends LinearLayout {
                         childInfo.getRv().scrollToPosition(0);
                         childInfo.getManager().setLayoutType(WheelLayoutManager.halfType);
                         childInfo.setSelectPosition();
+                        if (listener != null) {
+                            middleList = wheelDataList.get(parentInfo.getSelectPosition()).getChildList();
+                            childList = middleList.get(middleInfo.getSelectPosition()).getStrings();
+                            listener.selected(wheelDataList.get(parentInfo.getSelectPosition()).data, middleList.get(middleInfo.getSelectPosition()).data, childList.get(0)
+                                    , parentInfo.getSelectPosition(), middleInfo.getSelectPosition(), position);
+                        }
                         break;
                     case 2:
                         if (listener != null) {
                             middleList = wheelDataList.get(parentInfo.getSelectPosition()).getChildList();
                             childList = middleList.get(middleInfo.getSelectPosition()).getStrings();
-                            listener.selected(childList.get(position), position);
+                            listener.selected(wheelDataList.get(parentInfo.getSelectPosition()).data, middleList.get(middleInfo.getSelectPosition()).data, childList.get(position)
+                                    , parentInfo.getSelectPosition(), middleInfo.getSelectPosition(), position);
                         }
                         break;
                 }
@@ -195,6 +265,6 @@ public class WheelLayoutView extends LinearLayout {
     SelectionListener listener;
 
     public interface SelectionListener {
-        void selected(String text, int position);
+        void selected(String parent, String middle, String child, int parentPos, int middlePos, int childPos);
     }
 }

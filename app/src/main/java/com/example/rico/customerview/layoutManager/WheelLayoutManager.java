@@ -15,6 +15,7 @@ public class WheelLayoutManager extends LinearLayoutManager {
 
     private Context context;
 
+
     public WheelLayoutManager(Context context) {
         super(context);
         this.context = context;
@@ -34,10 +35,16 @@ public class WheelLayoutManager extends LinearLayoutManager {
     public void scrollToPosition(int position) {
         if (position == 0) {
             firstPos = 0;
+            layoutType = halfType;
+        } else {
+            layoutType = allType;
+            if (position > 0) {
+                firstPos = position - 1;
+                scrollY = parentHeight * position / 2;
+            }
         }
         requestLayout();
     }
-
 
 
     @Override
@@ -109,9 +116,11 @@ public class WheelLayoutManager extends LinearLayoutManager {
     private int firstPos, lastPos, parentHeight, centerY, firstTop, distanceHeight, layoutType = halfType;
     private int scrollY;
 
+
     public void setLayoutType(int layoutType) {
         this.layoutType = layoutType;
     }
+
 
     @Override
     public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
@@ -119,6 +128,7 @@ public class WheelLayoutManager extends LinearLayoutManager {
         if (getItemCount() == 0) {
             return 0;
         }
+
         if (dy > 0) {
             View lastView = getChildAt(getChildCount() - 1);
             if (lastView != null) {
@@ -133,8 +143,8 @@ public class WheelLayoutManager extends LinearLayoutManager {
         } else if (scrollY + dy < 0) {
             dy = -scrollY;
         }
-        offsetChildrenVertical(-dy);
         dy = fillViews(dy, recycler);
+        offsetChildrenVertical(-dy);
         scrollY += dy;
         return dy;
     }
@@ -147,7 +157,7 @@ public class WheelLayoutManager extends LinearLayoutManager {
             if (child != null) {
                 if (dy > 0) {
                     if (getChildCount() == 2) {
-                        if (getDecoratedBottom(child) + distanceHeight+dy > parentHeight) {
+                        if (getDecoratedBottom(child) + distanceHeight + dy > parentHeight) {
                             layoutType = allType;
                         }
                     } else {
@@ -162,8 +172,8 @@ public class WheelLayoutManager extends LinearLayoutManager {
                     if (getDecoratedTop(child) + dy > parentHeight) {
                         removeAndRecycleView(child, recycler);
                         lastPos--;
-                        if (lastPos==0) {
-                            layoutType=halfType;
+                        if (lastPos == 0) {
+                            layoutType = halfType;
                         }
                     }
                 }
@@ -204,6 +214,16 @@ public class WheelLayoutManager extends LinearLayoutManager {
         if (firstView != null) {
             firstPos = getPosition(firstView);
             firstTop = getDecoratedTop(firstView) - getPaddingTop();
+            int top = getDecoratedTop(firstView);
+            int height = getDecoratedMeasuredHeight(firstView);
+            if (dy <= 0) {
+                if (top + height / 2 - dy > parentHeight / 2 && firstPos == 0) {
+                    dy = 0;
+                    scrollY = 0;
+                }
+            }
+
+
         }
         return dy;
     }
