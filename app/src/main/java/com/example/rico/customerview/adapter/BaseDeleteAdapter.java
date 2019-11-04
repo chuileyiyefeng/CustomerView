@@ -3,7 +3,6 @@ package com.example.rico.customerview.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +29,7 @@ public abstract class BaseDeleteAdapter<T> extends RecyclerView.Adapter<BaseDele
     protected abstract int bindContentLayout();
 
     protected abstract int bindDeleteLayout();
+
     @NonNull
     @Override
     public BaseDeleteViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -68,12 +68,15 @@ public abstract class BaseDeleteAdapter<T> extends RecyclerView.Adapter<BaseDele
         list.add(t);
         notifyItemInserted(list.size());
     }
+
     public void removeItem(int position) {
         list.remove(position);
         notifyItemRemoved(position);
-        if (position != list.size())
+        if (position != list.size()) {
             notifyItemRangeChanged(position, list.size() - position);
+        }
     }
+
     public void addItem(Collection<T> collections) {
         int currentSize = getItemCount();
         list.addAll(collections);

@@ -74,6 +74,7 @@ public class SideDeleteView extends ViewGroup {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         setClickable(true);
         int child0Width = 0;
+        height=0;
         for (int i = 0; i < getChildCount(); i++) {
             View childView = getChildAt(i);
 //            childView.setClickable(true);

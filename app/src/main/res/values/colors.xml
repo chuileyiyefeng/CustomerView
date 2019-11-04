@@ -23,6 +23,7 @@
     <color name="blue_y">#07beab</color>
     <!--透明色 -->
     <color name="transparent">#00000000</color>
+    <color name="trans_black">#90000000</color>
     <!--白色 -->
     <color name="white">#FFFFFF</color>
     <!--象牙色 -->

@@ -18,9 +18,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(bindLayout());
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        doBusiness();
         StatusBarUtil.setStatusBarColor(this, R.color.white);
         StatusBarUtil.setStatusTextDark(this, true);
+        doBusiness();
     }
 
     public abstract int bindLayout();

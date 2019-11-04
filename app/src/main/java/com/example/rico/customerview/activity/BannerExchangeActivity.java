@@ -15,7 +15,7 @@ public class BannerExchangeActivity extends BaseActivity {
     ExchangeItemAdapter adapter;
     @Override
     public int bindLayout() {
-        return R.layout.activity_recycler;
+        return R.layout.activity_exchange_view;
     }
 
     @Override
@@ -27,11 +27,6 @@ public class BannerExchangeActivity extends BaseActivity {
         adapter.addItem(R.mipmap.flip_1);
         adapter.addItem(R.mipmap.flip_2);
         adapter.addItem(R.mipmap.flip_3);
-        adapter.addItemClick(new com.example.rico.customerview.adapter.BaseAdapter.ItemClick() {
-            @Override
-            public void itemClick(int position) {
-                Log.e("canClick", "itemClick: "+position );
-            }
-        });
+        adapter.addItemClick(position -> Log.e("canClick", "itemClick: "+position ));
     }
 }

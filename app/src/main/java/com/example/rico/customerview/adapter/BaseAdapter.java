@@ -3,7 +3,6 @@ package com.example.rico.customerview.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +14,12 @@ import java.util.List;
 /**
  * Created by Tmp on 2018/12/18.
  */
-public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> {
+public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> implements View.OnClickListener {
     protected Context context;
     private List<T> list;
 
 
-    BaseAdapter(Context context) {
+    public BaseAdapter(Context context) {
         this.context = context;
         list = new ArrayList<>();
     }
@@ -41,14 +40,8 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, final int i) {
         bindHolder(holder, i);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (itemClick != null) {
-                    itemClick.itemClick(i);
-                }
-            }
-        });
+        holder.itemView.setTag(i);
+        holder.itemView.setOnClickListener(this);
     }
 
     protected abstract void bindHolder(@NonNull BaseViewHolder holder, int i);
@@ -88,6 +81,14 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
 
     public void addItemClick(ItemClick itemClick) {
         this.itemClick = itemClick;
+    }
+
+    @Override
+    public void onClick(View v) {
+        int position = (int) v.getTag();
+        if (itemClick != null) {
+            itemClick.itemClick(position);
+        }
     }
 
     public interface ItemClick {

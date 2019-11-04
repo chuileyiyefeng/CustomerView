@@ -39,6 +39,10 @@
         <activity android:name=".activity.BannerExchangeActivity" />
         <activity android:name=".activity.CurveActivity" />
         <activity android:name=".activity.ListLinkageActivity" />
+        <activity android:name=".activity.PictureViewerActivity" />
+        <activity
+            android:name=".activity.PictureDetailActivity"
+            android:theme="@style/PicTheme" />
     </application>
 
 </manifest>
