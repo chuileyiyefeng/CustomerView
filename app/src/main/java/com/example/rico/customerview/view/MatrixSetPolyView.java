@@ -19,7 +19,6 @@ import com.example.rico.customerview.R;
 public class MatrixSetPolyView extends BaseCustomerView {
 
     private int testPoint = 4;
-    private int triggerRadius = 180;    // 触发半径为180px
 
     private Bitmap mBitmap;             // 要绘制的图片
     private Matrix mPolyMatrix;         // 测试setPolyToPoly用的Matrix
@@ -71,6 +70,7 @@ public class MatrixSetPolyView extends BaseCustomerView {
 
                 // 根据触控位置改变dst
                 for (int i = 0; i < testPoint * 2; i += 2) {
+                    int triggerRadius = 180;
                     if (Math.abs(tempX - dst[i]) <= triggerRadius && Math.abs(tempY - dst[i + 1]) <= triggerRadius) {
                         dst[i] = tempX - 100;
                         dst[i + 1] = tempY - 100;

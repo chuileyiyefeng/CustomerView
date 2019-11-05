@@ -16,7 +16,7 @@ import java.util.List;
  */
 public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder> implements View.OnClickListener {
     protected Context context;
-    private List<T> list;
+    protected List<T> list;
 
 
     public BaseAdapter(Context context) {

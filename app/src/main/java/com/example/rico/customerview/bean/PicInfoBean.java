@@ -1,53 +1,45 @@
 package com.example.rico.customerview.bean;
 
-import android.graphics.Rect;
-
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by Tmp on 2019/11/4.
  */
 public class PicInfoBean implements Serializable {
-    private int left,top,right,bottom;
-    private String url;
 
-    public int getLeft() {
-        return left;
+    private int position;
+    private ArrayList<String> strings;
+    private ArrayList<MyRect> myRectList;
+
+    public ArrayList<String> getStrings() {
+        if (strings == null) {
+            return strings = new ArrayList<>();
+        }
+        return strings;
     }
 
-    public void setLeft(int left) {
-        this.left = left;
+    public ArrayList<MyRect> getMyRectList() {
+        if (myRectList == null) {
+            return myRectList = new ArrayList<>();
+        }
+        return myRectList;
     }
 
-    public int getTop() {
-        return top;
+    public void setMyRectList(ArrayList<MyRect> myRectList) {
+        this.myRectList = myRectList;
     }
 
-    public void setTop(int top) {
-        this.top = top;
+    public void setStrings(ArrayList<String> strings) {
+        this.strings = strings;
     }
 
-    public int getRight() {
-        return right;
+    public int getPosition() {
+        return position;
     }
 
-    public void setRight(int right) {
-        this.right = right;
+    public void setPosition(int position) {
+        this.position = position;
     }
 
-    public int getBottom() {
-        return bottom;
-    }
-
-    public void setBottom(int bottom) {
-        this.bottom = bottom;
-    }
-
-    public String getUrl() {
-        return url == null ? "" : url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 }
