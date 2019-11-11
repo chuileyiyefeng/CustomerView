@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.rico.customerview.R;
 
 /**
@@ -23,6 +24,7 @@ public class PicDetailAdapter extends BaseAdapter<String> {
     @Override
     protected void bindHolder(@NonNull BaseViewHolder holder, int i) {
         ImageView iv = holder.itemView.findViewById(R.id.iv);
+//        Glide.with(context).load(getItem(i)).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(iv);
         Glide.with(context).load(getItem(i)).into(iv);
     }
 }

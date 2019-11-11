@@ -24,9 +24,9 @@ public abstract class BaseFragment extends Fragment {
         return view;
     }
 
-    abstract int bindLayout();
+    protected abstract int bindLayout();
 
-    abstract protected void initView();
+    protected abstract  void initView();
 
     protected View findViewById(int resId) {
         return view.findViewById(resId);

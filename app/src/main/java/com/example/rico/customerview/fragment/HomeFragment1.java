@@ -29,7 +29,7 @@ public class HomeFragment1 extends BaseFragment implements BaseAdapter.ItemClick
     FirstAdapter adapter;
 
     @Override
-    int bindLayout() {
+    protected int bindLayout() {
         return R.layout.activity_main;
     }
 

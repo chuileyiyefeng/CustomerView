@@ -1,135 +1,189 @@
 package com.example.rico.customerview.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
-import android.support.annotation.NonNull;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.StatusBarUtil;
-import com.example.rico.customerview.adapter.PicDetailAdapter;
 import com.example.rico.customerview.adapter.PointAdapter;
+import com.example.rico.customerview.adapter.ViewPagerAdapter;
+import com.example.rico.customerview.bean.MyRect;
 import com.example.rico.customerview.bean.PicInfoBean;
+import com.example.rico.customerview.fragment.ImageFragment;
+
+import java.util.ArrayList;
 
 /**
  * Created by Tmp on 2019/11/4.
  */
-public class PictureDetailActivity extends BaseActivity {
+public class PictureDetailActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
     PicInfoBean bean;
-    RecyclerView rvPic, rvPoint;
-    PicDetailAdapter picAdapter;
+    RecyclerView rvPoint;
     PointAdapter pointAdapter;
-    LinearLayoutManager manager;
-    PagerSnapHelper helper;
+
+    View contentView;
+    ViewPager ivPager;
+    ViewPagerAdapter pagerAdapter;
+    ArrayList<Fragment> fragments;
 
     @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        StatusBarUtil.setTransparent(this);
+        setContentView(bindLayout());
+        doBusiness();
+    }
+
     public int bindLayout() {
         return R.layout.activity_picture_detail;
     }
 
-    @Override
     public void doBusiness() {
-        StatusBarUtil.hideStatusBar(PictureDetailActivity.this);
-        rvPic = findViewById(R.id.rv_pic_detail);
         rvPoint = findViewById(R.id.rv_point);
-        helper = new PagerSnapHelper();
-        picAdapter = new PicDetailAdapter(this);
         pointAdapter = new PointAdapter(this);
-        manager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-
-        rvPic.setLayoutManager(manager);
-        helper.attachToRecyclerView(rvPic);
         bean = (PicInfoBean) getIntent().getSerializableExtra("picInfoBean");
         lastPosition = bean.getPosition();
-        picAdapter.addItem(bean.getStrings());
-        rvPic.setAdapter(picAdapter);
-        rvPic.scrollToPosition(lastPosition);
-        rvPic.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                changePosition(recyclerView, newState);
-            }
-        });
 
         rvPoint.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         for (int i = 0; i < bean.getStrings().size(); i++) {
             pointAdapter.addItem(bean.getPosition() == i);
         }
         rvPoint.setAdapter(pointAdapter);
-
+        fragments = new ArrayList<>();
+        for (int i = 0; i < bean.getStrings().size(); i++) {
+            ImageFragment fragment = new ImageFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("url", bean.getStrings().get(i));
+            fragment.setArguments(bundle);
+            fragments.add(fragment);
+        }
+        ivPager = findViewById(R.id.iv_pager);
+        pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), fragments);
+        ivPager.setAdapter(pagerAdapter);
         colorDrawable = new ColorDrawable(Color.BLACK);
-        View contentView = findViewById(android.R.id.content);
+        contentView = findViewById(android.R.id.content);
         contentView.setBackground(colorDrawable);
-        enterAnimation();
+        ivPager.setCurrentItem(bean.getPosition());
+        ivPager.addOnPageChangeListener(this);
+
+        enterAnimation(ivPager);
     }
 
-    boolean isDragging = false;
     int lastPosition;
-
-    private void changePosition(RecyclerView recyclerView, int newState) {
-        View view = helper.findSnapView(manager);
-        int position;
-        if (view != null) {
-            position = recyclerView.getChildLayoutPosition(view);
-        } else {
-            return;
-        }
-        if (newState == RecyclerView.SCROLL_STATE_IDLE && isDragging) {
-            isDragging = false;
-            pointAdapter.notifyItemChanged(lastPosition, false);
-            pointAdapter.notifyItemChanged(position, true);
-            lastPosition = position;
-        } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-            isDragging = true;
-        }
-    }
-
-    int DURATION = 300;
+    int DURATION_IN = 300, DURATION_OUT = 300;
     ColorDrawable colorDrawable;
+    float scaleX, scaleY;
+    int width, height;
 
-    public void enterAnimation() {
+    public void enterAnimation(View view) {
         Point point = new Point();
         getWindowManager().getDefaultDisplay().getSize(point);
-        float scaleX = (bean.getMyRectList().get(lastPosition).getRight() - bean.getMyRectList().get(lastPosition).getLeft()) / (float) point.x;
-        float scaleY = (bean.getMyRectList().get(lastPosition).getBottom() - bean.getMyRectList().get(lastPosition).getTop()) / (float) point.y;
+        width = point.x;
+        height = point.y;
+        scaleX = (bean.getMyRectList().get(lastPosition).getRight() - bean.getMyRectList().get(lastPosition).getLeft()) / (float) point.x;
+        scaleY = (bean.getMyRectList().get(lastPosition).getBottom() - bean.getMyRectList().get(lastPosition).getTop()) / (float) point.y;
         //设置view缩放中心
-        rvPic.setPivotX(0);
-        rvPic.setPivotY(0);
-        rvPic.setTranslationX(bean.getMyRectList().get(lastPosition).getLeft());
-        rvPic.setTranslationY(bean.getMyRectList().get(lastPosition).getTop());
-        rvPic.setScaleX(scaleX);
-        rvPic.setScaleY(scaleY);
+        view.setPivotX(0);
+        view.setPivotY(0);
+        view.setTranslationX(bean.getMyRectList().get(lastPosition).getLeft());
+        view.setTranslationY(bean.getMyRectList().get(lastPosition).getTop() - (point.y - point.x) / 2f * scaleX);
+        view.setScaleX(scaleX);
+        view.setScaleY(scaleX);
         //设置动画
         TimeInterpolator sDecelerator = new DecelerateInterpolator();
-        //设置imageview缩放动画
-        rvPic.animate().setDuration(DURATION).scaleX(1).scaleY(1).
+        //设置imageView缩放动画
+        view.animate().setDuration(DURATION_IN).scaleX(1).scaleY(1).
                 translationX(0).translationY(0).setInterpolator(sDecelerator);
 
         // 设置activity主布局背景颜色DURATION毫秒内透明度从透明到不透明
         ObjectAnimator bgAnim = ObjectAnimator.ofInt(colorDrawable, "alpha", 0, 255);
-        bgAnim.setDuration(DURATION);
+        bgAnim.setDuration(DURATION_IN);
         bgAnim.start();
+        bgAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                rvPoint.setVisibility(View.VISIBLE);
+
+            }
+        });
     }
 
-    public void exitAnimation(final Runnable endAction) {
+    @Override
+    public void finish() {
+        if (isAnimationEnd) {
+            setResult(RESULT_OK);
+            super.finish();
+            overridePendingTransition(0, 0);
+        } else {
+            exitAnimation(ivPager);
+        }
+    }
 
-//        TimeInterpolator sInterpolator = new AccelerateInterpolator();
-//        //设置imageview缩放动画，以及缩放结束位置
-//        iv.animate().setDuration(DURATION).scaleX(mWidthScale).scaleY(mHeightScale).
-//                translationX(mLeftDelta).translationY(mTopDelta)
-//                .setInterpolator(sInterpolator).withEndAction(endAction);
-//
-//        // 设置activity主布局背景颜色DURATION毫秒内透明度从不透明到透明
-//        ObjectAnimator bgAnim = ObjectAnimator.ofInt(colorDrawable, "alpha", 0);
-//        bgAnim.setDuration(DURATION);
-//        bgAnim.start();
+
+    boolean isAnimationEnd;
+
+    public void exitAnimation(View view) {
+        if (bean == null) {
+            return;
+        }
+        rvPoint.setVisibility(View.GONE);
+        MyRect myRect = bean.getMyRectList().get(lastPosition);
+        Rect rect = new Rect();
+        rect.set(0, (height - width) / 2, width, (height - width) / 2 + width);
+        view.setClipBounds(rect);
+        int transLateX = myRect.getLeft();
+        int transLateY = (int) (myRect.getTop() - (height - width) / 2f * scaleX);
+        float newScale = scaleX;
+        TimeInterpolator sInterpolator = new DecelerateInterpolator();
+        //设置imageView缩放动画
+        view.animate().setDuration(DURATION_OUT).scaleX(scaleX).scaleY(newScale).
+                translationX(transLateX).translationY(transLateY)
+                .setInterpolator(sInterpolator);
+
+        // 设置activity主布局背景颜色DURATION毫秒内透明度从不透明到透明
+        ObjectAnimator bgAnim = ObjectAnimator.ofInt(colorDrawable, "alpha", 0);
+        bgAnim.setDuration(DURATION_OUT);
+        bgAnim.start();
+        bgAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                isAnimationEnd = true;
+                finish();
+            }
+        });
+    }
+
+    @Override
+    public void onPageScrolled(int i, float v, int i1) {
+        pointAdapter.notifyItemChanged(i, true);
+        pointAdapter.notifyItemChanged(lastPosition, false);
+        lastPosition = i;
+    }
+
+    @Override
+    public void onPageSelected(int i) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int i) {
+
     }
 }

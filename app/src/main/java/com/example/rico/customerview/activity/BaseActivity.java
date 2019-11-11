@@ -31,6 +31,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void hideStatusBar() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
-
-
+    //   显示状态栏
+    protected void showStatusBar() {
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
 }
