@@ -28,6 +28,7 @@ public class BezierMoveView extends BaseCustomerView {
 
     public BezierMoveView(Context context) {
         super(context);
+
     }
 
     public BezierMoveView(Context context, @Nullable AttributeSet attrs) {
