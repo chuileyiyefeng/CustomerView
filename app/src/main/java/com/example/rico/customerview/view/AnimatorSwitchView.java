@@ -142,18 +142,15 @@ public class AnimatorSwitchView extends BaseCustomerView {
         if (animator == null) {
             animator = ValueAnimator.ofFloat(pathMeasure.getLength());
             animator.setInterpolator(new DecelerateInterpolator());
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float value = (float) animation.getAnimatedValue();
-                    pathMeasure.getPosTan(value, tan, null);
-                    if (value >= width / 2) {
-                        circlePaint.setColor(rightColor);
-                    } else {
-                        circlePaint.setColor(leftColor);
-                    }
-                    invalidate();
+            animator.addUpdateListener(animation -> {
+                float value = (float) animation.getAnimatedValue();
+                pathMeasure.getPosTan(value, tan, null);
+                if (value >= width / 2) {
+                    circlePaint.setColor(rightColor);
+                } else {
+                    circlePaint.setColor(leftColor);
                 }
+                invalidate();
             });
             animator.setDuration(300);
         }

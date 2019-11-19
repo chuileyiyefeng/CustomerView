@@ -42,7 +42,7 @@ public class PictureViewerActivity extends BaseActivity implements BaseAdapter.I
         rvPic.setLayoutManager(manager);
         adapter = new PicViewAdapter(this);
         rvPic.setAdapter(adapter);
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 1; i++) {
             strings.add("http://images.open68.cn/images/dabe6894-1829-42b9-906d-3a72dbbae213.png");
             strings.add("http://img.hb.aicdn.com/f22df3bca217f7435b6b7d3c66bc6d21d72b60c3a70eb-yctL70_fw658");
             strings.add("http://img.hb.aicdn.com/266e4c85ef38c4ef468dd28cc5ae9deba47080867d89-urhOsD_fw658");
