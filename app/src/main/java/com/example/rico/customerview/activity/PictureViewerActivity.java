@@ -52,6 +52,7 @@ public class PictureViewerActivity extends BaseActivity implements BaseAdapter.I
         strings.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574242290&di=5b43dcc02c7b41cba1992d34ca9353a5&imgtype=jpg&er=1&src=http%3A%2F%2Fwx3.sinaimg.cn%2Forj360%2F006dJMtQly1g72bexutpkj30ku60j4r3.jpg");
         strings.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574242314&di=6bcadae213ad1de4c7d1527164078bee&imgtype=jpg&er=1&src=http%3A%2F%2Fimg11.weikeimg.com%2Fdata%2Fuploads%2F2013%2F07%2F15%2F97030299451e390d182ba1.jpg");
         strings.add("https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=342882021,2221042042&fm=26&gp=0.jpg");
+        strings.add("https://desk-fd.zol-img.com.cn/t_s4096x2160c5/g1/M09/01/0E/ChMljl2uaa2IK3RxADmYD_Zm6C0AAQDVQC9xGUAOZgn852.jpg");
         adapter.addItem(strings);
         adapter.addItemClick(this);
         bean = new PicInfoBean();

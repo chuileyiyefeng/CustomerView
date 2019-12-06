@@ -102,8 +102,9 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
         view.setPivotY(0);
         view.setTranslationX(bean.getMyRectList().get(lastPosition).getLeft());
         view.setTranslationY(bean.getMyRectList().get(lastPosition).getTop() - (point.y - point.x) / 2f * scaleX);
-        view.setScaleX(scaleX);
-        view.setScaleY(scaleX);
+        float realScale=scaleX;
+        view.setScaleX(realScale);
+        view.setScaleY(realScale);
         //设置动画
         TimeInterpolator sDecelerator = new DecelerateInterpolator();
         //设置imageView缩放动画

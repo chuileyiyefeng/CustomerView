@@ -21,7 +21,9 @@ public class ImageFragment extends BaseFragment {
         if (getArguments() != null) {
             String url = getArguments().getString("url");
             ivPic = (ImageView) findViewById(R.id.iv_pic);
-            Glide.with(getContext()).load(url).into(ivPic);
+            if (getContext()!=null) {
+                Glide.with(getContext()).load(url).into(ivPic);
+            }
         }
     }
 }
