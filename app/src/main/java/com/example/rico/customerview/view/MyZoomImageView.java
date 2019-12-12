@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
 /**
@@ -39,19 +40,20 @@ public class MyZoomImageView extends AppCompatImageView {
     // 单次缩放值、缩放中心X、缩放中心Y
     float scaleCenterX, scaleCenterY;
 
-    // 是否是同一次缩放、是否继续缩放
-    boolean isSameTimeScaling, isContinuedScaling = true;
+    // 是否是同一次缩放、是否继续缩放(在缩放还原之后，不抬起全部手指不能继续缩放)
+    boolean isSameTimeScaling;
+    // 是否进入了缩放操作
+    boolean isEnterScale;
 
     private void initGesture() {
         picMatrix = new Matrix();
         scaleDetector = new ScaleGestureDetector(getContext(), new ScaleGestureDetector.SimpleOnScaleGestureListener() {
             @Override
-            public boolean onScaleBegin(ScaleGestureDetector detector) {
-                return true;
-            }
-
-            @Override
             public boolean onScale(ScaleGestureDetector detector) {
+                isEnterScale = true;
+                if (isOnZooming) {
+                    return false;
+                }
                 float scale = detector.getScaleFactor();
                 if (!isSameTimeScaling) {
                     scaleCenterX = detector.getFocusX();
@@ -59,14 +61,10 @@ public class MyZoomImageView extends AppCompatImageView {
                     isSameTimeScaling = true;
                 }
                 float needScale = getNeedScale();
-                if (needScale < 1) {
-                    onScaling(scale);
+                if (needScale > minScale) {
+                    reductionScale(needScale);
                 } else {
-                    if (needScale > minScale) {
-                        reductionScale();
-                    } else {
-                        onScaling(scale);
-                    }
+                    onScaling(scale);
                 }
                 return true;
             }
@@ -74,16 +72,37 @@ public class MyZoomImageView extends AppCompatImageView {
             @Override
             public void onScaleEnd(ScaleGestureDetector detector) {
                 super.onScaleEnd(detector);
+                Log.e("inMess", "onScaleEnd: ");
                 upToScale();
             }
         });
         simpleDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                isOnScrolling = true;
+                lastScrollLeft = false;
+                lastScrollRight = false;
+                if (currentRectF == null) {
+                    disallowParent(false);
+                    return false;
+                }
+                if (isInMess() || isDoubleDown) {
+                    return false;
+                }
+                if (flingAnimator != null) {
+                    flingAnimator.cancel();
+                }
                 float left = currentRectF.left, top = currentRectF.top, right = currentRectF.right, bottom = currentRectF.bottom;
                 float endLeft = left - distanceX, endTop = top - distanceY, endRight = right - distanceX, endBottom = bottom - distanceY;
+                if (left - distanceX > 0 && distanceX < 0) {
+                    lastScrollLeft = true;
+                }
+                if (right - distanceX < width && distanceX > 0) {
+                    lastScrollRight = true;
+                }
                 float currentWidth = right - left;
                 float currentHeight = bottom - top;
+
                 picMatrix.postTranslate(-distanceX, -distanceY);
 //                // 图片高度大于view高度可以上下滑动
 //                // distanceX右滑是负数，左滑是正数
@@ -117,48 +136,78 @@ public class MyZoomImageView extends AppCompatImageView {
                 picMatrix.postTranslate(-distanceX, -distanceY);
                 setImageMatrix(picMatrix);
                 currentRectF.set(endLeft, endTop, endRight, endBottom);
-                disallowParent();
+                Log.e("inMess", "onScroll:");
+
                 return true;
             }
 
             @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                scaleCenterX = e.getRawX();
+                scaleCenterY = e.getRawY();
+                toDoubleClickScale();
+                Log.e("inMess", "onDouble:" + e.getRawX() + " " + e.getRawY());
+                return super.onDoubleTap(e);
+            }
+
+            @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                // fling后每秒移动的速度
+                // 进入了缩放操作就不处理fling
+                if (isEnterScale) {
+                    return false;
+                }
+                // velocityX、velocityY为fling后每秒移动的像素
                 float distanceX = e1.getRawX() - e2.getRawX();
                 float distanceY = e1.getRawY() - e2.getRawY();
-                Log.e("distance", "onFling: " + distanceX + " " + distanceY);
-                //1080p 1818 2482
                 // 以宽为1080为标准
-                float realMoveX = getRealMove(1080f / width * Math.abs(distanceX) / 1000 * pxToDp(velocityX));
-                float realMoveY = getRealMove((height / width * 1080f) / height * Math.abs(distanceY) / 1000 * pxToDp(velocityY));
+                float realMoveX = getRealMove(1080f / width * Math.abs(distanceX) / 300 * pxToDp(velocityX));
+                float realMoveY = getRealMove((height / width * 1080f) / height * Math.abs(distanceY) / 300 * pxToDp(velocityY));
                 startFlingAnimator(realMoveX, realMoveY);
+                Log.e("inMess", "onFling:");
                 return super.onFling(e1, e2, velocityX, velocityY);
 
             }
         });
     }
 
+    boolean isSetType;
+    //view宽高 图片宽高
+    int width, height, drawableWidth, drawableHeight;
+    // 图片原始边界
+    RectF originRectF, currentRectF, matrixRect;
+    int centerX, centerY;
+
+    private void setMatrixType() {
+        if (!isSetType) {
+            isSetType = true;
+            setScaleType(ScaleType.MATRIX);
+            Drawable drawable = getDrawable();
+            if (drawable == null) {
+                isSetType = false;
+                return;
+            }
+            width = getWidth();
+            height = getHeight();
+            centerX = width / 2;
+            centerY = height / 2;
+            drawableWidth = drawable.getIntrinsicWidth();
+            drawableHeight = drawable.getIntrinsicHeight();
+            picMatrix.postTranslate((width - drawableWidth) / 2, (height - drawableHeight) / 2);
+            float originScale = Math.min((float) width / drawableWidth, (float) height / drawableHeight);
+            float left = (width - originScale * drawableWidth) / 2;
+            float top = (height - originScale * drawableHeight) / 2;
+            float right = left + drawableWidth * originScale;
+            float bottom = top + drawableHeight * originScale;
+            originRectF = new RectF(left, top, right, bottom);
+            currentRectF = new RectF(left, top, right, bottom);
+            matrixRect = new RectF(0, 0, drawableWidth, drawableHeight);
+        }
+    }
+
     private float pxToDp(float px) {
         float scale = getResources().getDisplayMetrics().density;
         return px / scale;
     }
-
-    // 限制拖拽的最小最大距离
-    private float getRealMove(float value) {
-        if (value > 5000) {
-            value = 5000;
-        } else if (value < -5000) {
-            value = -5000;
-        }
-        if (value > 0 && value < 50) {
-            value = 50;
-        }
-        if (value < 0 && value > -50) {
-            value = -50;
-        }
-        return value;
-    }
-
 
     @Override
     public boolean performClick() {
@@ -168,40 +217,86 @@ public class MyZoomImageView extends AppCompatImageView {
     boolean isDoubleDown;
     float minScale = 1 / 0.6f;
 
+    // 上次滑动是否到了左边界、右边界
+    boolean lastScrollLeft, lastScrollRight;
+
+    // 是否在滑动中
+    boolean isOnScrolling;
+    float lastDownX, lastDownY;
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         performClick();
-        disallowParent();
+        disallowParent(true);
         int pointCount = event.getPointerCount();
         switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                // 按下时不知道是缩放还是滑动，重置值
+                isEnterScale = false;
+                lastDownX = event.getX();
+                lastDownY = event.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float distanceX = event.getX() - lastDownX;
+                boolean smallPic = currentRectF.width() <= originRectF.width();
+                boolean similarPic = currentRectF.equals(originRectF);
+                boolean isEndL = distanceX > 0 && lastScrollLeft && !isOnScrolling;
+                boolean isEndR = distanceX < 0 && lastScrollRight && !isOnScrolling;
+                if (smallPic || similarPic || isEndL || isEndR) {
+                    disallowParent(false);
+                }
+                break;
             case MotionEvent.ACTION_UP:
-                isContinuedScaling = true;
+                isOnScrolling = false;
+                isOnScrolling = false;
+                isOnZooming = false;
                 isDoubleDown = false;
                 isSameTimeScaling = false;
                 break;
         }
-        // 两个按下的点、不在缩放动画中、在同一次缩放操作
-        if (pointCount == 2 && !onZooming && isContinuedScaling) {
+        if (pointCount == 2) {
             isDoubleDown = true;
-            setMatrixType();
-            disallowParent();
-            scaleDetector.onTouchEvent(event);
-        } else {
-            //进行缩放操作后，最后抬起时会视为滑动操作，需要添加判断条件
-            if (currentRectF != null && !isDoubleDown) {
-                simpleDetector.onTouchEvent(event);
-            }
         }
+        // 两个按下的点、不在缩放动画中、在同一次缩放操作
+        setMatrixType();
+        scaleDetector.onTouchEvent(event);
+        //进行缩放操作后，最后抬起时会视为滑动操作，需要添加判断条件
+        simpleDetector.onTouchEvent(event);
         return true;
     }
 
-    private void disallowParent() {
-        getParent().requestDisallowInterceptTouchEvent(true);
+    // 限制拖拽的最小最大距离
+    private float getRealMove(float value) {
+        if (value > 5000) {
+            value = 5000;
+        } else if (value < -5000) {
+            value = -5000;
+        }
+        if (value > 0) {
+            if (value > 20 && value < 50) {
+                value = 50;
+            } else if (value < 20) {
+                value = 0;
+            }
+        }
+        if (value < 0) {
+            if (value < -20 && value > -50) {
+                value = -50;
+            } else if (value > -20) {
+                value = 0;
+            }
+        }
+        return value;
+    }
+
+
+    private void disallowParent(boolean b) {
+        getParent().requestDisallowInterceptTouchEvent(b);
     }
 
     float shouldMoveX, shouldMoveY;
     float lastMoveX, lastMoveY;
-    ValueAnimator animator;
+    ValueAnimator upAnimator;
 
     // 手指缩放中
     private void onScaling(float scale) {
@@ -211,7 +306,7 @@ public class MyZoomImageView extends AppCompatImageView {
         currentRectF = getEndValueRectF(currentRectF, scale);
     }
 
-    // 当前的矩形范围缩放后的值
+    // 当前的图形范围缩放后的值
     private RectF getEndValueRectF(RectF rectF, float scale) {
         float left = scaleCenterX - (scaleCenterX - currentRectF.left) * scale;
         float top = scaleCenterY - (scaleCenterY - currentRectF.top) * scale;
@@ -223,28 +318,31 @@ public class MyZoomImageView extends AppCompatImageView {
 
 
     // 手指离开后或者缩放到最小值时的缩放动画
-    ValueAnimator scaleAnimator;
+    ValueAnimator minScaleAnimator;
 
     // 还原缩放为1
     float lastScale = 1f;
     // 是否正在缩放还原中
-    boolean onZooming;
+    boolean isOnZooming;
 
     // 还原缩放时的偏差值
     float needMoveX, needMoveY;
 
 
-    // 还原缩放为1
-    private void reductionScale() {
-        onZooming = true;
-        float needScale = getNeedScale();
+    // 从小到大还原缩放为1
+    private void reductionScale(float needScale) {
+        if (isInMess()) {
+            return;
+        }
+        //还原缩放后，必须全部按压抬起才能继续下一次缩放
+        isOnZooming = true;
         RectF targetRectF = new RectF();
         targetRectF = getEndValueRectF(targetRectF, needScale);
         needMoveX = (originRectF.left - targetRectF.left) / (needScale - 1);
         needMoveY = (originRectF.top - targetRectF.top) / (needScale - 1);
-        if (scaleAnimator == null) {
-            scaleAnimator = ValueAnimator.ofFloat(1f, needScale);
-            scaleAnimator.addUpdateListener(animation -> {
+        if (minScaleAnimator == null) {
+            minScaleAnimator = ValueAnimator.ofFloat(1f, needScale);
+            minScaleAnimator.addUpdateListener(animation -> {
                 float value = (float) animation.getAnimatedValue();
                 float thisMoveX = (value - lastScale) * needMoveX;
                 float thisMoveY = (value - lastScale) * needMoveY;
@@ -253,12 +351,14 @@ public class MyZoomImageView extends AppCompatImageView {
                 onScaling(realScale);
                 lastScale = value;
             });
-            scaleAnimator.setInterpolator(new DecelerateInterpolator());
-            scaleAnimator.setDuration(300);
-            scaleAnimator.addListener(new AnimatorListenerAdapter() {
+            minScaleAnimator.setInterpolator(new DecelerateInterpolator());
+            minScaleAnimator.setDuration(300);
+            minScaleAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
+                    lastScrollLeft = true;
+                    lastScrollRight = true;
                     lastScale = 1f;
                     // onScaling有给currentRect赋值，这里重新赋值为了精度
                     currentRectF.left = originRectF.left;
@@ -268,31 +368,32 @@ public class MyZoomImageView extends AppCompatImageView {
                     picMatrix.reset();
                     picMatrix.postTranslate((width - drawableWidth) / 2, (height - drawableHeight) / 2);
                     setImageMatrix(picMatrix);
-                    onZooming = false;
-                    // 此时没有抬起全部按压点，不能继续缩放
-                    if (isSameTimeScaling) {
-                        isContinuedScaling = false;
-                    }
                 }
             });
         } else {
-            scaleAnimator.setFloatValues(1f, needScale);
+            minScaleAnimator.setFloatValues(1f, needScale);
         }
-        scaleAnimator.start();
+        minScaleAnimator.start();
     }
-
 
     //此时的大小对比原大小需要缩放的scale
     private float getNeedScale() {
         float currentImageWidth = currentRectF.right - currentRectF.left;
-        float currentImageHeight = currentRectF.right - currentRectF.left;
+        float currentImageHeight = currentRectF.bottom - currentRectF.top;
         float originImageWidth = originRectF.right - originRectF.left;
-        float originImageHeight = originRectF.right - originRectF.left;
+        float originImageHeight = originRectF.bottom - originRectF.top;
         if (currentImageHeight > originImageHeight && currentImageWidth > originImageWidth) {
             return Math.min(originImageHeight / currentImageHeight, originImageWidth / currentImageWidth);
         } else {
             return Math.max(originImageHeight / currentImageHeight, originImageWidth / currentImageWidth);
         }
+    }
+
+    // 获取当前的缩放值
+    private float getCurrentScale() {
+        float currentImageWidth = currentRectF.right - currentRectF.left;
+        float originImageWidth = originRectF.right - originRectF.left;
+        return currentImageWidth / originImageWidth;
     }
 
 
@@ -303,16 +404,27 @@ public class MyZoomImageView extends AppCompatImageView {
     float lastDragX, lastDragY;
     float dragScaleX, dragScaleY;
 
+    //是否在滑动动画中
+    boolean isOnFling;
+    float allDragX, allDragY;
+
     private void startFlingAnimator(float moveX, float moveY) {
+        if (isInMess()) {
+            return;
+        }
+        allDragX = 0;
+        allDragY = 0;
         // 这里moveX、moveY和scroll的数值正负是相反的
         float left = currentRectF.left, top = currentRectF.top, right = currentRectF.right, bottom = currentRectF.bottom;
         float currentWidth = right - left;
         float currentHeight = bottom - top;
         if (left + moveX > 0) {
             moveX = -left;
+            lastScrollLeft = true;
         }
         if (right + moveX < width) {
             moveX = width - right;
+            lastScrollRight = true;
         }
         if (top + moveY > 0) {
             moveY = -top;
@@ -333,6 +445,7 @@ public class MyZoomImageView extends AppCompatImageView {
         if (finalDragX == 0 && finalDragY == 0) {
             return;
         }
+        isOnFling = true;
         float endLeft = left + moveX, endTop = top + moveY, endRight = right + moveX, endBottom = bottom + moveY;
         currentRectF.set(endLeft, endTop, endRight, endBottom);
 
@@ -345,14 +458,14 @@ public class MyZoomImageView extends AppCompatImageView {
             flingAnimator.addUpdateListener(animation -> {
                 float value = (float) animation.getAnimatedValue();
                 float dragX = 0, dragY = 0;
-                if (finalDragX != 0 && value <= Math.abs(finalDragX)) {
+                if (finalDragX != 0 && value * dragScaleX <= Math.abs(finalDragX)) {
                     if (finalDragX > 0) {
                         dragX = value * dragScaleX - lastDragX;
                     } else {
                         dragX = -value * dragScaleX + lastDragX;
                     }
                 }
-                if (finalDragY != 0 && value <= Math.abs(finalDragY)) {
+                if (finalDragY != 0 && value * dragScaleY <= Math.abs(finalDragY)) {
                     if (finalDragY > 0) {
                         dragY = value * dragScaleY - lastDragY;
                     } else {
@@ -361,12 +474,21 @@ public class MyZoomImageView extends AppCompatImageView {
                 }
                 lastDragX = value * dragScaleX;
                 lastDragY = value * dragScaleY;
+                allDragX += dragX;
+                allDragY += dragY;
                 picMatrix.postTranslate(dragX, dragY);
-                Log.e("startFlingAnimator", "startFlingAnimator: " + dragX + " " + dragY + " " + currentRectF.toString());
                 setImageMatrix(picMatrix);
             });
-            flingAnimator.setDuration(300);
+            flingAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    isOnFling = false;
+                }
+            });
+            flingAnimator.setDuration(500);
         } else {
+            flingAnimator.cancel();
             flingAnimator.setFloatValues(finalMoveValue);
         }
         flingAnimator.start();
@@ -374,8 +496,9 @@ public class MyZoomImageView extends AppCompatImageView {
 
     // 缩放后
     private void upToScale() {
-        if (getNeedScale() > 1f) {
-            reductionScale();
+        float needScale = getNeedScale();
+        if (needScale > 1f) {
+            reductionScale(needScale);
         } else {
             // 需要向各个方向移动的距离
             if (currentRectF.left > 0) {
@@ -432,9 +555,9 @@ public class MyZoomImageView extends AppCompatImageView {
             lastMoveY = 0;
             // 拿最大的移动距离为动画变动的值
             float allMove = Math.max(Math.abs(shouldMoveX), Math.abs(shouldMoveY));
-            if (animator == null) {
-                animator = ValueAnimator.ofFloat(allMove);
-                animator.addUpdateListener(animation -> {
+            if (upAnimator == null) {
+                upAnimator = ValueAnimator.ofFloat(allMove);
+                upAnimator.addUpdateListener(animation -> {
                     float value = (float) animation.getAnimatedValue();
                     float dx, dy;
                     if (shouldMoveX > 0) {
@@ -460,47 +583,98 @@ public class MyZoomImageView extends AppCompatImageView {
                     picMatrix.postTranslate(dx, dy);
                     setImageMatrix(picMatrix);
                 });
-                animator.setDuration(200);
-                animator.setInterpolator(new DecelerateInterpolator());
+                upAnimator.setDuration(200);
+                upAnimator.setInterpolator(new DecelerateInterpolator());
             } else {
-                animator.setFloatValues(allMove);
+                upAnimator.setFloatValues(allMove);
             }
-            animator.start();
+            upAnimator.start();
         }
     }
 
 
-    boolean isSetType;
-    //view宽高 图片宽高
-    int width, height, drawableWidth, drawableHeight;
-    // 图片原始边界
-    RectF originRectF, currentRectF, matrixRect;
-    int centerX, centerY;
+    // 双击缩放方法
+    ValueAnimator targetAnimator;
+    // 缩放次数为两次 singleBigScale*singleBigScale=maxScale;
+    float maxScale = 2.56f, singleBigScale = 1.6f;
+    float lastBingScale;
+    boolean isDoubleScale;
 
-    private void setMatrixType() {
-        if (!isSetType) {
-            isSetType = true;
-            setScaleType(ScaleType.MATRIX);
-            Drawable drawable = getDrawable();
-            if (drawable == null) {
-                isSetType = false;
-                return;
+    private void toDoubleClickScale() {
+        if (isInMess()) {
+            return;
+        }
+        if (currentRectF == null) {
+            setMatrixType();
+        }
+        float targetScale;
+        float currentScale = getCurrentScale();
+        float picWidth = currentRectF.right - currentRectF.left;
+        float picHeight = currentRectF.bottom - currentRectF.top;
+        // 宽小于屏幕，高大于等于屏幕 缩放宽度和屏幕一样宽
+        if (picWidth <= width && picHeight >= height) {
+            scaleCenterX = width / 2;
+        }
+        if (picHeight < height && picWidth >= height) {
+            scaleCenterY = height / 2;
+        }
+        lastBingScale = currentScale;
+        if (currentScale >= maxScale) {
+            reductionScale(1 / currentScale);
+        } else {
+            isDoubleScale = true;
+            if (picWidth < width && picHeight >= height) {
+                lastScrollLeft = true;
+                lastScrollRight = true;
+                targetScale = currentScale * (width / picWidth);
+            } else {
+                if (currentScale < singleBigScale) {
+                    targetScale = singleBigScale;
+                } else {
+                    targetScale = maxScale;
+                }
             }
-            width = getWidth();
-            height = getHeight();
-            centerX = width / 2;
-            centerY = height / 2;
-            drawableWidth = drawable.getIntrinsicWidth();
-            drawableHeight = drawable.getIntrinsicHeight();
-            picMatrix.postTranslate((width - drawableWidth) / 2, (height - drawableHeight) / 2);
-            float originScale = Math.min((float) width / drawableWidth, (float) height / drawableHeight);
-            float left = (width - originScale * drawableWidth) / 2;
-            float top = (height - originScale * drawableHeight) / 2;
-            float right = left + drawableWidth * originScale;
-            float bottom = top + drawableHeight * originScale;
-            originRectF = new RectF(left, top, right, bottom);
-            currentRectF = new RectF(left, top, right, bottom);
-            matrixRect = new RectF(0, 0, drawableWidth, drawableHeight);
+            if (targetAnimator == null) {
+                targetAnimator = ValueAnimator.ofFloat(currentScale, targetScale);
+                targetAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+                targetAnimator.addUpdateListener(animation -> {
+                    float value = (float) animation.getAnimatedValue();
+                    float scale = value / lastBingScale;
+                    onScaling(scale);
+                    lastBingScale = value;
+                });
+                targetAnimator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        isDoubleScale = false;
+                        if (lastScrollLeft && lastScrollRight) {
+                            
+                        }
+                    }
+                });
+                targetAnimator.setDuration(300);
+            } else {
+                targetAnimator.setFloatValues(currentScale, targetScale);
+            }
+            targetAnimator.start();
+        }
+    }
+
+    private boolean isInMess() {
+        return isDoubleScale || isOnZooming || isOnFling;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        stopAnimator(flingAnimator, minScaleAnimator, targetAnimator, upAnimator);
+    }
+
+    private void stopAnimator(Animator... animators) {
+        for (Animator animator : animators) {
+            if (animator != null) {
+                animator.cancel();
+            }
         }
     }
 }
