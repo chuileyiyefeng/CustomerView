@@ -80,7 +80,6 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
         contentView.setBackground(colorDrawable);
         ivPager.setCurrentItem(bean.getPosition());
         ivPager.addOnPageChangeListener(this);
-
         enterAnimation(ivPager);
     }
 

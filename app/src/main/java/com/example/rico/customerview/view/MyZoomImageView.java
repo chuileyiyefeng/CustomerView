@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -137,8 +138,14 @@ public class MyZoomImageView extends AppCompatImageView {
                 setImageMatrix(picMatrix);
                 currentRectF.set(endLeft, endTop, endRight, endBottom);
                 Log.e("inMess", "onScroll:");
-
                 return true;
+            }
+
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                disallowParent(false);
+                onClickListener.onClick(MyZoomImageView.this);
+                return false;
             }
 
             @Override
@@ -160,8 +167,8 @@ public class MyZoomImageView extends AppCompatImageView {
                 float distanceX = e1.getRawX() - e2.getRawX();
                 float distanceY = e1.getRawY() - e2.getRawY();
                 // 以宽为1080为标准
-                float realMoveX = getRealMove(1080f / width * Math.abs(distanceX) / 300 * pxToDp(velocityX));
-                float realMoveY = getRealMove((height / width * 1080f) / height * Math.abs(distanceY) / 300 * pxToDp(velocityY));
+                float realMoveX = getRealMove(1080f / width * Math.abs(distanceX) / 100 * pxToDp(velocityX));
+                float realMoveY = getRealMove((height / width * 1080f) / height * Math.abs(distanceY) / 100 * pxToDp(velocityY));
                 startFlingAnimator(realMoveX, realMoveY);
                 Log.e("inMess", "onFling:");
                 return super.onFling(e1, e2, velocityX, velocityY);
@@ -209,9 +216,17 @@ public class MyZoomImageView extends AppCompatImageView {
         return px / scale;
     }
 
+
     @Override
     public boolean performClick() {
         return super.performClick();
+    }
+
+    OnClickListener onClickListener;
+
+    @Override
+    public void setOnClickListener(@Nullable OnClickListener l) {
+        onClickListener = l;
     }
 
     boolean isDoubleDown;
@@ -242,7 +257,7 @@ public class MyZoomImageView extends AppCompatImageView {
                 boolean similarPic = currentRectF.equals(originRectF);
                 boolean isEndL = distanceX > 0 && lastScrollLeft && !isOnScrolling;
                 boolean isEndR = distanceX < 0 && lastScrollRight && !isOnScrolling;
-                if (smallPic || similarPic || isEndL || isEndR) {
+                if (smallPic || similarPic || isEndL || isEndR || isScaleToParentWidth) {
                     disallowParent(false);
                 }
                 break;
@@ -352,7 +367,7 @@ public class MyZoomImageView extends AppCompatImageView {
                 lastScale = value;
             });
             minScaleAnimator.setInterpolator(new DecelerateInterpolator());
-            minScaleAnimator.setDuration(300);
+            minScaleAnimator.setDuration(200);
             minScaleAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -486,11 +501,16 @@ public class MyZoomImageView extends AppCompatImageView {
                     isOnFling = false;
                 }
             });
-            flingAnimator.setDuration(500);
         } else {
             flingAnimator.cancel();
             flingAnimator.setFloatValues(finalMoveValue);
         }
+        long duration;
+        duration = (long) (finalMoveValue / 4);
+        if (duration <= 300) {
+            duration = 300;
+        }
+        flingAnimator.setDuration(duration);
         flingAnimator.start();
     }
 
@@ -597,8 +617,11 @@ public class MyZoomImageView extends AppCompatImageView {
     ValueAnimator targetAnimator;
     // 缩放次数为两次 singleBigScale*singleBigScale=maxScale;
     float maxScale = 2.56f, singleBigScale = 1.6f;
+    // 双击放大的次数 因为缩放会有误差，所以加上次数判断
+    int doubleScaleCount;
     float lastBingScale;
-    boolean isDoubleScale;
+    // 是否是双击屏幕缩放、是否是缩放到父view宽度
+    boolean isDoubleScale, isScaleToParentWidth;
 
     private void toDoubleClickScale() {
         if (isInMess()) {
@@ -611,26 +634,57 @@ public class MyZoomImageView extends AppCompatImageView {
         float currentScale = getCurrentScale();
         float picWidth = currentRectF.right - currentRectF.left;
         float picHeight = currentRectF.bottom - currentRectF.top;
+        lastBingScale = currentScale;
+        // 这是属性是判断图片视图是否处于铺满宽度状态，这个状态左右滑动不拦截父类的监听事件
+        isScaleToParentWidth = false;
         // 宽小于屏幕，高大于等于屏幕 缩放宽度和屏幕一样宽
-        if (picWidth <= width && picHeight >= height) {
+        if (picWidth <= width) {
             scaleCenterX = width / 2;
         }
-        if (picHeight < height && picWidth >= height) {
+        if (picHeight <= height) {
             scaleCenterY = height / 2;
         }
-        lastBingScale = currentScale;
-        if (currentScale >= maxScale) {
+        Log.e("currentScale", "toDoubleClickScale: " + currentScale);
+        if (currentScale >= maxScale || doubleScaleCount == 2) {
+            // 计算缩放中心,使缩放效果为向中心点缩放
+            float topDistance = originRectF.top - currentRectF.top;
+            float bottomDistance = currentRectF.bottom - originRectF.bottom;
+            float leftDistance = originRectF.left - currentRectF.left;
+            float rightDistance = currentRectF.right - originRectF.right;
+            if (topDistance != 0 && bottomDistance != 0) {
+                scaleCenterX = width / (leftDistance + rightDistance) * leftDistance;
+                scaleCenterY = height / (topDistance + bottomDistance) * topDistance;
+            } else {
+                if (currentRectF.bottom > originRectF.bottom && topDistance == 0) {
+                    scaleCenterY = 0;
+                } else if (currentRectF.top < originRectF.top && bottomDistance == 0) {
+                    scaleCenterY = height;
+                }
+                if (currentRectF.right > originRectF.right && leftDistance == 0) {
+                    scaleCenterX = 0;
+                } else if (currentRectF.left < originRectF.left && rightDistance == 0) {
+                    scaleCenterX = width;
+                }
+            }
+            doubleScaleCount = 0;
             reductionScale(1 / currentScale);
         } else {
+            // 宽小于屏幕，高大于等于屏幕 缩放宽度和屏幕一样宽
             isDoubleScale = true;
             if (picWidth < width && picHeight >= height) {
-                lastScrollLeft = true;
-                lastScrollRight = true;
+                isScaleToParentWidth = true;
                 targetScale = currentScale * (width / picWidth);
             } else {
                 if (currentScale < singleBigScale) {
-                    targetScale = singleBigScale;
+                    if (doubleScaleCount == 0) {
+                        targetScale = singleBigScale;
+                        doubleScaleCount++;
+                    } else {
+                        targetScale = maxScale;
+                        doubleScaleCount = 2;
+                    }
                 } else {
+                    doubleScaleCount++;
                     targetScale = maxScale;
                 }
             }
@@ -647,12 +701,14 @@ public class MyZoomImageView extends AppCompatImageView {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         isDoubleScale = false;
-                        if (lastScrollLeft && lastScrollRight) {
-                            
+                        if (isScaleToParentWidth) {
+                            //精度可能会有误差，所以要设置一下最终值
+                            currentRectF.left = 0;
+                            currentRectF.right = width;
                         }
                     }
                 });
-                targetAnimator.setDuration(300);
+                targetAnimator.setDuration(200);
             } else {
                 targetAnimator.setFloatValues(currentScale, targetScale);
             }
@@ -660,6 +716,7 @@ public class MyZoomImageView extends AppCompatImageView {
         }
     }
 
+    // 是否处于动画中
     private boolean isInMess() {
         return isDoubleScale || isOnZooming || isOnFling;
     }
