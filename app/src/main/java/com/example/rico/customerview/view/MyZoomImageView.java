@@ -239,10 +239,12 @@ public class MyZoomImageView extends AppCompatImageView {
     boolean isOnScrolling;
     float lastDownX, lastDownY;
 
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         performClick();
         disallowParent(true);
+        setMatrixType();
         int pointCount = event.getPointerCount();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -253,6 +255,7 @@ public class MyZoomImageView extends AppCompatImageView {
                 break;
             case MotionEvent.ACTION_MOVE:
                 float distanceX = event.getX() - lastDownX;
+                float distanceY = event.getY() - lastDownY;
                 boolean smallPic = currentRectF.width() <= originRectF.width();
                 boolean similarPic = currentRectF.equals(originRectF);
                 boolean isEndL = distanceX > 0 && lastScrollLeft && !isOnScrolling;
@@ -272,15 +275,14 @@ public class MyZoomImageView extends AppCompatImageView {
         if (pointCount == 2) {
             isDoubleDown = true;
         }
-        // 两个按下的点、不在缩放动画中、在同一次缩放操作
-        setMatrixType();
         scaleDetector.onTouchEvent(event);
-        //进行缩放操作后，最后抬起时会视为滑动操作，需要添加判断条件
         simpleDetector.onTouchEvent(event);
         return true;
     }
 
-    // 限制拖拽的最小最大距离
+
+
+    // 限制fling的最小最大距离
     private float getRealMove(float value) {
         if (value > 5000) {
             value = 5000;

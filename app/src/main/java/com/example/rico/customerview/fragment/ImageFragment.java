@@ -23,25 +23,21 @@ public class ImageFragment extends BaseFragment {
         if (getArguments() != null) {
             String url = getArguments().getString("url");
             ivPic = (ImageView) findViewById(R.id.iv_pic);
-
             if (getContext() != null) {
                 Glide.with(getContext()).load(url)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)//不使用缓存
-                        .skipMemoryCache(true)
+//                        .diskCacheStrategy(DiskCacheStrategy.NONE)//不使用缓存
+//                        .skipMemoryCache(true)
                         .into(ivPic);
             }
             ivPic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getActivity().finish();
+                    if (getActivity()!=null) {
+                        getActivity().finish();
+                    }
                 }
             });
 
         }
     }
-
-    //图片记载进度在manifest配置
-//        <meta-data
-//    android:name="com.example.rico.customerview.glideHelper.MyGlideModel"
-//    android:value="AppGlideModule" />
 }
