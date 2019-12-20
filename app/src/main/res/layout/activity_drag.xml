@@ -4,10 +4,14 @@
     android:layout_height="match_parent">
 
     <com.example.rico.customerview.view.DragFrameLayout
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@color/red">
+        android:background="@color/blue_y">
 
+        <com.example.rico.customerview.view.MyZoomImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/img1" />
     </com.example.rico.customerview.view.DragFrameLayout>
 </FrameLayout>

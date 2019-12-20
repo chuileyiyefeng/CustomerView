@@ -15,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 /**
  * Created by Tmp on 2019/11/4.
  */
-public class PictureDetailActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
+public class PictureDetailActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, ImageFragment.PicLayoutChange {
     PicInfoBean bean;
     RecyclerView rvPoint;
     PointAdapter pointAdapter;
@@ -70,6 +71,7 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
             Bundle bundle = new Bundle();
             bundle.putString("url", bean.getStrings().get(i));
             fragment.setArguments(bundle);
+            fragment.setChange(this);
             fragments.add(fragment);
         }
         ivPager = findViewById(R.id.iv_pager);
@@ -101,7 +103,7 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
         view.setPivotY(0);
         view.setTranslationX(bean.getMyRectList().get(lastPosition).getLeft());
         view.setTranslationY(bean.getMyRectList().get(lastPosition).getTop() - (point.y - point.x) / 2f * scaleX);
-        float realScale=scaleX;
+        float realScale = scaleX;
         view.setScaleX(realScale);
         view.setScaleY(realScale);
         //设置动画
@@ -185,5 +187,21 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
     @Override
     public void onPageScrollStateChanged(int i) {
 
+    }
+
+    float allY;
+
+    @Override
+    public void change(float x, float y, int heightDistance) {
+        allY += y;
+        if (allY > 0) {
+            if (allY > heightDistance) {
+                allY = heightDistance;
+            }
+            colorDrawable.setAlpha((int) (255 - 255 * (allY / heightDistance)));
+        } else {
+            colorDrawable.setAlpha(255);
+        }
+        Log.e("activity", "initView: " + x + " " + y + " " + allY);
     }
 }

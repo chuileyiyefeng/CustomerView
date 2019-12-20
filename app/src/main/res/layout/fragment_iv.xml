@@ -3,15 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.example.rico.customerview.view.DragFrameLayout
+    <com.example.rico.customerview.view.MyZoomImageView
+        android:id="@+id/iv_pic"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.example.rico.customerview.view.MyZoomImageView
-            android:id="@+id/iv_pic"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@mipmap/img1" />
-    </com.example.rico.customerview.view.DragFrameLayout>
-
+        android:layout_height="match_parent"
+        android:src="@mipmap/img1" />
 </FrameLayout>

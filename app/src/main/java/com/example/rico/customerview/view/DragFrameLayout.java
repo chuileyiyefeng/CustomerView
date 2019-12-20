@@ -3,8 +3,6 @@ package com.example.rico.customerview.view;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
@@ -37,19 +35,10 @@ public class DragFrameLayout extends FrameLayout {
     }
 
     float currentLeft, currentTop;
-    GestureDetector simpleDetector;
+
 
     private void initView() {
-        simpleDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                Log.e("scroll", "onScroll: " + distanceX + " " + distanceY);
-                currentLeft = getLeft() - distanceX;
-                currentTop = getTop() - distanceY;
-                layout((int) currentLeft, (int) currentTop, (int) currentLeft + width, (int) currentTop + height);
-                return true;
-            }
-        });
+
     }
 
     @Override
@@ -63,33 +52,32 @@ public class DragFrameLayout extends FrameLayout {
     // 拦截竖向滑动
 
     boolean isInterceptVertical;
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                isInterceptVertical=false;
                 lastDownX = event.getRawX();
                 lastDownY = event.getRawY();
                 break;
             case MotionEvent.ACTION_MOVE:
                 float distanceX = event.getRawX() - lastDownX;
                 float distanceY = event.getRawY() - lastDownY;
-                isInterceptVertical=Math.abs(distanceX)<Math.abs(distanceY);
-                lastDownX = event.getRawX();
-                lastDownY = event.getRawY();
+                isInterceptVertical = Math.abs(distanceX) < Math.abs(distanceY);
                 break;
             case MotionEvent.ACTION_UP:
-                isInterceptVertical=false;
+                disallowIntercept = true;
                 break;
         }
-        Log.e("onIntercept", "onInterceptTouchEvent: "+super.onInterceptTouchEvent(event) );
         return false;
     }
+    boolean disallowIntercept;
+
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         performClick();
-//        simpleDetector.onTouchEvent(event);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 lastDownX = event.getRawX();
@@ -106,6 +94,7 @@ public class DragFrameLayout extends FrameLayout {
                 break;
             case MotionEvent.ACTION_UP:
                 // 还原
+                disallowIntercept = false;
                 break;
         }
         return true;
