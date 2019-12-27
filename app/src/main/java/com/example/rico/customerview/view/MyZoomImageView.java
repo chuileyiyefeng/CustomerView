@@ -305,17 +305,18 @@ public class MyZoomImageView extends AppCompatImageView {
                     disallowParent(false);
                 }
                 if (canChangeViewPosition && currentRectF == null || currentRectF.equals(originRectF)) {
-                    float distanceRowX = event.getRawX() - lastDownRowX;
-                    float distanceRowY = event.getRawY() - lastDownRowY;
-                    float realX = Math.abs(distanceRowX);
-                    float realY = Math.abs(distanceRowY);
-                    if ((realY > touchSlop && realY > realX) || startChangePos) {
-                        startChangePos = true;
-                        currentLeft = getLeft() + distanceRowX;
-                        currentTop = getTop() + distanceRowY;
-                        layout((int) currentLeft, (int) currentTop, (int) currentLeft + width, (int) currentTop + height);
-                        if (layoutChangeListener != null) {
-                            layoutChangeListener.change(distanceRowX, distanceRowY, (int) originRectF.top);
+                    if (!isDoubleDown) {
+                        float distanceRowX = event.getRawX() - lastDownRowX;
+                        float distanceRowY = event.getRawY() - lastDownRowY;
+                        float realX = Math.abs(distanceRowX);
+                        float realY = Math.abs(distanceRowY);
+                        if ((realY > touchSlop && realY > realX) || startChangePos) {
+                            startChangePos = true;
+                            currentLeft = getLeft() + distanceRowX;
+                            currentTop = getTop() + distanceRowY;
+                            if (layoutChangeListener != null) {
+                                layoutChangeListener.change(distanceRowX, distanceRowY, (int) event.getRawY());
+                            }
                         }
                     }
                     lastDownRowX = event.getRawX();

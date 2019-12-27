@@ -49,7 +49,7 @@ public class ImageFragment extends BaseFragment {
 
                 @Override
                 public void release() {
-                    
+                    picLayoutChange.release();
                 }
 
             });
@@ -64,5 +64,6 @@ public class ImageFragment extends BaseFragment {
 
     public interface PicLayoutChange {
         void change(float x, float y,int heightDistance);
+        void  release();
     }
 }

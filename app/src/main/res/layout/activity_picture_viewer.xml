@@ -10,7 +10,8 @@
         android:id="@+id/rv_pic"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="15dp" />
+        android:layout_marginStart="15dp"
+        android:overScrollMode="never"/>
     <com.example.rico.customerview.view.MyZoomImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
