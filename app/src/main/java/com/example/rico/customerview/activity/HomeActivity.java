@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
 import com.example.rico.customerview.R;
-import com.example.rico.customerview.SomeThing;
 import com.example.rico.customerview.adapter.ViewPagerAdapter;
 import com.example.rico.customerview.fragment.HomeFragment1;
 import com.example.rico.customerview.fragment.HomeFragment2;

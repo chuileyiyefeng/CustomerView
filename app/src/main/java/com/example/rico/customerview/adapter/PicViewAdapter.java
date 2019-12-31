@@ -13,6 +13,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.rico.customerview.R;
+import com.example.rico.util.BitmapLruCache;
 
 import java.util.ArrayList;
 
@@ -35,12 +36,13 @@ public class PicViewAdapter extends BaseAdapter<String> {
     @Override
     protected void bindHolder(@NonNull BaseViewHolder holder, int i) {
         ImageView iv = holder.itemView.findViewById(R.id.iv_pic);
-        if (scales.size()==i) {
-            scales.add(i,1f);
+        if (scales.size() == i) {
+            scales.add(i, 1f);
         }
+        String url = getItem(i);
         Glide.with(context)
                 .asBitmap()
-                .load(getItem(i))
+                .load(url)
                 .listener(new RequestListener<Bitmap>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
@@ -48,9 +50,10 @@ public class PicViewAdapter extends BaseAdapter<String> {
                     }
 
                     @Override
-                    public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
-                        Log.e("itemBitmap", "onResourceReady: " + resource.getHeight() + " " + resource.getWidth());
-                        scales.set(i, (float) resource.getWidth() / resource.getHeight());
+                    public boolean onResourceReady(Bitmap bitmap, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                        Log.e("itemBitmap", "onResourceReady: " + bitmap.getHeight() + " " + bitmap.getWidth() + " " + bitmap.getAllocationByteCount());
+                        scales.set(i, (float) bitmap.getWidth() / bitmap.getHeight());
+                        BitmapLruCache.getInstance().putBitmapToMemory(url, bitmap);
                         return false;
                     }
                 }).into(iv);

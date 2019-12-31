@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 
 import com.example.rico.customerview.R;
-import com.example.rico.customerview.StatusBarUtil;
+import com.example.rico.util.StatusBarUtil;
 
 /**
  * Created by Tmp on 2018/12/18.

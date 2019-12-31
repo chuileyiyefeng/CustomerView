@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:fitsSystemWindows="true">
-
     <android.support.v7.widget.RecyclerView
         android:visibility="visible"
         android:id="@+id/rv_pic"
@@ -12,9 +11,5 @@
         android:layout_height="match_parent"
         android:layout_marginStart="15dp"
         android:overScrollMode="never"/>
-    <com.example.rico.customerview.view.MyZoomImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@mipmap/img1" />
 
 </LinearLayout>

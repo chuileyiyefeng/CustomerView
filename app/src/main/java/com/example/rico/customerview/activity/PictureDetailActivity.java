@@ -6,7 +6,6 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -14,18 +13,18 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.LinearLayout;
 
 import com.example.rico.customerview.R;
-import com.example.rico.customerview.adapter.PointAdapter;
 import com.example.rico.customerview.adapter.ViewPagerAdapter;
 import com.example.rico.customerview.bean.MyRect;
 import com.example.rico.customerview.bean.PicInfoBean;
 import com.example.rico.customerview.fragment.ImageFragment;
+import com.example.rico.util.StatusBarUtil;
 
 import java.util.ArrayList;
 
@@ -34,18 +33,18 @@ import java.util.ArrayList;
  */
 public class PictureDetailActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, ImageFragment.PicLayoutChange {
     PicInfoBean bean;
-    RecyclerView rvPoint;
-    PointAdapter pointAdapter;
 
     View contentView;
     ViewPager ivPager;
+    LinearLayout llPoint;
+
     ViewPagerAdapter pagerAdapter;
     ArrayList<Fragment> fragments;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        StatusBarUtil.setTransparent(this);
+        StatusBarUtil.setTransparent(this);
         setContentView(bindLayout());
         doBusiness();
     }
@@ -55,21 +54,25 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
     }
 
     public void doBusiness() {
-        rvPoint = findViewById(R.id.rv_point);
-        pointAdapter = new PointAdapter(this);
-        bean = (PicInfoBean) getIntent().getSerializableExtra("picInfoBean");
+        bean = getIntent().getParcelableExtra("picInfoBean");
         lastPosition = bean.getPosition();
-
-        rvPoint.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        llPoint = findViewById(R.id.ll_point);
         for (int i = 0; i < bean.getStrings().size(); i++) {
-            pointAdapter.addItem(bean.getPosition() == i);
+            View view = LayoutInflater.from(this).inflate(R.layout.item_point, null);
+            View selectView = view.findViewById(R.id.view_select);
+            View unSelectView = view.findViewById(R.id.view_un_select);
+            if (i == lastPosition) {
+                selectView.setVisibility(View.VISIBLE);
+                unSelectView.setVisibility(View.INVISIBLE);
+            }
+            llPoint.addView(view);
         }
-        rvPoint.setAdapter(pointAdapter);
         fragments = new ArrayList<>();
         for (int i = 0; i < bean.getStrings().size(); i++) {
             ImageFragment fragment = new ImageFragment();
             Bundle bundle = new Bundle();
             bundle.putString("url", bean.getStrings().get(i));
+            bundle.putString("thumbnail", bean.getOriginStrings().get(i));
             fragment.setArguments(bundle);
             fragment.setChange(this);
             fragments.add(fragment);
@@ -102,13 +105,48 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
     int lastClipValue;
 
     private void enterAnimation(View view) {
-        colorDrawable.setAlpha(0);
-        Point point = new Point();
-        getWindowManager().getDefaultDisplay().getSize(point);
-        width = point.x;
-        height = point.y;
-        MyRect myRect = bean.getMyRectList().get(lastPosition);
-        // 图片的宽高比
+        ivPager.post(new Runnable() {
+            @Override
+            public void run() {
+                int hhh = ivPager.getMeasuredHeight();
+                width = ivPager.getMeasuredWidth();
+                height = ivPager.getMeasuredHeight();
+                MyRect myRect = bean.getMyRectList().get(lastPosition);
+                // 图片的宽高比
+                getSizeChange(view, myRect, true);
+
+                //缩放view
+                view.setPivotX(0);
+                view.setPivotY(0);
+                view.setTranslationX(translateX);
+                view.setTranslationY(translateY);
+                float realScale = originScale;
+                view.setScaleX(realScale);
+                view.setScaleY(realScale);
+                //设置动画
+                TimeInterpolator sDecelerator = new DecelerateInterpolator();
+                //设置imageView缩放动画
+                view.animate().setDuration(DURATION_IN)
+                        .scaleX(1).scaleY(1)
+                        .translationX(0).translationY(0)
+                        .setInterpolator(sDecelerator);
+
+                // 设置activity主布局背景颜色DURATION毫秒内透明度从透明到不透明
+                ObjectAnimator bgAnim = ObjectAnimator.ofInt(colorDrawable, "alpha", 0, 255);
+                bgAnim.setDuration(DURATION_IN);
+                bgAnim.start();
+                bgAnim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        llPoint.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+        });
+    }
+
+    private void getSizeChange(View view, MyRect myRect, boolean needClip) {
         float widthHeightScale = myRect.getWidthHeightScale();
         float bigScale = 1f;
         if (widthHeightScale > 1f) {
@@ -139,87 +177,69 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
                 translateY = myRect.getTop() - (height - height * widthHeightScale) / 2 * originScale;
             }
         }
-        //缩放view
-        view.setPivotX(0);
-        view.setPivotY(0);
-        view.setTranslationX(translateX);
-        view.setTranslationY(translateY);
-        float realScale = originScale;
-        view.setScaleX(realScale);
-        view.setScaleY(realScale);
-
         // 裁剪显示区域
-        clipRect = new Rect();
+        clipRect = new Rect(0, 0, width, height);
         //裁剪宽度
         if (widthHeightScale > 1) {
             type = 1;
             clipSize = (int) (width - width / widthHeightScale) / 2;
-            clipRect.set((int) (width - width / widthHeightScale) / 2, 0, (int) (width + width / widthHeightScale) / 2, height);
-            view.setClipBounds(clipRect);
+            if (needClip) {
+                clipRect.set((int) (width - width / widthHeightScale) / 2, 0, (int) (width + width / widthHeightScale) / 2, height);
+            }
             // 裁剪高度
         } else if (widthHeightScale < 1) {
             type = 2;
             if (height * widthHeightScale > width) {
                 clipSize = ((height - width) / 2);
-                clipRect.set(0, ((height - width) / 2), width, ((height + width) / 2));
+                if (needClip) {
+                    clipRect.set(0, ((height - width) / 2), width, ((height + width) / 2));
+                }
             } else {
-                clipSize = (int) ((height - width * widthHeightScale) / 2);
-                clipRect.set(0, (int) ((height - width * widthHeightScale) / 2), width, (int) ((height + height * widthHeightScale) / 2));
+                clipSize = (int) ((height - height * widthHeightScale) / 2);
+                if (needClip) {
+                    clipRect.set(0, (int) ((height - height * widthHeightScale) / 2), width, (int) ((height + height * widthHeightScale) / 2));
+                }
             }
-            view.setClipBounds(clipRect);
         }
         if (clipSize != 0) {
-            enterAnimator = ValueAnimator.ofInt(clipSize);
-            enterAnimator.setDuration(CLIP_DURATION);
-            enterAnimator.addUpdateListener(animation -> {
-                int value = (int) animation.getAnimatedValue();
-                int left = clipRect.left;
-                int top = clipRect.top;
-                int right = clipRect.right;
-                int bottom = clipRect.bottom;
-                switch (type) {
-                    case 1:
-                        left -= value-lastClipValue;
-                        right += value-lastClipValue;
-                        break;
-                    case 2:
-                        top -= value-lastClipValue;
-                        bottom += value-lastClipValue;
-                        break;
-                }
-                clipRect.set(left, top, right, bottom);
-                Log.e("clipRect", "enterAnimation: "+clipRect.toString() );
+            if (needClip) {
                 view.setClipBounds(clipRect);
-                lastClipValue=value;
-            });
-            enterAnimator.setInterpolator(new DecelerateInterpolator());
-            enterAnimator.start();
-        }
-        //设置动画
-        TimeInterpolator sDecelerator = new DecelerateInterpolator();
-        //设置imageView缩放动画
-        view.animate().setDuration(DURATION_IN)
-                .scaleX(1).scaleY(1)
-                .translationX(0).translationY(0)
-                .setInterpolator(sDecelerator);
-
-        // 设置activity主布局背景颜色DURATION毫秒内透明度从透明到不透明
-        ObjectAnimator bgAnim = ObjectAnimator.ofInt(colorDrawable, "alpha", 0, 255);
-        bgAnim.setDuration(DURATION_IN);
-        bgAnim.start();
-        bgAnim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                rvPoint.setVisibility(View.VISIBLE);
             }
-        });
-
+            if (enterAnimator == null) {
+                enterAnimator = ValueAnimator.ofInt(clipSize);
+                enterAnimator.setDuration(CLIP_DURATION);
+                enterAnimator.addUpdateListener(animation -> {
+                    int value = (int) animation.getAnimatedValue();
+                    int left = clipRect.left;
+                    int top = clipRect.top;
+                    int right = clipRect.right;
+                    int bottom = clipRect.bottom;
+                    switch (type) {
+                        case 1:
+                            left -= value - lastClipValue;
+                            right += value - lastClipValue;
+                            break;
+                        case 2:
+                            top -= value - lastClipValue;
+                            bottom += value - lastClipValue;
+                            break;
+                    }
+                    clipRect.set(left, top, right, bottom);
+                    view.setClipBounds(clipRect);
+                    lastClipValue = value;
+                });
+                enterAnimator.setInterpolator(new DecelerateInterpolator());
+                enterAnimator.start();
+            }
+        }
     }
 
     @Override
     public void finish() {
         if (isAnimationEnd) {
+            if (enterAnimator != null) {
+                enterAnimator.cancel();
+            }
             setResult(RESULT_OK);
             super.finish();
             overridePendingTransition(0, 0);
@@ -236,9 +256,10 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
         if (bean == null) {
             return;
         }
-        rvPoint.setVisibility(View.GONE);
-        if (clipSize!=0) {
-            enterAnimator.setIntValues(clipSize,0);
+        getSizeChange(view, bean.getMyRectList().get(lastPosition), false);
+        if (clipSize != 0) {
+            lastClipValue = clipSize;
+            enterAnimator.setIntValues(clipSize, 0);
             enterAnimator.start();
         }
         TimeInterpolator sInterpolator = new DecelerateInterpolator();
@@ -263,8 +284,17 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
 
     @Override
     public void onPageScrolled(int i, float v, int i1) {
-        pointAdapter.notifyItemChanged(i, true);
-        pointAdapter.notifyItemChanged(lastPosition, false);
+        View lastView = llPoint.getChildAt(lastPosition);
+        View selectView1 = lastView.findViewById(R.id.view_select);
+        View unSelectView1 = lastView.findViewById(R.id.view_un_select);
+        selectView1.setVisibility(View.INVISIBLE);
+        unSelectView1.setVisibility(View.VISIBLE);
+
+        View thisView = llPoint.getChildAt(i);
+        View selectView2 = thisView.findViewById(R.id.view_select);
+        View unSelectView2 = thisView.findViewById(R.id.view_un_select);
+        selectView2.setVisibility(View.VISIBLE);
+        unSelectView2.setVisibility(View.INVISIBLE);
         lastPosition = i;
     }
 
@@ -319,9 +349,12 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
         if (bean == null) {
             return;
         }
-        Rect rect = new Rect();
-        rect.set(0, (height - width) / 2, width, (height - width) / 2 + width);
-        view.setClipBounds(rect);
+        getSizeChange(view, myRect, false);
+        if (clipSize != 0) {
+            lastClipValue = clipSize;
+            enterAnimator.setIntValues(clipSize, 0);
+            enterAnimator.start();
+        }
         Rect ivRect = new Rect();
         ivRect.set(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
         float newScale = originScale;
@@ -349,5 +382,13 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
                 finish();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (enterAnimator.isRunning()) {
+            return;
+        }
+        super.onBackPressed();
     }
 }

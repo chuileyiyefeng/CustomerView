@@ -40,6 +40,7 @@ public class MyZoomImageView extends AppCompatImageView {
     public MyZoomImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+        setScaleType(ScaleType.FIT_CENTER);
         initGesture();
     }
 
@@ -67,7 +68,7 @@ public class MyZoomImageView extends AppCompatImageView {
     boolean isDoubleDown;
 
     // 最小的缩放值
-    float minScale = 1 / 0.6f;
+    float minScale = 1 / 0.4f;
 
     // 上次滑动是否到了左边界、右边界
     boolean lastScrollLeft, lastScrollRight;
@@ -79,8 +80,6 @@ public class MyZoomImageView extends AppCompatImageView {
     float lastDownX, lastDownY;
     float lastDownRowX, lastDownRowY;
     float currentLeft, currentTop;
-    // 能否滑动view的位置
-    boolean canChangeViewPosition = true;
 
     //view的原始顶点
     int originTop, originLeft;
@@ -229,18 +228,19 @@ public class MyZoomImageView extends AppCompatImageView {
     private void setMatrixType() {
         if (!isSetType) {
             isSetType = true;
-            setScaleType(ScaleType.MATRIX);
             Drawable drawable = getDrawable();
             if (drawable == null) {
                 isSetType = false;
                 return;
             }
+            setScaleType(ScaleType.MATRIX);
             width = getWidth();
             height = getHeight();
             centerX = width / 2;
             centerY = height / 2;
             drawableWidth = drawable.getIntrinsicWidth();
             drawableHeight = drawable.getIntrinsicHeight();
+            Log.e("drawableSize", "setMatrixType: " + drawableWidth + " " + drawableHeight);
             picMatrix.postTranslate((width - drawableWidth) / 2, (height - drawableHeight) / 2);
             originScale = Math.min((float) width / drawableWidth, (float) height / drawableHeight);
             picMatrix.postScale(originScale, originScale, (float) width / 2, (float) height / 2);
@@ -272,11 +272,17 @@ public class MyZoomImageView extends AppCompatImageView {
     }
 
 
-    public void setCanChangeViewPosition(boolean canChangeViewPosition) {
-        this.canChangeViewPosition = canChangeViewPosition;
-    }
-
     boolean startChangePos;
+
+    //是否可以拖拽view
+    boolean canLayoutChange;
+    // 是否抬起了手指,可以拖拽view的Boolean变了，要完全抬起手指，有一个新的滑动事件才能拖拽
+    boolean isUp;
+
+    public void setCanLayoutChange(boolean canLayoutChange) {
+        this.canLayoutChange = canLayoutChange;
+        isUp=false;
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -284,6 +290,9 @@ public class MyZoomImageView extends AppCompatImageView {
         disallowParent(true);
         setMatrixType();
         int pointCount = event.getPointerCount();
+        if (currentRectF == null) {
+            return false;
+        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 // 按下时不知道是缩放还是滑动，重置值
@@ -304,8 +313,10 @@ public class MyZoomImageView extends AppCompatImageView {
                 if (smallPic || similarPic || isEndL || isEndR || isScaleToParentWidth) {
                     disallowParent(false);
                 }
-                if (canChangeViewPosition && currentRectF == null || currentRectF.equals(originRectF)) {
-                    if (!isDoubleDown) {
+                if (currentRectF == null || currentRectF.equals(originRectF)) {
+                    //要完全抬起手指，能够拖拽并且是一个新的滑动事件才能拖拽
+                    if (!isDoubleDown&&canLayoutChange&&isUp) {
+                        Log.e("drag", "onTouchEvent: " );
                         float distanceRowX = event.getRawX() - lastDownRowX;
                         float distanceRowY = event.getRawY() - lastDownRowY;
                         float realX = Math.abs(distanceRowX);
@@ -324,7 +335,7 @@ public class MyZoomImageView extends AppCompatImageView {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                isOnScrolling = false;
+                isUp=true;
                 isOnScrolling = false;
                 isOnZooming = false;
                 isDoubleDown = false;
@@ -436,16 +447,7 @@ public class MyZoomImageView extends AppCompatImageView {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
-                    doubleScaleCount = 0;
-                    lastScrollLeft = true;
-                    lastScrollRight = true;
-                    lastScale = 1f;
-                    // onScaling有给currentRect赋值，这里重新赋值为了精度
-                    currentRectF.left = originRectF.left;
-                    currentRectF.right = originRectF.right;
-                    currentRectF.top = originRectF.top;
-                    currentRectF.bottom = originRectF.bottom;
-                    picMatrix.reset();
+                    resetMatrix();
                     picMatrix.postTranslate((width - drawableWidth) / 2, (height - drawableHeight) / 2);
                     picMatrix.postScale(originScale, originScale, (float) width / 2, (float) height / 2);
                     setImageMatrix(picMatrix);
@@ -455,6 +457,22 @@ public class MyZoomImageView extends AppCompatImageView {
             minScaleAnimator.setFloatValues(1f, needScale);
         }
         minScaleAnimator.start();
+    }
+
+    private void resetMatrix() {
+        doubleScaleCount = 0;
+        lastScrollLeft = true;
+        lastScrollRight = true;
+        lastScale = 1f;
+        // onScaling有给currentRect赋值，这里重新赋值为了精度
+        // 有可能有加载缩略图和原图的情况，需要重置rect
+        if (currentRectF != null && originRectF != null) {
+            currentRectF.left = originRectF.left;
+            currentRectF.right = originRectF.right;
+            currentRectF.top = originRectF.top;
+            currentRectF.bottom = originRectF.bottom;
+        }
+        picMatrix.reset();
     }
 
     //此时的大小对比原大小需要缩放的scale
@@ -779,15 +797,28 @@ public class MyZoomImageView extends AppCompatImageView {
         }
     }
 
+
     // 是否处于动画中
     private boolean isInMess() {
         return isDoubleScale || isOnZooming || isOnFling;
     }
 
     @Override
+    public void setImageDrawable(@Nullable Drawable drawable) {
+        super.setImageDrawable(drawable);
+        if (drawable != null && picMatrix != null) {
+            setScaleType(ScaleType.FIT_CENTER);
+            isSetType = false;
+            resetMatrix();
+            Log.e("BitmapWidth", "setImageDrawable: " + drawable.getIntrinsicWidth());
+        }
+    }
+
+    @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         stopAnimator(flingAnimator, minScaleAnimator, targetAnimator, upAnimator);
+        Log.e("detached", "onDetachedFromWindow: " + drawableWidth);
     }
 
     private void stopAnimator(Animator... animators) {
@@ -803,4 +834,5 @@ public class MyZoomImageView extends AppCompatImageView {
     public void setLayoutChangeListener(LayoutChangeListener layoutChangeListener) {
         this.layoutChangeListener = layoutChangeListener;
     }
+
 }

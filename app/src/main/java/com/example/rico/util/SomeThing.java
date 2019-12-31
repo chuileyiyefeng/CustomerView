@@ -1,4 +1,4 @@
-package com.example.rico.customerview;
+package com.example.rico.util;
 
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;

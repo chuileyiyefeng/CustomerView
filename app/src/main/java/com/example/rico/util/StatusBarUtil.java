@@ -1,4 +1,4 @@
-package com.example.rico.customerview;
+package com.example.rico.util;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

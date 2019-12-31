@@ -5,18 +5,18 @@
     android:orientation="vertical">
 
 
+
     <android.support.v4.view.ViewPager
         android:id="@+id/iv_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_point"
+    <LinearLayout
+        android:id="@+id/ll_point"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_marginBottom="40dp"
+        android:orientation="horizontal"
         android:visibility="gone" />
-
-
 </FrameLayout>
