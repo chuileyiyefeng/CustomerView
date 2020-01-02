@@ -29,8 +29,6 @@ public class ImageFragment extends BaseFragment implements RequestListener<Drawa
         return R.layout.fragment_iv;
     }
 
-
-
     @Override
     protected void initView() {
         if (getArguments() != null) {
@@ -79,6 +77,13 @@ public class ImageFragment extends BaseFragment implements RequestListener<Drawa
 
             });
         }
+    }
+
+    public void picSetOriginScale(){
+        ivPic.setOriginScale();
+    }
+    public float getMatrixScale() {
+        return ivPic.getMatrixScale();
     }
 
     PicLayoutChange picLayoutChange;

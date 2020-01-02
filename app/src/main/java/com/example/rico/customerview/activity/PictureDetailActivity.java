@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
@@ -228,7 +229,7 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
                     view.setClipBounds(clipRect);
                     lastClipValue = value;
                 });
-                enterAnimator.setInterpolator(new DecelerateInterpolator());
+                enterAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
                 enterAnimator.start();
             }
         }
@@ -258,6 +259,10 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
         }
         getSizeChange(view, bean.getMyRectList().get(lastPosition), false);
         if (clipSize != 0) {
+            ImageFragment fragment= (ImageFragment) fragments.get(lastPosition);
+            if (fragment.getMatrixScale()>1f) {
+                fragment.picSetOriginScale();
+            }
             lastClipValue = clipSize;
             enterAnimator.setIntValues(clipSize, 0);
             enterAnimator.start();
@@ -351,6 +356,10 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
         }
         getSizeChange(view, myRect, false);
         if (clipSize != 0) {
+            ImageFragment fragment= (ImageFragment) fragments.get(lastPosition);
+            if (fragment.getMatrixScale()>1f) {
+                fragment.picSetOriginScale();
+            }
             lastClipValue = clipSize;
             enterAnimator.setIntValues(clipSize, 0);
             enterAnimator.start();

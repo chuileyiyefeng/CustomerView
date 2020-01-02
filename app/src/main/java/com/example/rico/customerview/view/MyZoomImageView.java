@@ -224,6 +224,16 @@ public class MyZoomImageView extends AppCompatImageView {
         });
     }
 
+    public float getMatrixScale() {
+        if (currentRectF != null) {
+            return getCurrentScale();
+        } else {
+            return 1f;
+        }
+    }
+    public void setOriginScale(){
+        reductionScale(1 / getCurrentScale());
+    }
 
     private void setMatrixType() {
         if (!isSetType) {
@@ -240,7 +250,6 @@ public class MyZoomImageView extends AppCompatImageView {
             centerY = height / 2;
             drawableWidth = drawable.getIntrinsicWidth();
             drawableHeight = drawable.getIntrinsicHeight();
-            Log.e("drawableSize", "setMatrixType: " + drawableWidth + " " + drawableHeight);
             picMatrix.postTranslate((width - drawableWidth) / 2, (height - drawableHeight) / 2);
             originScale = Math.min((float) width / drawableWidth, (float) height / drawableHeight);
             picMatrix.postScale(originScale, originScale, (float) width / 2, (float) height / 2);
@@ -277,11 +286,13 @@ public class MyZoomImageView extends AppCompatImageView {
     //是否可以拖拽view
     boolean canLayoutChange;
     // 是否抬起了手指,可以拖拽view的Boolean变了，要完全抬起手指，有一个新的滑动事件才能拖拽
-    boolean isUp;
+    boolean isNewTouch;
+
+    int touchType;
 
     public void setCanLayoutChange(boolean canLayoutChange) {
+        isNewTouch = touchType == 0 || touchType == MotionEvent.ACTION_UP;
         this.canLayoutChange = canLayoutChange;
-        isUp=false;
     }
 
     @Override
@@ -290,9 +301,10 @@ public class MyZoomImageView extends AppCompatImageView {
         disallowParent(true);
         setMatrixType();
         int pointCount = event.getPointerCount();
-        if (currentRectF == null) {
+        if (currentRectF == null || !canLayoutChange) {
             return false;
         }
+        touchType = event.getAction();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 // 按下时不知道是缩放还是滑动，重置值
@@ -313,10 +325,13 @@ public class MyZoomImageView extends AppCompatImageView {
                 if (smallPic || similarPic || isEndL || isEndR || isScaleToParentWidth) {
                     disallowParent(false);
                 }
+                if (isInMess()) {
+                    disallowParent(true);
+                }
                 if (currentRectF == null || currentRectF.equals(originRectF)) {
                     //要完全抬起手指，能够拖拽并且是一个新的滑动事件才能拖拽
-                    if (!isDoubleDown&&canLayoutChange&&isUp) {
-                        Log.e("drag", "onTouchEvent: " );
+                    if (!isDoubleDown && isNewTouch) {
+                        Log.e("drag", "onTouchEvent: ");
                         float distanceRowX = event.getRawX() - lastDownRowX;
                         float distanceRowY = event.getRawY() - lastDownRowY;
                         float realX = Math.abs(distanceRowX);
@@ -335,7 +350,7 @@ public class MyZoomImageView extends AppCompatImageView {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                isUp=true;
+                isNewTouch = true;
                 isOnScrolling = false;
                 isOnZooming = false;
                 isDoubleDown = false;
@@ -343,7 +358,6 @@ public class MyZoomImageView extends AppCompatImageView {
                 if (startChangePos && layoutChangeListener != null) {
                     layoutChangeListener.release();
                 }
-                // 还原position
                 break;
         }
         if (pointCount == 2) {

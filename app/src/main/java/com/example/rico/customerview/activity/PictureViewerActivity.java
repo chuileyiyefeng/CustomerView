@@ -52,12 +52,10 @@ public class PictureViewerActivity extends BaseActivity implements BaseAdapter.I
 
         thumbnails.addAll(originUrls);
         // 这里分为缩略图和原图的url
-        originUrls.add("http://static.simpledesktops.com/uploads/desktops/2015/07/11/Yosemite-Color-Block.png");
         originUrls.add("https://cdn.pixabay.com/photo/2015/03/17/14/05/sparkler-677774_960_720.jpg");
         originUrls.add("https://images.pexels.com/photos/36717/amazing-animal-beautiful-beautifull.jpg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260");
         originUrls.add("https://images.pexels.com/photos/853199/pexels-photo-853199.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260");
 
-        thumbnails.add("http://static.simpledesktops.com/uploads/desktops/2015/07/11/Yosemite-Color-Block.png.625x385_q100.png");
         thumbnails.add("https://cdn.pixabay.com/photo/2015/03/17/14/05/sparkler-677774__340.jpg");
         thumbnails.add("https://images.pexels.com/photos/36717/amazing-animal-beautiful-beautifull.jpg?auto=compress&cs=tinysrgb&dpr=1&w=500");
         thumbnails.add("https://images.pexels.com/photos/853199/pexels-photo-853199.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500");
