@@ -90,7 +90,13 @@ public class BezierMoveView extends BaseCustomerView {
     int tapSlop;
 
     @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
+        performClick();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 downX = event.getX();
@@ -135,63 +141,60 @@ public class BezierMoveView extends BaseCustomerView {
         scale = (float) radius / 100;
         if (deformAnimator == null) {
             deformAnimator = ValueAnimator.ofInt(100, 200, 300, 150, 170, 150);
-            deformAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    int newValue = (int) animation.getAnimatedValue();
-                    if (newValue > value) {
-                        if (lastTrend != add) {
-                            addTime++;
-                            lastTrend = add;
-                        }
-                    } else if (newValue < value) {
-                        if (lastTrend != decrease) {
-                            addTime++;
-                            lastTrend = decrease;
-                        }
+            deformAnimator.addUpdateListener(animation -> {
+                int newValue = (int) animation.getAnimatedValue();
+                if (newValue > value) {
+                    if (lastTrend != add) {
+                        addTime++;
+                        lastTrend = add;
                     }
-                    if (addTime > 2) {
-                        moveDistance = 0;
-                        //                    已经到终点，缓冲动画
-                        leftX = ((newValue - 50) * scale - radius);
-                        //                    左边的x值变化是右边的过了临界值的时候开始变
-                        underY = leftX * 0.2f;
+                } else if (newValue < value) {
+                    if (lastTrend != decrease) {
+                        addTime++;
+                        lastTrend = decrease;
                     }
-                    if (addTime < 3 && newValue <= 200) {
-                        if (moveDistance != defaultMove) {
-                            moveDistance = 0;
-                        }
-                        if (newValue > value && newValue <= 150) {
-                            rightX = newValue * scale - radius;
-
-                        } else if (newValue < value) {
-                            rightX = (newValue - 50) * scale - radius;
-                            moveDistance = lastRightX - rightX;
-
-                        }
-//                    左边的x值变化是右边的过了临界值的时候开始变
-                        if (newValue > value && newValue >= 150) {
-                            if (!rightIsFull) {
-                                rightIsFull = true;
-                            }
-                            //                        这个时候满足move条件
-//                        右边是150到200时，左边是100到150
-                            leftX = -((newValue - 50) * scale - radius); // 0.5*radius-0
-//                        上下分别加减0.8r
-                            underY = -((newValue - 50) * scale - radius) * 0.2f;
-
-                        } else if (newValue < value) {
-//                        右边是200到100时，左边是150到100
-                            leftX = -((newValue - 50) * scale - radius);
-                            underY = -((newValue - 50) * scale - radius) * 0.2f;
-
-                        }
-                        value = newValue;
-                        lastRightX = rightX;
-                    }
-                    changePath();
-//                    结束缓冲动画
                 }
+                if (addTime > 2) {
+                    moveDistance = 0;
+                    //                    已经到终点，缓冲动画
+                    leftX = ((newValue - 50) * scale - radius);
+                    //                    左边的x值变化是右边的过了临界值的时候开始变
+                    underY = leftX * 0.2f;
+                }
+                if (addTime < 3 && newValue <= 200) {
+                    if (moveDistance != defaultMove) {
+                        moveDistance = 0;
+                    }
+                    if (newValue > value && newValue <= 150) {
+                        rightX = newValue * scale - radius;
+
+                    } else if (newValue < value) {
+                        rightX = (newValue - 50) * scale - radius;
+                        moveDistance = lastRightX - rightX;
+
+                    }
+//                    左边的x值变化是右边的过了临界值的时候开始变
+                    if (newValue > value && newValue >= 150) {
+                        if (!rightIsFull) {
+                            rightIsFull = true;
+                        }
+                        //                        这个时候满足move条件
+//                        右边是150到200时，左边是100到150
+                        leftX = -((newValue - 50) * scale - radius); // 0.5*radius-0
+//                        上下分别加减0.8r
+                        underY = -((newValue - 50) * scale - radius) * 0.2f;
+
+                    } else if (newValue < value) {
+//                        右边是200到100时，左边是150到100
+                        leftX = -((newValue - 50) * scale - radius);
+                        underY = -((newValue - 50) * scale - radius) * 0.2f;
+
+                    }
+                    value = newValue;
+                    lastRightX = rightX;
+                }
+                changePath();
+//                    结束缓冲动画
             });
             deformAnimator.setDuration(2000);
             deformAnimator.setInterpolator(new DecelerateInterpolator());

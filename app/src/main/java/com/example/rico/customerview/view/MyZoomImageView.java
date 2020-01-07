@@ -21,7 +21,7 @@ import android.view.animation.DecelerateInterpolator;
 import com.example.rico.customerview.bean.LayoutChangeListener;
 
 /**
- * Created by Tmp on 2019/11/13.
+ * Created by Tmp on 2020/1/3.
  */
 public class MyZoomImageView extends AppCompatImageView {
     ScaleGestureDetector scaleDetector;
@@ -231,7 +231,8 @@ public class MyZoomImageView extends AppCompatImageView {
             return 1f;
         }
     }
-    public void setOriginScale(){
+
+    public void setOriginScale() {
         reductionScale(1 / getCurrentScale());
     }
 
@@ -302,7 +303,7 @@ public class MyZoomImageView extends AppCompatImageView {
         setMatrixType();
         int pointCount = event.getPointerCount();
         if (currentRectF == null || !canLayoutChange) {
-            return false;
+            return true;
         }
         touchType = event.getAction();
         switch (event.getAction()) {
@@ -320,13 +321,11 @@ public class MyZoomImageView extends AppCompatImageView {
                 float distanceY = event.getX() - lastDownY;
                 boolean smallPic = currentRectF.width() <= originRectF.width();
                 boolean similarPic = currentRectF.equals(originRectF);
-                boolean isEndL = distanceX > 0 && lastScrollLeft && !isOnScrolling;
-                boolean isEndR = distanceX < 0 && lastScrollRight && !isOnScrolling;
+                boolean isEndL = distanceX > 0 && lastScrollLeft;
+                boolean isEndR = distanceX < 0 && lastScrollRight;
                 if (smallPic || similarPic || isEndL || isEndR || isScaleToParentWidth) {
+                    Log.e("disallow", "onTouchEvent: ");
                     disallowParent(false);
-                }
-                if (isInMess()) {
-                    disallowParent(true);
                 }
                 if (currentRectF == null || currentRectF.equals(originRectF)) {
                     //要完全抬起手指，能够拖拽并且是一个新的滑动事件才能拖拽
@@ -368,25 +367,27 @@ public class MyZoomImageView extends AppCompatImageView {
         return true;
     }
 
+    // fling最大速度、最小速度
+    int maxSpeed = 10000, minSpeed = 20;
 
     // 限制fling的最小最大距离
     private float getRealMove(float value) {
-        if (value > 5000) {
-            value = 5000;
-        } else if (value < -5000) {
-            value = -5000;
+        if (value > maxSpeed) {
+            value = maxSpeed;
+        } else if (value < -maxSpeed) {
+            value = -maxSpeed;
         }
         if (value > 0) {
-            if (value > 20 && value < 50) {
+            if (value > minSpeed && value < 50) {
                 value = 50;
-            } else if (value < 20) {
+            } else if (value < minSpeed) {
                 value = 0;
             }
         }
         if (value < 0) {
-            if (value < -20 && value > -50) {
+            if (value < -minSpeed && value > -50) {
                 value = -50;
-            } else if (value > -20) {
+            } else if (value > -minSpeed) {
                 value = 0;
             }
         }
@@ -461,6 +462,7 @@ public class MyZoomImageView extends AppCompatImageView {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
+                    isOnZooming = false;
                     resetMatrix();
                     picMatrix.postTranslate((width - drawableWidth) / 2, (height - drawableHeight) / 2);
                     picMatrix.postScale(originScale, originScale, (float) width / 2, (float) height / 2);
@@ -725,6 +727,9 @@ public class MyZoomImageView extends AppCompatImageView {
         if (isInMess()) {
             return;
         }
+        //重新判断是否划到了边缘
+        lastScrollLeft = false;
+        lastScrollRight = false;
         float targetScale;
         float currentScale = getCurrentScale();
         float picWidth = currentRectF.right - currentRectF.left;
@@ -783,6 +788,7 @@ public class MyZoomImageView extends AppCompatImageView {
                     targetScale = maxScale;
                 }
             }
+            isOnZooming = true;
             if (targetAnimator == null) {
                 targetAnimator = ValueAnimator.ofFloat(currentScale, targetScale);
                 targetAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -796,6 +802,7 @@ public class MyZoomImageView extends AppCompatImageView {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         isDoubleScale = false;
+                        isOnZooming = false;
                         if (isScaleToParentWidth) {
                             //精度可能会有误差，所以要设置一下最终值
                             currentRectF.left = 0;
@@ -824,7 +831,6 @@ public class MyZoomImageView extends AppCompatImageView {
             setScaleType(ScaleType.FIT_CENTER);
             isSetType = false;
             resetMatrix();
-            Log.e("BitmapWidth", "setImageDrawable: " + drawable.getIntrinsicWidth());
         }
     }
 
@@ -832,7 +838,6 @@ public class MyZoomImageView extends AppCompatImageView {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         stopAnimator(flingAnimator, minScaleAnimator, targetAnimator, upAnimator);
-        Log.e("detached", "onDetachedFromWindow: " + drawableWidth);
     }
 
     private void stopAnimator(Animator... animators) {

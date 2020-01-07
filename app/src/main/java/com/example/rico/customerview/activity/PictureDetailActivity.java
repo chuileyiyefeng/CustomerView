@@ -25,6 +25,7 @@ import com.example.rico.customerview.adapter.ViewPagerAdapter;
 import com.example.rico.customerview.bean.MyRect;
 import com.example.rico.customerview.bean.PicInfoBean;
 import com.example.rico.customerview.fragment.ImageFragment;
+import com.example.rico.customerview.view.MyViewPager;
 import com.example.rico.util.StatusBarUtil;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
     PicInfoBean bean;
 
     View contentView;
-    ViewPager ivPager;
+    MyViewPager ivPager;
     LinearLayout llPoint;
 
     ViewPagerAdapter pagerAdapter;

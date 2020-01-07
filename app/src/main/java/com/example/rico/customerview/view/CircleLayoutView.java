@@ -123,7 +123,13 @@ public class CircleLayoutView extends ViewGroup {
     }
 
     @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
+        performClick();
         if (!scroller.isFinished()) {
             return false;
         }

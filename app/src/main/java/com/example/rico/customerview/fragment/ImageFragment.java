@@ -8,7 +8,6 @@ import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -44,18 +43,34 @@ public class ImageFragment extends BaseFragment implements RequestListener<Drawa
                             .load(url)
                             .placeholder(new BitmapDrawable(getResources(), bitmap))
                             .listener(this)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)//不使用缓存
-                            .skipMemoryCache(true)
+//                            .diskCacheStrategy(DiskCacheStrategy.NONE)//不使用缓存
+//                            .skipMemoryCache(true)
                             .into(ivPic);
                 } else {
                     Glide.with(getContext())
                             .load(url)
                             .listener(this)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)//不使用缓存
-                            .skipMemoryCache(true)
+//                            .diskCacheStrategy(DiskCacheStrategy.NONE)//不使用缓存
+//                            .skipMemoryCache(true)
                             .into(ivPic);
                 }
             }
+//            fresco加载方法，matrix不适用
+//            ivPic.setCanLayoutChange(true);
+//            Uri uri = Uri.parse(url);
+//            GenericDraweeHierarchyBuilder builder = new GenericDraweeHierarchyBuilder(getResources());
+//            GenericDraweeHierarchy hierarchy;
+//            if (getContext() != null) {
+//                builder.setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER)
+//                        .setProgressBarImage(new ProgressBarDrawable());
+//                if (bitmap != null) {
+//                    builder.setPlaceholderImage(new BitmapDrawable(getResources(), bitmap))
+//                            .setPlaceholderImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
+//                }
+//                hierarchy = builder.build();
+//                ivPic.setImageURI(uri);
+//                ivPic.setHierarchy(hierarchy);
+//            }
             ivPic.setOnClickListener(v -> {
                 if (getActivity() != null) {
                     getActivity().finish();

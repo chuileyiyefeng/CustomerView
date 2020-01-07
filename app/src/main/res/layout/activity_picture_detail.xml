@@ -6,7 +6,7 @@
 
 
 
-    <android.support.v4.view.ViewPager
+    <com.example.rico.customerview.view.MyViewPager
         android:id="@+id/iv_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

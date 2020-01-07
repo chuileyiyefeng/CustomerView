@@ -2,12 +2,12 @@ package com.example.rico.customerview.activity;
 
 import android.content.Intent;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.adapter.BaseAdapter;
 import com.example.rico.customerview.adapter.PicViewAdapter;
@@ -15,6 +15,13 @@ import com.example.rico.customerview.bean.MyRect;
 import com.example.rico.customerview.bean.PicInfoBean;
 import com.example.rico.util.BitmapLruCache;
 import com.example.rico.util.StatusBarUtil;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.drawable.ProgressBarDrawable;
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.core.ImagePipeline;
 
 import java.util.ArrayList;
 
@@ -25,7 +32,7 @@ public class PictureViewerActivity extends BaseActivity implements BaseAdapter.I
     RecyclerView rvPic;
     PicViewAdapter adapter;
     GridLayoutManager manager;
-    ArrayList<String> originUrls,thumbnails;
+    ArrayList<String> originUrls, thumbnails;
 
 
     @Override
@@ -104,5 +111,18 @@ public class PictureViewerActivity extends BaseActivity implements BaseAdapter.I
     protected void onDestroy() {
         super.onDestroy();
         BitmapLruCache.getInstance().clearCache();
+    }
+
+    @Override
+    public void finish() {
+        ImagePipeline imagePipeline = Fresco.getImagePipeline();
+        //清空内存缓存（包括Bitmap缓存和未解码图片的缓存）
+        imagePipeline.clearMemoryCaches();
+        //清空硬盘缓存，一般在设置界面供用户手动清理
+        imagePipeline.clearDiskCaches();
+
+        //同时清理内存缓存和硬盘缓存
+        imagePipeline.clearCaches();
+        super.finish();
     }
 }

@@ -35,4 +35,16 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
+
+    //fresco
+    implementation 'com.facebook.fresco:fresco:1.9.0'
+    // 支持 GIF 动图，需要添加
+    implementation 'com.facebook.fresco:animated-gif:1.9.0'
+
+    // 支持 WebP （静态图+动图），需要添加
+    implementation 'com.facebook.fresco:animated-webp:1.9.0'
+    implementation 'com.facebook.fresco:webpsupport:1.9.0'
+
+    // 仅支持 WebP 静态图，需要添加
+    implementation 'com.facebook.fresco:webpsupport:1.9.0'
 }

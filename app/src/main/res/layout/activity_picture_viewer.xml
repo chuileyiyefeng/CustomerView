@@ -2,14 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
     <android.support.v7.widget.RecyclerView
-        android:visibility="visible"
         android:id="@+id/rv_pic"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="15dp"
-        android:overScrollMode="never"/>
+        android:overScrollMode="never"
+        android:visibility="visible" />
 
 </LinearLayout>
