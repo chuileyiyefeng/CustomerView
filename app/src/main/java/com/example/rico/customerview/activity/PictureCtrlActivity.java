@@ -21,7 +21,7 @@ public class PictureCtrlActivity extends BaseActivity implements TouchToAddView.
         iv.addProportion(0.3f, 0.3f);
         iv.addProportion(0.4f, 0.4f);
         iv.addProportion(0.7f, 0.7f);
-        TouchToAddView tt=findViewById(R.id. tt);
+        TouchToAddView tt=findViewById(R.id.tt);
         tt.setPointClickListener(this);
 
     }
