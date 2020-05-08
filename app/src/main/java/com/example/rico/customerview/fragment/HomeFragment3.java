@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.example.rico.customerview.activity.PictureCtrlActivity;
 import com.example.rico.customerview.activity.PictureViewerActivity;
 import com.example.rico.customerview.bean.ItemInfo;
 import com.example.rico.customerview.R;
@@ -45,6 +46,7 @@ public class HomeFragment3 extends BaseFragment implements BaseAdapter.ItemClick
         adapter.addItem(new ItemInfo("卡片RecyclerView", new Intent(context, CardLayoutActivity.class)));
         adapter.addItem(new ItemInfo("列表联动选择", new Intent(context, ListLinkageActivity.class)));
         adapter.addItem(new ItemInfo("图片浏览", new Intent(context, PictureViewerActivity.class)));
+        adapter.addItem(new ItemInfo("图片操作", new Intent(context, PictureCtrlActivity.class)));
         adapter.addItemClick(this);
     }
 

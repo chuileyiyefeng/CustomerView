@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Matrix;
+import android.graphics.PointF;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
@@ -14,30 +16,30 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
+import android.widget.Toast;
 
-import com.example.rico.customerview.bean.LayoutChangeListener;
-
-/**
- * Created by Tmp on 2020/1/3.
- */
-public class MyZoomImageView extends AppCompatImageView {
+public class JustScaleImageView extends AppCompatImageView  {
     ScaleGestureDetector scaleDetector;
     GestureDetector simpleDetector;
     Matrix picMatrix;
     float touchSlop;
+    TouchToAddView addView;
+    int duration = 200;
 
-    public MyZoomImageView(Context context) {
+    public JustScaleImageView(Context context) {
         this(context, null);
     }
 
-    public MyZoomImageView(Context context, AttributeSet attrs) {
+    public JustScaleImageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public MyZoomImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public JustScaleImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         setScaleType(ScaleType.FIT_CENTER);
@@ -112,7 +114,6 @@ public class MyZoomImageView extends AppCompatImageView {
                 } else {
                     onScaling(scale);
                 }
-                Log.e("inMess", "onScale: " + scale);
                 return true;
             }
 
@@ -129,10 +130,6 @@ public class MyZoomImageView extends AppCompatImageView {
                 isOnScrolling = true;
                 lastScrollLeft = false;
                 lastScrollRight = false;
-                if (currentRectF == null || currentRectF.equals(originRectF)) {
-                    disallowParent(false);
-                    return false;
-                }
                 if (isInMess() || isDoubleDown) {
                     return false;
                 }
@@ -151,6 +148,8 @@ public class MyZoomImageView extends AppCompatImageView {
                 float currentHeight = bottom - top;
 
                 picMatrix.postTranslate(-distanceX, -distanceY);
+
+                moveAllPoint(distanceX, distanceY);
 //                // 图片高度大于view高度可以上下滑动
 //                // distanceX右滑是负数，左滑是正数
 //                // 先执行滑动，滑动到边界在回去
@@ -181,6 +180,7 @@ public class MyZoomImageView extends AppCompatImageView {
                 endRight = endRight - distanceX;
                 endBottom = endBottom - distanceY;
                 picMatrix.postTranslate(-distanceX, -distanceY);
+                moveAllPoint(distanceX, distanceY);
                 setImageMatrix(picMatrix);
                 currentRectF.set(endLeft, endTop, endRight, endBottom);
                 Log.e("inMess", "onScroll:");
@@ -189,9 +189,8 @@ public class MyZoomImageView extends AppCompatImageView {
 
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
-                disallowParent(false);
                 if (onClickListener != null) {
-                    onClickListener.onClick(MyZoomImageView.this);
+                    onClickListener.onClick(JustScaleImageView.this);
                 }
                 return false;
             }
@@ -222,21 +221,71 @@ public class MyZoomImageView extends AppCompatImageView {
                 return super.onFling(e1, e2, velocityX, velocityY);
 
             }
+
         });
     }
 
-    public float getMatrixScale() {
-        if (currentRectF != null) {
-            return getCurrentScale();
-        } else {
-            return 1f;
+    // 添加一个指示点,基于x,y轴比例
+    private void addNewProportion(float x, float y) {
+        post(() -> {
+            Drawable drawable = getDrawable();
+            if (drawable == null) {
+                return;
+            }
+            drawableWidth = drawable.getIntrinsicWidth();
+            drawableHeight = drawable.getIntrinsicHeight();
+            float picScale;
+            Rect picRect = new Rect();
+            if (drawableWidth > drawableHeight) {
+                if (getMeasuredWidth() == 0) {
+                    return;
+                }
+                picScale = (float) drawableWidth / getMeasuredWidth();
+                picRect.set(0, (int) (getMeasuredHeight() - (drawableHeight / picScale)) / 2, (int) (drawableWidth / picScale), (int) (getMeasuredHeight() + (drawableHeight / picScale)) / 2);
+            } else {
+                if (getMeasuredHeight() == 0) {
+                    return;
+                }
+                picScale = (float) drawableHeight / getMeasuredHeight();
+                picRect.set((int) (getMeasuredWidth() - (drawableWidth / picScale)) / 2, 0, (int) (getMeasuredWidth() + (drawableWidth / picScale)) / 2, (int) (drawableHeight / picScale));
+
+            }
+            Log.e("addPoint", "addPoint: " + picRect.toString());
+            addView.addPoint(picRect.left + picRect.width() * x, picRect.top + picRect.height() * y);
+
+        });
+    }
+
+    // 移动单个指示点
+    private void movePoint(int position, float distanceX, float distanceY) {
+        if (addView != null) {
+            addView.movePoint(position, distanceX, distanceY);
         }
     }
 
-    public void setOriginScale() {
-        reductionScale(1 / getCurrentScale());
+    // 移动指示点
+    private void moveAllPoint(float distanceX, float distanceY) {
+        if (addView != null) {
+            addView.moveAllPoint(distanceX, distanceY);
+        }
     }
 
+    //  缩放时移动指示点
+    private void scaleMovePoint(float scale) {
+        if (addView != null) {
+            for (int i = 0; i < addView.getPointS().size(); i++) {
+                PointF point = addView.getPointS().get(i);
+                float pointX = point.x;
+                float pointY = point.y;
+                float distanceX = pointX - scaleCenterX;
+                float distanceY = pointY - scaleCenterY;
+                movePoint(i, distanceX * (1 - scale), distanceY * (1 - scale));
+            }
+
+        }
+    }
+
+    // 设置图片加载type为Matrix
     private void setMatrixType() {
         if (!isSetType) {
             isSetType = true;
@@ -286,21 +335,15 @@ public class MyZoomImageView extends AppCompatImageView {
     boolean startChangePos;
 
     //是否可以拖拽view
-    boolean canLayoutChange;
+    boolean canLayoutChange = true;
     // 是否抬起了手指,可以拖拽view的Boolean变了，要完全抬起手指，有一个新的滑动事件才能拖拽
     boolean isNewTouch;
 
     int touchType;
 
-    public void setCanLayoutChange(boolean canLayoutChange) {
-        isNewTouch = touchType == 0 || touchType == MotionEvent.ACTION_UP;
-        this.canLayoutChange = canLayoutChange;
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         performClick();
-        disallowParent(true);
         setMatrixType();
         int pointCount = event.getPointerCount();
         if (currentRectF == null || !canLayoutChange) {
@@ -318,15 +361,6 @@ public class MyZoomImageView extends AppCompatImageView {
                 startChangePos = false;
                 break;
             case MotionEvent.ACTION_MOVE:
-                float distanceX = event.getX() - lastDownX;
-                boolean smallPic = currentRectF.width() <= originRectF.width();
-                boolean similarPic = currentRectF.equals(originRectF);
-                boolean isEndL = distanceX > 0 && lastScrollLeft;
-                boolean isEndR = distanceX < 0 && lastScrollRight;
-                if (smallPic || similarPic || isEndL || isEndR || isScaleToParentWidth) {
-                    Log.e("disallow", "onTouchEvent: ");
-                    disallowParent(false);
-                }
                 if (currentRectF == null || currentRectF.equals(originRectF)) {
                     //要完全抬起手指，能够拖拽并且是一个新的滑动事件才能拖拽
                     if (!isDoubleDown && isNewTouch) {
@@ -339,9 +373,6 @@ public class MyZoomImageView extends AppCompatImageView {
                             startChangePos = true;
                             currentLeft = getLeft() + distanceRowX;
                             currentTop = getTop() + distanceRowY;
-                            if (layoutChangeListener != null) {
-                                layoutChangeListener.change(distanceRowX, distanceRowY, (int) event.getRawY());
-                            }
                         }
                     }
                     lastDownRowX = event.getRawX();
@@ -354,9 +385,7 @@ public class MyZoomImageView extends AppCompatImageView {
                 isOnZooming = false;
                 isDoubleDown = false;
                 isSameTimeScaling = false;
-                if (startChangePos && layoutChangeListener != null) {
-                    layoutChangeListener.release();
-                }
+
                 break;
         }
         if (pointCount == 2) {
@@ -368,7 +397,7 @@ public class MyZoomImageView extends AppCompatImageView {
     }
 
     // fling最大速度、最小速度
-    int maxSpeed = 10000, minSpeed = 20;
+    int maxSpeed = 8000, minSpeed = 20;
 
     // 限制fling的最小最大距离
     private float getRealMove(float value) {
@@ -395,16 +424,21 @@ public class MyZoomImageView extends AppCompatImageView {
     }
 
 
-    private void disallowParent(boolean b) {
-        getParent().requestDisallowInterceptTouchEvent(b);
-    }
-
     float shouldMoveX, shouldMoveY;
     float lastMoveX, lastMoveY;
     ValueAnimator upAnimator;
 
     // 手指缩放中
     private void onScaling(float scale) {
+        picMatrix.postScale(scale, scale, scaleCenterX, scaleCenterY);
+        scaleMovePoint(scale);
+        setImageMatrix(picMatrix);
+//        // 计算缩放后的图片边界
+        getEndValueRectF(currentRectF, scale);
+    }
+
+    // 手指缩放中
+    private void onScalingNoMove(float scale) {
         picMatrix.postScale(scale, scale, scaleCenterX, scaleCenterY);
         setImageMatrix(picMatrix);
 //        // 计算缩放后的图片边界
@@ -432,7 +466,6 @@ public class MyZoomImageView extends AppCompatImageView {
     // 还原缩放时的偏差值
     float needMoveX, needMoveY;
 
-
     // 从小到大还原缩放为1
     private void reductionScale(float needScale) {
         if (isInMess()) {
@@ -442,8 +475,46 @@ public class MyZoomImageView extends AppCompatImageView {
         isOnZooming = true;
         RectF targetRectF = new RectF();
         getEndValueRectF(targetRectF, needScale);
+
         needMoveX = (originRectF.left - targetRectF.left) / (needScale - 1);
         needMoveY = (originRectF.top - targetRectF.top) / (needScale - 1);
+
+        // 需要还原标记点
+        if (addView != null) {
+            for (int i = 0; i < addView.getPointS().size(); i++) {
+                final float[] lastValue = {0};
+                PointF point = addView.getPointS().get(i);
+                float pointX = point.x;
+                float pointY = point.y;
+                float distanceX = pointX - scaleCenterX;
+                float distanceY = pointY - scaleCenterY;
+                distanceX = -(originRectF.left - targetRectF.left) + distanceX * (1 - needScale);
+                distanceY = -(originRectF.top - targetRectF.top) + distanceY * (1 - needScale);
+                float moveScale = 0;
+                if (distanceY != 0) {
+                    moveScale = distanceX / distanceY;
+                }
+                ValueAnimator movePointAnim = ValueAnimator.ofFloat(distanceX);
+                Log.e("pointMove", "reductionScale: " + "pointMove " + distanceX);
+                float finalMoveScale = moveScale;
+                int finalI = i;
+                movePointAnim.addUpdateListener(animator -> {
+                    float value = (float) animator.getAnimatedValue();
+                    movePoint(finalI, value - lastValue[0], (value - lastValue[0]) / finalMoveScale);
+                    lastValue[0] = value;
+                });
+                movePointAnim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        lastValue[0] = 0;
+                    }
+                });
+                movePointAnim.setInterpolator(new DecelerateInterpolator());
+                movePointAnim.setDuration(duration);
+                movePointAnim.start();
+            }
+        }
         if (minScaleAnimator == null) {
             minScaleAnimator = ValueAnimator.ofFloat(1f, needScale);
             minScaleAnimator.addUpdateListener(animation -> {
@@ -452,11 +523,11 @@ public class MyZoomImageView extends AppCompatImageView {
                 float thisMoveY = (value - lastScale) * needMoveY;
                 float realScale = value / lastScale;
                 picMatrix.preTranslate(thisMoveX, thisMoveY);
-                onScaling(realScale);
+                onScalingNoMove(realScale);
                 lastScale = value;
             });
             minScaleAnimator.setInterpolator(new DecelerateInterpolator());
-            minScaleAnimator.setDuration(200);
+            minScaleAnimator.setDuration(duration);
             minScaleAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -590,6 +661,7 @@ public class MyZoomImageView extends AppCompatImageView {
                 lastDragY = value * dragScaleY;
                 allDragX += dragX;
                 allDragY += dragY;
+                moveAllPoint(-dragX, -dragY);
                 picMatrix.postTranslate(dragX, dragY);
                 setImageMatrix(picMatrix);
             });
@@ -700,9 +772,10 @@ public class MyZoomImageView extends AppCompatImageView {
                         lastMoveY = value;
                     }
                     picMatrix.postTranslate(dx, dy);
+                    moveAllPoint(-dx, -dy);
                     setImageMatrix(picMatrix);
                 });
-                upAnimator.setDuration(200);
+                upAnimator.setDuration(duration);
                 upAnimator.setInterpolator(new DecelerateInterpolator());
             } else {
                 upAnimator.setFloatValues(allMove);
@@ -809,7 +882,7 @@ public class MyZoomImageView extends AppCompatImageView {
                         }
                     }
                 });
-                targetAnimator.setDuration(200);
+                targetAnimator.setDuration(duration);
             } else {
                 targetAnimator.setFloatValues(currentScale, targetScale);
             }
@@ -822,6 +895,7 @@ public class MyZoomImageView extends AppCompatImageView {
     private boolean isInMess() {
         return isDoubleScale || isOnZooming || isOnFling;
     }
+
 
     @Override
     public void setImageDrawable(@Nullable Drawable drawable) {
@@ -839,6 +913,7 @@ public class MyZoomImageView extends AppCompatImageView {
         stopAnimator(flingAnimator, minScaleAnimator, targetAnimator, upAnimator);
     }
 
+    // 停止动画
     private void stopAnimator(Animator... animators) {
         for (Animator animator : animators) {
             if (animator != null) {
@@ -847,10 +922,25 @@ public class MyZoomImageView extends AppCompatImageView {
         }
     }
 
-    LayoutChangeListener layoutChangeListener;
 
-    public void setLayoutChangeListener(LayoutChangeListener layoutChangeListener) {
-        this.layoutChangeListener = layoutChangeListener;
+    public void addProportion(float x, float y) {
+        if (getAddView()!=null) {
+            addNewProportion(x, y);
+        }
     }
 
+    private View getAddView() {
+        if (addView == null) {
+            try {
+                FrameLayout group = (FrameLayout) getParent();
+                addView = (TouchToAddView) group.getChildAt(1);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return  addView;
+    }
+
+
 }
+
