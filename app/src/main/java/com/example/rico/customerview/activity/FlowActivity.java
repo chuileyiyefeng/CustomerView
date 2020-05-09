@@ -43,7 +43,7 @@ public class FlowActivity extends BaseActivity {
         flow.setMargin(5, 5);
         for (int i = 0; i < list.size(); i++) {
             TextView view = new TextView(this);
-//            view.setTextColor(getResources().getColor(R.color.black));
+//            view.setTextColor(getResources().getPointColor(R.color.black));
             int dis= (int) (getResources().getDisplayMetrics().density*10);
             view.setPadding(dis, dis, dis, dis);
             view.setText(list.get(i));

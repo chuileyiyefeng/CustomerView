@@ -60,7 +60,7 @@ public class ImageFragment extends BaseFragment implements RequestListener<Drawa
 //            Uri uri = Uri.parse(url);
 //            GenericDraweeHierarchyBuilder builder = new GenericDraweeHierarchyBuilder(getResources());
 //            GenericDraweeHierarchy hierarchy;
-//            if (getContext() != null) {
+//            if (getMessage() != null) {
 //                builder.setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER)
 //                        .setProgressBarImage(new ProgressBarDrawable());
 //                if (bitmap != null) {

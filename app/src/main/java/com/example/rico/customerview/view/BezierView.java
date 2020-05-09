@@ -146,11 +146,11 @@ public class BezierView extends View {
         for (int i = 0; i < 4; i++) {
             int k = 2 * i;
 //            画控制点辅助线
-//            paint.setColor(getResources().getColor(R.color.colorAccent));
+//            paint.setPointColor(getResources().getPointColor(R.color.colorAccent));
 //            canvas.drawLine(stars[i].x, stars[i].y, control[k].x, control[k].y, paint);
 //            canvas.drawLine(control[k].x, control[k].y, control[k + 1].x, control[k + 1].y, paint);
 //            canvas.drawLine(control[k + 1].x, control[k + 1].y, stars[i + 1].x, stars[i + 1].y, paint);
-//            paint.setColor(getResources().getColor(R.color.text_normal));
+//            paint.setPointColor(getResources().getPointColor(R.color.text_normal));
             path.cubicTo(control[k].x, control[k].y, control[k + 1].x, control[k + 1].y, stars[i + 1].x, stars[i + 1].y);
         }
         canvas.drawPath(path, paint);

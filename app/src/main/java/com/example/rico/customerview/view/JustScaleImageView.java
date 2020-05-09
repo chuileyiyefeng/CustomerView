@@ -21,14 +21,18 @@ import android.view.ViewConfiguration;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
-public class JustScaleImageView extends AppCompatImageView  {
+import com.example.rico.customerview.bean.PointData;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
+public class JustScaleImageView extends AppCompatImageView {
     ScaleGestureDetector scaleDetector;
     GestureDetector simpleDetector;
     Matrix picMatrix;
     float touchSlop;
-    TouchToAddView addView;
+    ToAddView addView;
     int duration = 200;
 
     public JustScaleImageView(Context context) {
@@ -228,32 +232,74 @@ public class JustScaleImageView extends AppCompatImageView  {
     // 添加一个指示点,基于x,y轴比例
     private void addNewProportion(float x, float y) {
         post(() -> {
-            Drawable drawable = getDrawable();
-            if (drawable == null) {
-                return;
-            }
-            drawableWidth = drawable.getIntrinsicWidth();
-            drawableHeight = drawable.getIntrinsicHeight();
-            float picScale;
-            Rect picRect = new Rect();
-            if (drawableWidth > drawableHeight) {
-                if (getMeasuredWidth() == 0) {
-                    return;
-                }
-                picScale = (float) drawableWidth / getMeasuredWidth();
-                picRect.set(0, (int) (getMeasuredHeight() - (drawableHeight / picScale)) / 2, (int) (drawableWidth / picScale), (int) (getMeasuredHeight() + (drawableHeight / picScale)) / 2);
-            } else {
-                if (getMeasuredHeight() == 0) {
-                    return;
-                }
-                picScale = (float) drawableHeight / getMeasuredHeight();
-                picRect.set((int) (getMeasuredWidth() - (drawableWidth / picScale)) / 2, 0, (int) (getMeasuredWidth() + (drawableWidth / picScale)) / 2, (int) (drawableHeight / picScale));
-
-            }
-            Log.e("addPoint", "addPoint: " + picRect.toString());
+            Rect picRect = getRect();
+            if (picRect == null) return;
             addView.addPoint(picRect.left + picRect.width() * x, picRect.top + picRect.height() * y);
-
         });
+    }
+
+    // 添加一个指示点,基于x,y轴比例
+    private void addNewProportion(PointData data) {
+        post(() -> {
+            Rect picRect = getRect();
+            if (picRect == null) return;
+            if (data.getX() > 1f) {
+                data.setX(1f);
+            }
+            if (data.getY() > 1f) {
+                data.setY(1f);
+            }
+            data.setRealX(picRect.left + picRect.width() * data.getX());
+            data.setRealY(picRect.top + picRect.height() * data.getY());
+            addView.addPointData(data);
+        });
+    }
+
+    // 添加一个指示点,基于x,y轴比例
+    private void addNewProportion(ArrayList<PointData> list) {
+        post(() -> {
+            Rect picRect = getRect();
+            if (picRect == null) return;
+            for (int i = 0; i < list.size(); i++) {
+                PointData data = list.get(i);
+                if (data.getX() > 1f) {
+                    data.setX(1f);
+                }
+                if (data.getY() > 1f) {
+                    data.setY(1f);
+                }
+                data.setRealX(picRect.left + picRect.width() * data.getX());
+                data.setRealY(picRect.top + picRect.height() * data.getY());
+            }
+            addView.addPointData(list);
+        });
+    }
+
+    @Nullable
+    private Rect getRect() {
+        Drawable drawable = getDrawable();
+        if (drawable == null) {
+            return null;
+        }
+        drawableWidth = drawable.getIntrinsicWidth();
+        drawableHeight = drawable.getIntrinsicHeight();
+        float picScale;
+        Rect picRect = new Rect();
+        if (drawableWidth > drawableHeight) {
+            if (getMeasuredWidth() == 0) {
+                return null;
+            }
+            picScale = (float) drawableWidth / getMeasuredWidth();
+            picRect.set(0, (int) (getMeasuredHeight() - (drawableHeight / picScale)) / 2, (int) (drawableWidth / picScale), (int) (getMeasuredHeight() + (drawableHeight / picScale)) / 2);
+        } else {
+            if (getMeasuredHeight() == 0) {
+                return null;
+            }
+            picScale = (float) drawableHeight / getMeasuredHeight();
+            picRect.set((int) (getMeasuredWidth() - (drawableWidth / picScale)) / 2, 0, (int) (getMeasuredWidth() + (drawableWidth / picScale)) / 2, (int) (drawableHeight / picScale));
+
+        }
+        return picRect;
     }
 
     // 移动单个指示点
@@ -924,7 +970,7 @@ public class JustScaleImageView extends AppCompatImageView  {
 
 
     public void addProportion(float x, float y) {
-        if (getAddView()!=null) {
+        if (getAddView() != null) {
             addNewProportion(x, y);
         }
     }
@@ -933,14 +979,25 @@ public class JustScaleImageView extends AppCompatImageView  {
         if (addView == null) {
             try {
                 FrameLayout group = (FrameLayout) getParent();
-                addView = (TouchToAddView) group.getChildAt(1);
+                addView = (ToAddView) group.getChildAt(1);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-        return  addView;
+        return addView;
     }
 
 
+    public void addPointData(PointData data) {
+        if (getAddView() != null) {
+            addNewProportion(data);
+        }
+    }
+
+    public void addPointData(ArrayList<PointData> list) {
+        if (getAddView() != null) {
+            addNewProportion(list);
+        }
+    }
 }
 
