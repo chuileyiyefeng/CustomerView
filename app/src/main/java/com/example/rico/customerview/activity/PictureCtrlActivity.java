@@ -27,7 +27,7 @@ public class PictureCtrlActivity extends BaseActivity implements SignImageLayout
         data.setRadius(10);
         data.setX(0.5f);
         data.setY(0.5f);
-        data.setPointColorStr("#199aff");
+        data.setPointColorStr("#199cff");
         data.setTextSize(18);
         data.setTextColor(R.color.silver);
         data.setRectColor(R.color.blue_y);
