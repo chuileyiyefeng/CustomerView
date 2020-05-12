@@ -1,5 +1,7 @@
 package com.example.rico.customerview.bean;
 
+import android.graphics.Bitmap;
+
 public class PointData {
 
     // 标识内容
@@ -26,6 +28,52 @@ public class PointData {
     private int lastRectPos;
 
     public static final int left = 1, right = 2, defaultPos = 0;
+
+    // 传入的图片 实际使用时的图片
+    private Bitmap bitmap, realBitmap;
+    private int bitmapRes;
+
+    public Bitmap getRealBitmap() {
+        return realBitmap;
+    }
+
+    public void setRealBitmap(Bitmap realBitmap) {
+        this.realBitmap = realBitmap;
+    }
+
+    public int getBitmapRes() {
+        return bitmapRes;
+    }
+
+    // 设置图片
+    public void setBitmapRes(int bitmapRes, int bitmapWidth, int bitmapHeight) {
+        this.bitmapRes = bitmapRes;
+        this.bitmapWidth = bitmapWidth;
+        this.bitmapHeight = bitmapHeight;
+    }
+
+    // 标记点图片的大小
+    private int bitmapWidth, bitmapHeight;
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    // 设置图片
+    public void setBitmap(Bitmap bitmap, int bitmapWidth, int bitmapHeight) {
+        this.bitmap = bitmap;
+        this.bitmapWidth = bitmapWidth;
+        this.bitmapHeight = bitmapHeight;
+    }
+
+    public int getBitmapWidth() {
+        return bitmapWidth;
+    }
+
+    public int getBitmapHeight() {
+        return bitmapHeight;
+    }
+
 
     public int getLastRectPos() {
         return lastRectPos;

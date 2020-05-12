@@ -1,11 +1,14 @@
 package com.example.rico.customerview.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
+import android.graphics.RectF;
 import android.graphics.Region;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -37,6 +40,8 @@ public class ToAddView extends View {
     // 指示点区域突出的高度
     private float protrudingHeight = 20;
 
+    int top, left, right, bottom;
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -44,6 +49,10 @@ public class ToAddView extends View {
         height = h;
         globalRegion = new Region();
         globalRegion.set(0, 0, w, h);
+        top = getTop();
+        left = getLeft();
+        bottom = getBottom();
+        right = getRight();
     }
 
     Context mContext;
@@ -126,11 +135,6 @@ public class ToAddView extends View {
         PointF point = pointList.get(i);
         point.x = point.x - distanceX;
         point.y = point.y - distanceY;
-        Path path = pathList.get(i);
-        path.reset();
-        path.addCircle(point.x, point.y, dpToPx(dataList.get(i).getRadius()), Path.Direction.CW);
-        Region region = regionList.get(i);
-        region.setPath(path, globalRegion);
         invalidate();
     }
 
@@ -140,11 +144,6 @@ public class ToAddView extends View {
             PointF point = pointList.get(i);
             point.x = point.x - distanceX;
             point.y = point.y - distanceY;
-            Path path = pathList.get(i);
-            path.reset();
-            path.addCircle(point.x, point.y, dpToPx(dataList.get(i).getRadius()), Path.Direction.CW);
-            Region region = regionList.get(i);
-            region.setPath(path, globalRegion);
         }
         invalidate();
     }
@@ -218,12 +217,53 @@ public class ToAddView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (pointList == null) {
+        if (dataList == null) {
             return;
         }
-        drawPoint(canvas);
+//        drawPoint(canvas);
         drawClickInfo(canvas);
+        drawBitmap(canvas);
+    }
 
+    private void drawBitmap(Canvas canvas) {
+        for (int i = 0; i < dataList.size(); i++) {
+            PointData data = dataList.get(i);
+
+            if (data.getBitmap() == null && data.getBitmapRes() == 0 && data.getRealBitmap() == null) {
+                continue;
+            }
+            // bitmap有指定的大小，如果已经生成了指定大小的bitmap，就拿已经生成的，如果没有，就生成新的bitmap
+            // 然后把新生成的bitmap保存起来
+            // 如果bitmap的边界在超过当前view，就不绘制这个bitmap
+            Bitmap bitmap;
+            int bitmapWidth = dpToPx(data.getBitmapWidth());
+            int bitmapHeight = dpToPx(data.getBitmapHeight());
+            if (data.getRealBitmap() != null) {
+                bitmap = data.getRealBitmap();
+            } else {
+                bitmap = data.getBitmap();
+                if (bitmap != null) {
+                    bitmap = getNewBitmap(bitmap, bitmapWidth, bitmapHeight);
+                } else {
+                    bitmap = getNewBitmap(data.getBitmapRes(), bitmapWidth, bitmapHeight);
+                }
+                data.setRealBitmap(bitmap);
+            }
+            PointF pointF = pointList.get(i);
+            Path path = pathList.get(i);
+            path.reset();
+            RectF rect = new RectF(pointF.x, pointF.y, pointF.x + bitmap.getWidth(), pointF.y + bitmap.getHeight());
+            path.addRect(rect, Path.Direction.CW);
+            canvas.drawRect(rect, paintList.get(i));
+            boolean isNotVis = (pointF.x + bitmapWidth < left) || (pointF.x > right) || (pointF.y + bitmapHeight < top) || (pointF.y > bottom);
+            if (isNotVis) {
+                continue;
+            }
+            Log.e("isVis", "drawBitmap: "+"isVis" );
+            canvas.drawBitmap(bitmap, pointF.x, pointF.y, paintList.get(i));
+            Region region = regionList.get(i);
+            region.setPath(path, globalRegion);
+        }
     }
 
     // 画数据点
@@ -251,16 +291,17 @@ public class ToAddView extends View {
         float protrudingWidth = 20;
         if (clickPosition != noClick) {
             PointData data = dataList.get(clickPosition);
+            String text = dataList.get(clickPosition).getMessage();
+            if (text.isEmpty()) {
+                return;
+            }
             PointF pointF = pointList.get(clickPosition);
             Path rectPath = new Path();
             int radius = dpToPx(data.getRadius() / 2 + 4);
             float x = pointF.x;
             float y = pointF.y - radius;
 
-            String text = dataList.get(clickPosition).getMessage();
-            if (text.isEmpty()) {
-                return;
-            }
+
             Paint paint = paintList.get(clickPosition);
             float textLength = paint.measureText(text);
             float rectWidth = textLength + textMargin * 2;
@@ -327,6 +368,24 @@ public class ToAddView extends View {
 
     private float spToPx(float size) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, size, getResources().getDisplayMetrics());
+    }
+
+    //    获取指定宽高的图片
+
+    public Bitmap getNewBitmap(int bitRes, int width, int height) {
+        if (bitRes == 0) {
+            return null;
+        }
+        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), bitRes);
+        return getNewBitmap(bitmap, width, height);
+    }
+
+    public Bitmap getNewBitmap(Bitmap bitmap, int width, int height) {
+        if (bitmap == null) {
+            return null;
+        }
+        bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
+        return bitmap;
     }
 
     // 清除所有点标识
