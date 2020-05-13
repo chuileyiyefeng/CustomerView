@@ -70,7 +70,6 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
     public void clearAllItem() {
         int previousSize = list.size();
         list.clear();
-        notifyItemRangeRemoved(0, previousSize);
     }
 
     public T getItem(int position) {

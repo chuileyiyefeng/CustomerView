@@ -46,6 +46,7 @@
         <activity android:name=".activity.ListLinkageActivity" />
         <activity android:name=".activity.PictureViewerActivity" />
         <activity android:name=".activity.PictureCtrlActivity" />
+        <activity android:name=".activity.ScrollSignActivity" />
         <activity
             android:name=".activity.PictureDetailActivity"
             android:theme="@style/PicTheme" />

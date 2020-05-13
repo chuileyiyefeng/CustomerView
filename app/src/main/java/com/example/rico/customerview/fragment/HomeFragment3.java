@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.example.rico.customerview.activity.PictureCtrlActivity;
 import com.example.rico.customerview.activity.PictureViewerActivity;
+import com.example.rico.customerview.activity.ScrollSignActivity;
 import com.example.rico.customerview.bean.ItemInfo;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.activity.AllViewActivity;
@@ -47,6 +48,7 @@ public class HomeFragment3 extends BaseFragment implements BaseAdapter.ItemClick
         adapter.addItem(new ItemInfo("列表联动选择", new Intent(context, ListLinkageActivity.class)));
         adapter.addItem(new ItemInfo("图片浏览", new Intent(context, PictureViewerActivity.class)));
         adapter.addItem(new ItemInfo("图片操作", new Intent(context, PictureCtrlActivity.class)));
+        adapter.addItem(new ItemInfo("滑动标签", new Intent(context, ScrollSignActivity.class)));
         adapter.addItemClick(this);
     }
 

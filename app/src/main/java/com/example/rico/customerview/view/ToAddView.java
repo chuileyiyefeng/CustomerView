@@ -97,7 +97,7 @@ public class ToAddView extends View {
                     if (regionList.get(i).contains((int) touchX, (int) touchY)) {
                         clickPosition = i;
                         dataList.get(i).setLastRectPos(PointData.defaultPos);
-                        invalidate();
+//                        invalidate();
                         if (listener != null) {
                             listener.click(i, dataList.get(i).getMessage());
                         }
@@ -221,7 +221,7 @@ public class ToAddView extends View {
             return;
         }
 //        drawPoint(canvas);
-        drawClickInfo(canvas);
+//        drawClickInfo(canvas);
         drawBitmap(canvas);
     }
 
@@ -249,6 +249,9 @@ public class ToAddView extends View {
                 }
                 data.setRealBitmap(bitmap);
             }
+            if (bitmap == null) {
+                return;
+            }
             PointF pointF = pointList.get(i);
             Path path = pathList.get(i);
             path.reset();
@@ -259,7 +262,7 @@ public class ToAddView extends View {
             if (isNotVis) {
                 continue;
             }
-            Log.e("isVis", "drawBitmap: "+"isVis" );
+            Log.e("isVis", "drawBitmap: " + "isVis");
             canvas.drawBitmap(bitmap, pointF.x, pointF.y, paintList.get(i));
             Region region = regionList.get(i);
             region.setPath(path, globalRegion);

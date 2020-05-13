@@ -19,13 +19,11 @@ import java.util.List;
  */
 public class ExchangeView extends ViewGroup {
     public ExchangeView(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
 
     public ExchangeView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
+        this(context, attrs, 0);
     }
 
     public ExchangeView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -216,9 +214,9 @@ public class ExchangeView extends ViewGroup {
 
     private void scrollToCenter() {
         changeData();
-        RectF topRect=rectS.get(topPos);
-        RectF bottomRect=rectS.get(bottomPos);
-        topDis = centerX - ((topRect.left+topRect.right) / 2);
+        RectF topRect = rectS.get(topPos);
+        RectF bottomRect = rectS.get(bottomPos);
+        topDis = centerX - ((topRect.left + topRect.right) / 2);
         bottomDis = Math.min(bottomRect.left, parentWidth - bottomRect.right);
         endScale = Math.abs(bottomDis / topDis);
         if (animator == null) {
@@ -273,7 +271,8 @@ public class ExchangeView extends ViewGroup {
                 } else {
                     rect.left = getPaddingLeft();
                     rect.right = rect.left + childWidth;
-                } }
+                }
+            }
         }
     }
 

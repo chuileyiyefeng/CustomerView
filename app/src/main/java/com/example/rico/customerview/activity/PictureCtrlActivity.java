@@ -27,16 +27,16 @@ public class PictureCtrlActivity extends BaseActivity implements SignImageLayout
             value = ((i * 2) + 1) * 0.1f;
             data.setX(value);
             data.setY(0.2f);
-            data.setMessage("这是点击内容，下标为" + i);
-            data.setBitmapRes(R.mipmap.ic_launcher_round, 20, 20);
+//            data.setMessage("这是点击内容，下标为" + i);
+            data.setBitmapRes(R.mipmap.ic_complete, 20, 20);
             list.add(data);
             for (int k = 1; k < 3; k++) {
                 PointData data2 = new PointData();
                 float value2 = ((k + 1) * 2) * 0.1f;
                 data2.setX(value);
                 data2.setY(value2);
-                data2.setMessage("这是点击内容，下标为" + k);
-                data2.setBitmapRes(R.mipmap.ic_launcher_round, 20, 20);
+//                data2.setMessage("这是点击内容，下标为" + k);
+                data2.setBitmapRes(R.mipmap.icn_1, 20, 20);
                 list.add(data2);
             }
         }
