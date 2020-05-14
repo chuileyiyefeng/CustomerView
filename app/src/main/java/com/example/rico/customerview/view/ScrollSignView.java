@@ -63,7 +63,7 @@ public class ScrollSignView extends ViewGroup {
 
     public void setSignDataList(ArrayList<SignData> signDataList) {
         this.signDataList = signDataList;
-        post(() -> {
+//        post(() -> {
             for (int i = 0; i < signDataList.size(); i++) {
                 SignData data = signDataList.get(i);
                 data.setTop(dpToPx(data.getTop()));
@@ -111,7 +111,8 @@ public class ScrollSignView extends ViewGroup {
 //            Log.e("isValue4", "setSignDataList: "+(  itemRectF.top < topMargin) );
 //            Log.e("isValue5", "setSignDataList: "+( itemRectF.bottom > parentHeight - bottomMargin) );
             requestLayout();
-        });
+            invalidate();
+//        });
     }
 
     private void init() {
@@ -239,20 +240,20 @@ public class ScrollSignView extends ViewGroup {
                 }
             } else {
                 // 左在屏幕内，右在屏幕外
-                if (i == maxRightPosition) {
-                    boolean isLeft;
-                    if (itemRectF.left > leftMargin && itemRectF.right > parentWidth - rightMargin) {
-                        if (right + distanceX < parentWidth - rightMargin) {
-                            distanceX = parentWidth - defaultMargin - right;
-                        }
-                    }
-                }
+//                if (i == maxRightPosition) {
+//                    boolean isLeft;
+//                    if (itemRectF.left > leftMargin && itemRectF.right > parentWidth - rightMargin) {
+//                        if (right + distanceX < parentWidth - rightMargin) {
+//                            distanceX = parentWidth - defaultMargin - right;
+//                        }
+//                    }
+//                }
                 // 右在屏幕内，左在屏幕外
-                if (i == minLeftPosition) {
-                    if (itemRectF.left < leftMargin && itemRectF.right > parentWidth - rightMargin) {
-
-                    }
-                }
+//                if (i == minLeftPosition) {
+//                    if (itemRectF.left < leftMargin && itemRectF.right > parentWidth - rightMargin) {
+//
+//                    }
+//                }
                 // 左右都在屏幕外
 
                 // 左右都在屏幕内
