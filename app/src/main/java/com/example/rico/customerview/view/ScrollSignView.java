@@ -2,13 +2,10 @@ package com.example.rico.customerview.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,7 +16,6 @@ import com.example.rico.customerview.R;
 import com.example.rico.customerview.bean.SignData;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ScrollSignView extends ViewGroup {
     GestureDetector simpleDetector;
@@ -160,78 +156,7 @@ public class ScrollSignView extends ViewGroup {
 
             // 添加完子view后要判断子view的范围，然后让子view是否在屏幕外或者在屏幕内
             // 都不在的话，重新设置范围
-            if (!isContainChild && !isLargeParent) {
-                Log.e("inValue", "setSignDataList: false");
-                float itemRowWidth = itemRectF.right - itemRectF.left;
-                float itemRowHeight = itemRectF.bottom - itemRectF.top;
-                // 每个子view需要移动的距离
-                float distanceX, distanceY;
-
-                // 如果item范围比父view小，只需要整体移动就行，并把子view居中放置
-                // 居中起始点 x、y
-                float startX = (parentWidth - itemRowWidth) / 2;
-                float startY = (parentHeight - itemRowHeight) / 2;
-
-                if (itemRowWidth <= parentWidth && itemRowHeight <= parentHeight) {
-                    centerItem(startX, startY);
-                    isContainChild = true;
-                } else {
-                    if (rectS.size() < 1) {
-                        return;
-                    }
-                    boolean needStretchX = false, needStretchY = false;
-
-                    // y轴的拉伸距离，分两个方向
-                    float distanceTopY = 0, distanceBottomY = 0;
-
-                    // 需要拉伸宽度
-                    if (parentWidth > itemRowWidth) {
-                        needStretchX = true;
-                        distanceX = (parentWidth - itemRowWidth) / rectS.size() - 1;
-                    }// 不需要拉伸
-                    else {
-                        distanceX = startX - rectS.get(minLeftPosition).left;
-                    }
-                    // 需要拉伸高度
-                    if (parentHeight > itemRowHeight) {
-                        needStretchY = true;
-                        float minTop = rectS.get(minTopPosition).top;
-                        float maxBottom = rectS.get(maxBottomPosition).bottom;
-                        if (minTop > centerY || maxBottom < centerY) {
-                            centerY = (int) ((maxBottom + minTop) / 2);
-                        }
-                        distanceTopY = (getTop() - topMargin) - minTop;
-                        distanceBottomY = getBottom() + bottomMargin - maxBottom;
-                        distanceY = distanceTopY + distanceBottomY;
-                    }// 不需要拉伸
-                    else {
-                        distanceY = startY - rectS.get(minTopPosition).top;
-                    }
-                    Log.e("moveDistance", "setSignDataList: " + distanceX + " " + distanceTopY + " " + distanceBottomY + " " + centerY);
-                    for (int i = 0; i < rectS.size(); i++) {
-                        RectF rectF = rectS.get(i);
-                        if (rectF.right < centerX && needStretchX) {
-                            distanceX = -distanceX;
-                        }
-                        if (needStretchY) {
-                            if (rectF.bottom < centerY) {
-
-                                distanceY = distanceTopY;
-                            } else {
-                                distanceY = distanceBottomY;
-                            }
-                        }
-                        rectF.left = rectF.left + distanceX;
-                        rectF.right = rectF.right + distanceX;
-                        rectF.top = rectF.top + distanceY;
-                        rectF.bottom = rectF.bottom + distanceY;
-
-                    }
-
-                    isLargeParent = true;
-                }
-            }
-
+            resetChildRange();
             itemSpanX = itemRectF.right - itemRectF.left;
             itemSpanY = itemRectF.bottom - itemRectF.top;
             Log.e("isValue1", "setSignDataList: " + itemRectF.toString());
@@ -242,6 +167,81 @@ public class ScrollSignView extends ViewGroup {
             requestLayout();
             invalidate();
         });
+    }
+
+    // 重新设置子view的位置
+    private void resetChildRange() {
+        if (!isContainChild && !isLargeParent) {
+            Log.e("inValue", "setSignDataList: false");
+            float itemRowWidth = itemRectF.right - itemRectF.left;
+            float itemRowHeight = itemRectF.bottom - itemRectF.top;
+            // 每个子view需要移动的距离
+            float distanceX, distanceY;
+
+            // 如果item范围比父view小，只需要整体移动就行，并把子view居中放置
+            // 居中起始点 x、y
+            float startX = (parentWidth - itemRowWidth) / 2;
+            float startY = (parentHeight - itemRowHeight) / 2;
+
+            if (itemRowWidth <= parentWidth && itemRowHeight <= parentHeight) {
+                centerItem(startX, startY);
+                isContainChild = true;
+            } else {
+                if (rectS.size() < 1) {
+                    return;
+                }
+                boolean needStretchX = false, needStretchY = false;
+
+                // y轴的拉伸距离，分两个方向
+                float distanceTopY = 0, distanceBottomY = 0;
+
+                // 需要拉伸宽度
+                if (parentWidth > itemRowWidth) {
+                    needStretchX = true;
+                    distanceX = (parentWidth - itemRowWidth) / rectS.size() - 1;
+                }// 不需要拉伸
+                else {
+                    distanceX = startX - rectS.get(minLeftPosition).left;
+                }
+                // 需要拉伸高度
+                if (parentHeight > itemRowHeight) {
+                    needStretchY = true;
+                    float minTop = rectS.get(minTopPosition).top;
+                    float maxBottom = rectS.get(maxBottomPosition).bottom;
+                    if (minTop > centerY || maxBottom < centerY) {
+                        centerY = (int) ((maxBottom + minTop) / 2);
+                    }
+                    distanceTopY = (getTop() - topMargin) - minTop;
+                    distanceBottomY = getBottom() + bottomMargin - maxBottom;
+                    distanceY = distanceTopY + distanceBottomY;
+                }// 不需要拉伸
+                else {
+                    distanceY = startY - rectS.get(minTopPosition).top;
+                }
+                Log.e("moveDistance", "setSignDataList: " + distanceX + " " + distanceTopY + " " + distanceBottomY + " " + centerY);
+                for (int i = 0; i < rectS.size(); i++) {
+                    RectF rectF = rectS.get(i);
+                    if (rectF.right < centerX && needStretchX) {
+                        distanceX = -distanceX;
+                    }
+                    if (needStretchY) {
+                        if (rectF.bottom < centerY) {
+
+                            distanceY = distanceTopY;
+                        } else {
+                            distanceY = distanceBottomY;
+                        }
+                    }
+                    rectF.left = rectF.left + distanceX;
+                    rectF.right = rectF.right + distanceX;
+                    rectF.top = rectF.top + distanceY;
+                    rectF.bottom = rectF.bottom + distanceY;
+
+                }
+
+                isLargeParent = true;
+            }
+        }
     }
 
     // 把子view居中
@@ -256,24 +256,7 @@ public class ScrollSignView extends ViewGroup {
             rectF.right = rectF.right + distanceX;
             rectF.top = rectF.top + distanceY;
             rectF.bottom = rectF.bottom + distanceY;
-            if (minLeftPoint >= rectF.left) {
-                minLeftPoint = rectF.left;
-                minLeftPosition = i;
-            }
-            if (maxRightPoint <= rectF.right) {
-                maxRightPoint = rectF.right;
-                maxRightPosition = i;
-            }
-            if (minTopPoint >= rectF.top) {
-                minTopPoint = rectF.top;
-                minTopPosition = i;
-            }
-            if (maxBottomPoint <= rectF.bottom) {
-                maxBottomPoint = rectF.bottom;
-                maxBottomPosition = i;
-            }
         }
-        checkContain();
     }
 
     // 判断子view对于父view属性
