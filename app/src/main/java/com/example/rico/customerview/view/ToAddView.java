@@ -379,7 +379,7 @@ public class ToAddView extends View {
         if (bitRes == 0) {
             return null;
         }
-        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), bitRes);
+        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), bitRes);
         return getNewBitmap(bitmap, width, height);
     }
 

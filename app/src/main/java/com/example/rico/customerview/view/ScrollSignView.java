@@ -172,7 +172,6 @@ public class ScrollSignView extends ViewGroup {
     // 重新设置子view的位置
     private void resetChildRange() {
         if (!isContainChild && !isLargeParent) {
-            Log.e("inValue", "setSignDataList: false");
             float itemRowWidth = itemRectF.right - itemRectF.left;
             float itemRowHeight = itemRectF.bottom - itemRectF.top;
             // 每个子view需要移动的距离
@@ -211,22 +210,30 @@ public class ScrollSignView extends ViewGroup {
                     if (minTop > centerY || maxBottom < centerY) {
                         centerY = (int) ((maxBottom + minTop) / 2);
                     }
-                    distanceTopY = (getTop() - topMargin) - minTop;
-                    distanceBottomY = getBottom() + bottomMargin - maxBottom;
+                    Log.e("moveDistance", "neeMove: " + minTop + " " + maxBottom + " " + getTop() + " " + getBottom());
+                    distanceTopY = -topMargin - minTop;
+                    distanceBottomY = parentHeight + bottomMargin - maxBottom;
                     distanceY = distanceTopY + distanceBottomY;
                 }// 不需要拉伸
                 else {
-                    distanceY = startY - rectS.get(minTopPosition).top;
+                    distanceY = -rectS.get(minTopPosition).top;
                 }
                 Log.e("moveDistance", "setSignDataList: " + distanceX + " " + distanceTopY + " " + distanceBottomY + " " + centerY);
+
+                // 重置最大最小位置
+                minLeftPoint = Integer.MAX_VALUE;
+                minTopPoint = Integer.MAX_VALUE;
+                maxRightPoint = Integer.MIN_VALUE;
+                maxBottomPoint = Integer.MIN_VALUE;
+
                 for (int i = 0; i < rectS.size(); i++) {
                     RectF rectF = rectS.get(i);
+                    Log.e("change", "origin: " + rectF.toString());
                     if (rectF.right < centerX && needStretchX) {
                         distanceX = -distanceX;
                     }
                     if (needStretchY) {
                         if (rectF.bottom < centerY) {
-
                             distanceY = distanceTopY;
                         } else {
                             distanceY = distanceBottomY;
@@ -237,8 +244,34 @@ public class ScrollSignView extends ViewGroup {
                     rectF.top = rectF.top + distanceY;
                     rectF.bottom = rectF.bottom + distanceY;
 
+                    if (minLeftPoint >= rectF.left) {
+                        minLeftPoint = rectF.left;
+                        minLeftPosition = i;
+                    }
+                    if (maxRightPoint <= rectF.right) {
+                        maxRightPoint = rectF.right;
+                        maxRightPosition = i;
+                    }
+                    if (minTopPoint >= rectF.top) {
+                        minTopPoint = rectF.top;
+                        minTopPosition = i;
+                    }
+                    if (maxBottomPoint <= rectF.bottom) {
+                        maxBottomPoint = rectF.bottom;
+                        maxBottomPosition = i;
+                    }
+                    Log.e("change", "change: " + rectF.toString());
                 }
-
+                itemRectF = new RectF(minLeftPoint, minTopPoint, maxRightPoint, maxBottomPoint);
+                itemRowWidth = itemRectF.right - itemRectF.left;
+                itemRowHeight = itemRectF.bottom - itemRectF.top;
+                Log.e("itemRectF", "change: " + itemRectF.toString() + " " + parentHeight + " " + parentWidth + " " + itemRowHeight + " " + itemRowWidth);
+                // 把子view居中放置
+                // 居中起始点 x、y
+                startX = (parentWidth - itemRowWidth) / 2;
+                startY = (parentHeight - itemRowHeight) / 2;
+                Log.e("itemRectF", "change: " + startX + " " + startY);
+                centerItem(startX, startY);
                 isLargeParent = true;
             }
         }
@@ -246,10 +279,9 @@ public class ScrollSignView extends ViewGroup {
 
     // 把子view居中
     private void centerItem(float startX, float startY) {
-        float distanceX;
-        float distanceY;
-        distanceX = startX - rectS.get(minLeftPosition).left;
-        distanceY = startY - rectS.get(minLeftPosition).top;
+        float distanceX = startX - rectS.get(minLeftPosition).left;
+        float distanceY = startY - rectS.get(minTopPosition).top;
+        Log.e("itemRectF", "change: " + distanceX + " " + distanceY);
         for (int i = 0; i < rectS.size(); i++) {
             RectF rectF = rectS.get(i);
             rectF.left = rectF.left + distanceX;
@@ -380,7 +412,6 @@ public class ScrollSignView extends ViewGroup {
 
     // 改变view的位置  手指向右下参数为正数 左上为负数
     private void moveView(float distanceX, float distanceY) {
-        Log.e("moveView", "moveView: " + distanceX + " " + distanceY);
         for (int i = 0; i < getChildCount(); i++) {
             RectF rect = rectS.get(i);
             float left = rect.left;
