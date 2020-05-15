@@ -425,7 +425,7 @@ public class ScrollSignView extends ViewGroup implements View.OnClickListener {
     }
 
     float mDownX, mDownY, mTouchSlop;
-    boolean isIntercept;
+//    boolean isIntercept;
 
     // 滑动的时候拦截事件
 //    @Override
