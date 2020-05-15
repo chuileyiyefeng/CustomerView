@@ -7,7 +7,7 @@
         android:layout_gravity="center_vertical"
         android:id="@+id/sign_view"
         android:layout_width="match_parent"
-        android:background="@color/lightblue"
+        android:background="@color/gray"
         android:layout_height="300dp" />
     <View
         android:visibility="gone"

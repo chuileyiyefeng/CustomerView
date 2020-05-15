@@ -2,22 +2,30 @@ package com.example.rico.customerview.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.RectF;
+import android.opengl.Visibility;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.bean.SignData;
 
 import java.util.ArrayList;
 
-public class ScrollSignView extends ViewGroup {
+public class ScrollSignView extends ViewGroup implements View.OnClickListener {
     GestureDetector simpleDetector;
     int defaultMargin = dpToPx(20);
     int leftMargin = defaultMargin, topMargin = defaultMargin, rightMargin = defaultMargin, bottomMargin = defaultMargin;
@@ -32,7 +40,7 @@ public class ScrollSignView extends ViewGroup {
 
     public ScrollSignView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context);
     }
 
     // 当前view绘制的rect,view移动时的参照rect
@@ -53,9 +61,6 @@ public class ScrollSignView extends ViewGroup {
     // 子控件范围大于父控件,即子控件都在父控件范围外
     boolean isLargeParent;
 
-    // 子控件横跨的范围
-
-    float itemSpanX, itemSpanY;
 
     // 子控件之间边距
     int childRightMargin, childTopMargin, childBottomMargin;
@@ -63,12 +68,18 @@ public class ScrollSignView extends ViewGroup {
     // 父控件宽度中点、高度中点
     int centerX, centerY;
 
+    // 连线的点集合
+    private ArrayList<PointF> pointList;
+
+    Path path;
+    Paint paint;
+
     public void setSignDataList(ArrayList<SignData> signDataList) {
         this.signDataList = signDataList;
         childRightMargin = dpToPx(10);
-        childTopMargin = dpToPx(30);
-        childBottomMargin = dpToPx(30);
-
+        childTopMargin = dpToPx(20);
+        childBottomMargin = dpToPx(20);
+        pointList = new ArrayList<>();
         post(() -> {
             parentWidth = getRight() - getLeft();
             parentHeight = getBottom() - getTop();
@@ -78,11 +89,18 @@ public class ScrollSignView extends ViewGroup {
             for (int i = 0; i < signDataList.size(); i++) {
                 // 先得到子view的宽高，再来排布
                 SignData data = signDataList.get(i);
+                data.setPosition(i);
                 View view = inflate(getContext(), R.layout.item_sign, null);
                 TextView tvContentTop = view.findViewById(R.id.tv_content_top);
                 TextView tvContentBottom = view.findViewById(R.id.tv_content_bottom);
+                TextView tvTitle = view.findViewById(R.id.tv_title);
+                tvTitle.setText(data.getTitle());
                 tvContentTop.setText(data.getMessage());
                 tvContentBottom.setText(data.getMessage());
+                tvContentBottom.setTag(data);
+                tvContentTop.setTag(data);
+                tvContentBottom.setOnClickListener(this);
+                tvContentTop.setOnClickListener(this);
                 int randomValue = get20Random();
                 if (randomValue > dpToPx(10)) {
                     tvContentBottom.setVisibility(GONE);
@@ -94,6 +112,17 @@ public class ScrollSignView extends ViewGroup {
                 measureChild(view, parentWidth, parentHeight);
                 int childWidth = view.getMeasuredWidth();
                 int childHeight = view.getMeasuredHeight();
+                View signView = view.findViewById(R.id.view_sign);
+                // 当前的连线点这个数据是偏移量
+                PointF pointF = new PointF();
+                pointF.x = signView.getMeasuredWidth() / 2;
+                View childParent = (View) signView.getParent();
+                if (tvContentBottom.getVisibility() == View.GONE) {
+                    pointF.y = childHeight - childParent.getMeasuredHeight() / 2;
+                } else {
+                    pointF.y = childParent.getMeasuredHeight() / 2;
+                }
+                pointList.add(pointF);
                 // 设置子view的起始位置
                 if (i == 0) {
                     data.setLeft(-leftMargin);
@@ -107,23 +136,25 @@ public class ScrollSignView extends ViewGroup {
                     // 把当前这个view放在上半部分
 
                     if (randomValue > dpToPx(10)) {
-                        //
+                        //  比当前view更加上
                         if (lastRect.top <= centerY) {
                             data.setTop((int) (lastRect.top - childHeight - get20Random() - childTopMargin));
                             data.setLeft((int) lastRect.right + childRightMargin);
                         } else {
-                            data.setTop(centerY - childHeight - get20Random() - childTopMargin);
+
+                            data.setTop(centerY - childHeight - get20Random());
                             data.setLeft((int) ((int) lastRect.left + childRightMargin + (lastRect.right - lastRect.left) / 2));
                             resetContain(i, data, childWidth, childHeight);
                         }
 
                     }// 在下半部分
                     else {
+                        // 比当前view更加下
                         if (lastRect.bottom >= centerY) {
                             data.setTop((int) (lastRect.bottom + get20Random() + childBottomMargin));
                             data.setLeft((int) lastRect.right + childRightMargin);
                         } else {
-                            data.setTop(centerY + get20Random() + childBottomMargin);
+                            data.setTop(centerY + get20Random());
                             data.setLeft((int) ((int) lastRect.left + childRightMargin + (lastRect.right - lastRect.left) / 2));
                             resetContain(i, data, childWidth, childHeight);
                         }
@@ -157,17 +188,12 @@ public class ScrollSignView extends ViewGroup {
             // 添加完子view后要判断子view的范围，然后让子view是否在屏幕外或者在屏幕内
             // 都不在的话，重新设置范围
             resetChildRange();
-            itemSpanX = itemRectF.right - itemRectF.left;
-            itemSpanY = itemRectF.bottom - itemRectF.top;
-            Log.e("isValue1", "setSignDataList: " + itemRectF.toString());
-//            Log.e("isValue2", "setSignDataList: "+( itemRectF.left < leftMargin) );
-//            Log.e("isValue3", "setSignDataList: "+(  itemRectF.right > parentWidth - rightMargin) );
-//            Log.e("isValue4", "setSignDataList: "+(  itemRectF.top < topMargin) );
-//            Log.e("isValue5", "setSignDataList: "+( itemRectF.bottom > parentHeight - bottomMargin) );
             requestLayout();
-            invalidate();
+            // 设置连线点的位置
+            setPointPosition();
         });
     }
+
 
     // 重新设置子view的位置
     private void resetChildRange() {
@@ -210,7 +236,6 @@ public class ScrollSignView extends ViewGroup {
                     if (minTop > centerY || maxBottom < centerY) {
                         centerY = (int) ((maxBottom + minTop) / 2);
                     }
-                    Log.e("moveDistance", "neeMove: " + minTop + " " + maxBottom + " " + getTop() + " " + getBottom());
                     distanceTopY = -topMargin - minTop;
                     distanceBottomY = parentHeight + bottomMargin - maxBottom;
                     distanceY = distanceTopY + distanceBottomY;
@@ -218,7 +243,6 @@ public class ScrollSignView extends ViewGroup {
                 else {
                     distanceY = -rectS.get(minTopPosition).top;
                 }
-                Log.e("moveDistance", "setSignDataList: " + distanceX + " " + distanceTopY + " " + distanceBottomY + " " + centerY);
 
                 // 重置最大最小位置
                 minLeftPoint = Integer.MAX_VALUE;
@@ -228,7 +252,6 @@ public class ScrollSignView extends ViewGroup {
 
                 for (int i = 0; i < rectS.size(); i++) {
                     RectF rectF = rectS.get(i);
-                    Log.e("change", "origin: " + rectF.toString());
                     if (rectF.right < centerX && needStretchX) {
                         distanceX = -distanceX;
                     }
@@ -260,20 +283,26 @@ public class ScrollSignView extends ViewGroup {
                         maxBottomPoint = rectF.bottom;
                         maxBottomPosition = i;
                     }
-                    Log.e("change", "change: " + rectF.toString());
+
                 }
                 itemRectF = new RectF(minLeftPoint, minTopPoint, maxRightPoint, maxBottomPoint);
                 itemRowWidth = itemRectF.right - itemRectF.left;
                 itemRowHeight = itemRectF.bottom - itemRectF.top;
-                Log.e("itemRectF", "change: " + itemRectF.toString() + " " + parentHeight + " " + parentWidth + " " + itemRowHeight + " " + itemRowWidth);
                 // 把子view居中放置
                 // 居中起始点 x、y
                 startX = (parentWidth - itemRowWidth) / 2;
                 startY = (parentHeight - itemRowHeight) / 2;
-                Log.e("itemRectF", "change: " + startX + " " + startY);
                 centerItem(startX, startY);
                 isLargeParent = true;
             }
+        }
+    }
+
+    private void setPointPosition() {
+        for (int i = 0; i < pointList.size(); i++) {
+            PointF pointF = pointList.get(i);
+            pointF.x = rectS.get(i).left + pointF.x;
+            pointF.y = rectS.get(i).top + pointF.y;
         }
     }
 
@@ -281,7 +310,6 @@ public class ScrollSignView extends ViewGroup {
     private void centerItem(float startX, float startY) {
         float distanceX = startX - rectS.get(minLeftPosition).left;
         float distanceY = startY - rectS.get(minTopPosition).top;
-        Log.e("itemRectF", "change: " + distanceX + " " + distanceY);
         for (int i = 0; i < rectS.size(); i++) {
             RectF rectF = rectS.get(i);
             rectF.left = rectF.left + distanceX;
@@ -335,32 +363,23 @@ public class ScrollSignView extends ViewGroup {
         return point.x >= rectF.left && point.x <= rectF.right && point.y >= rectF.top && point.y <= rectF.bottom;
     }
 
-    private void init() {
+    private void init(Context context) {
         rectS = new ArrayList<>();
         signDataList = new ArrayList<>();
+        path = new Path();
+        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setColor(Color.parseColor("#ffffff"));
+        DashPathEffect pathEffect = new DashPathEffect(new float[]{6, 10}, 20);
+        paint.setPathEffect(pathEffect);
+        paint.setStyle(Paint.Style.STROKE);
+        ViewConfiguration configuration = ViewConfiguration.get(context);
+        mTouchSlop = configuration.getScaledTouchSlop();
         simpleDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
                 moveView(-distanceX, -distanceY);
-                return true;
-            }
-
-            @Override
-            public boolean onSingleTapConfirmed(MotionEvent e) {
                 return false;
             }
-
-            @Override
-            public boolean onDoubleTap(MotionEvent e) {
-                return super.onDoubleTap(e);
-            }
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-
-                return false;
-            }
-
         });
     }
 
@@ -403,7 +422,34 @@ public class ScrollSignView extends ViewGroup {
         performClick();
         simpleDetector.onTouchEvent(event);
         return true;
+    }
 
+    float mDownX, mDownY, mTouchSlop;
+    boolean isIntercept;
+
+    // 滑动的时候拦截事件
+//    @Override
+//    public boolean onInterceptTouchEvent(MotionEvent ev) {
+//        switch (ev.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//            case MotionEvent.ACTION_UP:
+//                isIntercept = false;
+//                mDownX = ev.getX();
+//                mDownY = ev.getY();
+//                break;
+//            case MotionEvent.ACTION_MOVE:
+//                isIntercept = isIntercept(ev);
+//                break;
+//        }
+//        return isIntercept;
+//    }
+
+
+    public boolean isIntercept(MotionEvent ev) {
+        float moveX = ev.getX();
+        float moveY = ev.getY();
+        Log.e("isIntercept", "moveView: " + (moveX-mDownX) + " " + (moveY-mDownY));
+        return (Math.abs(moveY - mDownY) > mTouchSlop || (Math.abs(moveX - mDownX) > mTouchSlop));
     }
 
     private int dpToPx(int dp) {
@@ -412,6 +458,7 @@ public class ScrollSignView extends ViewGroup {
 
     // 改变view的位置  手指向右下参数为正数 左上为负数
     private void moveView(float distanceX, float distanceY) {
+        Log.e("moveDistance", "moveView: " + distanceX + " " + distanceY);
         for (int i = 0; i < getChildCount(); i++) {
             RectF rect = rectS.get(i);
             float left = rect.left;
@@ -491,12 +538,26 @@ public class ScrollSignView extends ViewGroup {
             rect.right = rect.left + width;
             rect.top = rect.top + distanceY;
             rect.bottom = rect.top + height;
+            PointF pointF = pointList.get(i);
+            pointF.x += distanceX;
+            pointF.y += distanceY;
         }
         requestLayout();
     }
 
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        path.reset();
+        for (int i = 0; i < pointList.size(); i++) {
+            PointF point = pointList.get(i);
+            if (i == 0) {
+                path.moveTo(point.x, point.y);
+            } else {
+                path.lineTo(point.x, point.y);
+            }
+        }
+        canvas.drawPath(path, paint);
         super.dispatchDraw(canvas);
     }
 
@@ -506,5 +567,43 @@ public class ScrollSignView extends ViewGroup {
     @Override
     public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
         return new ViewGroup.MarginLayoutParams(getContext(), attrs);
+    }
+
+    private int lastClickPosition = -1;
+
+    @Override
+    public void onClick(View view) {
+        SignData data = (SignData) view.getTag();
+        int currentPosition = data.getPosition();
+        if (listener != null) {
+            listener.click(data);
+        }
+        if (lastClickPosition == currentPosition) {
+            return;
+        }
+        setColor(currentPosition, "#90FF0000");
+        if (lastClickPosition != -1) {
+            setColor(lastClickPosition, "#90000000");
+        }
+        lastClickPosition = currentPosition;
+    }
+
+
+    private void setColor(int position, String color) {
+        View lastParentView = getChildAt(position);
+        TextView tvContentTop = lastParentView.findViewById(R.id.tv_content_top);
+        TextView tvContentBottom = lastParentView.findViewById(R.id.tv_content_bottom);
+        tvContentTop.setBackgroundColor(Color.parseColor(color));
+        tvContentBottom.setBackgroundColor(Color.parseColor(color));
+    }
+
+    SignClickListener listener;
+
+    public void setListener(SignClickListener listener) {
+        this.listener = listener;
+    }
+
+    public interface SignClickListener {
+        void click(SignData data);
     }
 }

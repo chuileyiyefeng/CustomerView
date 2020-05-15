@@ -20,7 +20,8 @@ public class ScrollSignActivity extends BaseActivity {
         ArrayList<SignData> dataList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             SignData data = new SignData();
-            data.setMessage("这是一条信息长长长" + i);
+            data.setMessage("# 这是一条信息长长长" + i);
+            data.setTitle("这是标题" + i);
 //            int k = (int) (Math.random() * 10);
 //            int left = (int) ((Math.random() * 10) * (Math.random() * 10));
 //            int top = (int) ((Math.random() * 15) * (Math.random() * 15));
