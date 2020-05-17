@@ -9,24 +9,20 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.opengl.Visibility;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.bean.SignData;
 
 import java.util.ArrayList;
 
 public class ScrollSignView extends ViewGroup implements View.OnClickListener {
-    GestureDetector simpleDetector;
     int defaultMargin = dpToPx(20);
     int leftMargin = defaultMargin, topMargin = defaultMargin, rightMargin = defaultMargin, bottomMargin = defaultMargin;
 
@@ -115,12 +111,12 @@ public class ScrollSignView extends ViewGroup implements View.OnClickListener {
                 View signView = view.findViewById(R.id.view_sign);
                 // 当前的连线点这个数据是偏移量
                 PointF pointF = new PointF();
-                pointF.x = signView.getMeasuredWidth() / 2;
+                pointF.x = signView.getMeasuredWidth() / 2.0f;
                 View childParent = (View) signView.getParent();
                 if (tvContentBottom.getVisibility() == View.GONE) {
-                    pointF.y = childHeight - childParent.getMeasuredHeight() / 2;
+                    pointF.y = childHeight - childParent.getMeasuredHeight() / 2.0f;
                 } else {
-                    pointF.y = childParent.getMeasuredHeight() / 2;
+                    pointF.y = childParent.getMeasuredHeight() / 2.0f;
                 }
                 pointList.add(pointF);
                 // 设置子view的起始位置
@@ -374,13 +370,6 @@ public class ScrollSignView extends ViewGroup implements View.OnClickListener {
         paint.setStyle(Paint.Style.STROKE);
         ViewConfiguration configuration = ViewConfiguration.get(context);
         mTouchSlop = configuration.getScaledTouchSlop();
-        simpleDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                moveView(-distanceX, -distanceY);
-                return false;
-            }
-        });
     }
 
     // 获取 dp 20以内的随机距离
@@ -420,35 +409,50 @@ public class ScrollSignView extends ViewGroup implements View.OnClickListener {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         performClick();
-        simpleDetector.onTouchEvent(event);
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                downX = event.getX();
+                downY = event.getY();
+                Log.e("down", "onTouchEvent: "+downY+" "+downY );
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float moveX = downX - event.getX();
+                float moveY = downY - event.getY();
+                downX = event.getX();
+                downY = event.getY();
+                moveView(-moveX,- moveY);
+                break;
+        }
         return true;
     }
 
     float mDownX, mDownY, mTouchSlop;
     boolean isIntercept;
 
-    // 滑动的时候拦截事件
-//    @Override
-//    public boolean onInterceptTouchEvent(MotionEvent ev) {
-//        switch (ev.getAction()) {
-//            case MotionEvent.ACTION_DOWN:
-//            case MotionEvent.ACTION_UP:
-//                isIntercept = false;
-//                mDownX = ev.getX();
-//                mDownY = ev.getY();
-//                break;
-//            case MotionEvent.ACTION_MOVE:
-//                isIntercept = isIntercept(ev);
-//                break;
-//        }
-//        return isIntercept;
-//    }
+    //     滑动的时候拦截事件
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_UP:
+                isIntercept = false;
+                mDownX = ev.getX();
+                mDownY = ev.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                isIntercept = isIntercept(ev);
+                downX = ev.getX();
+                downY = ev.getY();
+                break;
+        }
+        return isIntercept;
+    }
 
 
     public boolean isIntercept(MotionEvent ev) {
         float moveX = ev.getX();
         float moveY = ev.getY();
-        Log.e("isIntercept", "moveView: " + (moveX-mDownX) + " " + (moveY-mDownY));
+        Log.e("isIntercept", "moveView: " + (moveX - mDownX) + " " + (moveY - mDownY));
         return (Math.abs(moveY - mDownY) > mTouchSlop || (Math.abs(moveX - mDownX) > mTouchSlop));
     }
 
@@ -599,6 +603,7 @@ public class ScrollSignView extends ViewGroup implements View.OnClickListener {
 
     SignClickListener listener;
 
+    // 设置view点击监听
     public void setListener(SignClickListener listener) {
         this.listener = listener;
     }
