@@ -204,7 +204,7 @@ public class ScrollSignView extends ViewGroup implements View.OnClickListener {
         maxRightPoint = Integer.MIN_VALUE;
         maxBottomPoint = Integer.MIN_VALUE;
         lastClickPosition = -1;
-        
+
         this.signDataList = signDataList;
         rectS = new ArrayList<>();
         path = new Path();
