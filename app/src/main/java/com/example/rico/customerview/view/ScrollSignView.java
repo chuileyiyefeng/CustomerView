@@ -198,7 +198,6 @@ public class ScrollSignView extends ViewGroup implements View.OnClickListener {
         downY = 0;
         mDownX = 0;
         mDownY = 0;
-
         // 重置最大最小位置
         minLeftPoint = Integer.MAX_VALUE;
         minTopPoint = Integer.MAX_VALUE;
