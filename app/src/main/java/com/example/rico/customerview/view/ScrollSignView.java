@@ -70,12 +70,12 @@ public class ScrollSignView extends ViewGroup implements View.OnClickListener {
     Path path;
     Paint paint;
 
+
     public void setSignDataList(ArrayList<SignData> signDataList) {
         this.signDataList = signDataList;
         childRightMargin = dpToPx(10);
         childTopMargin = dpToPx(20);
         childBottomMargin = dpToPx(20);
-        pointList = new ArrayList<>();
         post(() -> {
             parentWidth = getRight() - getLeft();
             parentHeight = getBottom() - getTop();
@@ -190,6 +190,27 @@ public class ScrollSignView extends ViewGroup implements View.OnClickListener {
         });
     }
 
+
+    // 重新设置数据
+    public void reSetSignDataList(ArrayList<SignData> signDataList) {
+        removeAllViews();
+        downX = 0;
+        downY = 0;
+        mDownX = 0;
+        mDownY = 0;
+        // 重置最大最小位置
+        minLeftPoint = Integer.MAX_VALUE;
+        minTopPoint = Integer.MAX_VALUE;
+        maxRightPoint = Integer.MIN_VALUE;
+        maxBottomPoint = Integer.MIN_VALUE;
+        lastClickPosition = -1;
+        
+        this.signDataList = signDataList;
+        rectS = new ArrayList<>();
+        path = new Path();
+        pointList = new ArrayList<>();
+        setSignDataList(signDataList);
+    }
 
     // 重新设置子view的位置
     private void resetChildRange() {
@@ -362,6 +383,7 @@ public class ScrollSignView extends ViewGroup implements View.OnClickListener {
     private void init(Context context) {
         rectS = new ArrayList<>();
         signDataList = new ArrayList<>();
+        pointList = new ArrayList<>();
         path = new Path();
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(Color.parseColor("#ffffff"));
@@ -413,14 +435,14 @@ public class ScrollSignView extends ViewGroup implements View.OnClickListener {
             case MotionEvent.ACTION_DOWN:
                 downX = event.getX();
                 downY = event.getY();
-                Log.e("down", "onTouchEvent: "+downY+" "+downY );
+                Log.e("down", "onTouchEvent: " + downY + " " + downY);
                 break;
             case MotionEvent.ACTION_MOVE:
                 float moveX = downX - event.getX();
                 float moveY = downY - event.getY();
                 downX = event.getX();
                 downY = event.getY();
-                moveView(-moveX,- moveY);
+                moveView(-moveX, -moveY);
                 break;
         }
         return true;

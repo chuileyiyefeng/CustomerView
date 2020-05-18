@@ -1,5 +1,7 @@
 package com.example.rico.customerview.activity;
 
+import android.view.View;
+
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.bean.SignData;
 import com.example.rico.customerview.view.ScrollSignView;
@@ -17,19 +19,28 @@ public class ScrollSignActivity extends BaseActivity {
     @Override
     public void doBusiness() {
         signView = findViewById(R.id.sign_view);
+        setData();
+        findViewById(R.id.tv_change).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<SignData> dataList = new ArrayList<>();
+                for (int i = 0; i < 10; i++) {
+                    SignData data = new SignData();
+                    data.setMessage("# 这是一条重设的信息" + i);
+                    data.setTitle("这是标题" + i);
+                    dataList.add(data);
+                }
+                signView.reSetSignDataList(dataList);
+            }
+        });
+    }
+
+    private void setData() {
         ArrayList<SignData> dataList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             SignData data = new SignData();
             data.setMessage("# 这是一条信息长长长" + i);
             data.setTitle("这是标题" + i);
-//            int k = (int) (Math.random() * 10);
-//            int left = (int) ((Math.random() * 10) * (Math.random() * 10));
-//            int top = (int) ((Math.random() * 15) * (Math.random() * 15));
-//            k = 100;
-//            int left = i + 1;
-//            int top = i + 1;
-//            data.setLeft(k * left);
-//            data.setTop(k * top);
             dataList.add(data);
         }
         signView.setSignDataList(dataList);
