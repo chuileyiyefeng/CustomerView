@@ -2,9 +2,9 @@ package com.example.rico.customerview.activity;
 
 import android.content.Intent;
 import android.graphics.Rect;
-import android.net.Uri;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -16,11 +16,6 @@ import com.example.rico.customerview.bean.PicInfoBean;
 import com.example.rico.util.BitmapLruCache;
 import com.example.rico.util.StatusBarUtil;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.drawable.ProgressBarDrawable;
-import com.facebook.drawee.drawable.ScalingUtils;
-import com.facebook.drawee.generic.GenericDraweeHierarchy;
-import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.core.ImagePipeline;
 
 import java.util.ArrayList;

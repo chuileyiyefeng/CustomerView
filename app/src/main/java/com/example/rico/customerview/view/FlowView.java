@@ -15,6 +15,7 @@ import java.util.List;
 public class FlowView extends ViewGroup {
     private List<ChildPos> list;
 
+    // 左右间距、上下间距
     int verticalDis, horizontalDis;
 
 

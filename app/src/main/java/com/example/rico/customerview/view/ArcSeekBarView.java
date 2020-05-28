@@ -9,12 +9,10 @@ import android.graphics.RectF;
 import android.graphics.SweepGradient;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 
 import com.example.rico.customerview.R;
 

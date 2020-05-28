@@ -1,10 +1,9 @@
 package com.example.rico.customerview.layoutManager;
 
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 
 public class CardTouchListener extends ItemTouchHelper.SimpleCallback {
 

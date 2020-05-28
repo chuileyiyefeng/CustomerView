@@ -1,12 +1,11 @@
 package com.example.rico.customerview.activity;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.adapter.BaseAdapter;
 import com.example.rico.customerview.adapter.LayoutManagerAdapter;
-import com.example.rico.customerview.layoutManager.BannerLayoutManager;
 import com.example.rico.customerview.layoutManager.FlowLayoutManager;
 
 /**

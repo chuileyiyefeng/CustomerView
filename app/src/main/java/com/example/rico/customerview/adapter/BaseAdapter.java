@@ -1,8 +1,8 @@
 package com.example.rico.customerview.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +59,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
     public void addItem(Collection<T> collections) {
         int currentSize = getItemCount();
         list.addAll(collections);
-        notifyItemRangeInserted(currentSize, getItemCount());
+        notifyDataSetChanged();
     }
 
     public void removePosition(int position) {

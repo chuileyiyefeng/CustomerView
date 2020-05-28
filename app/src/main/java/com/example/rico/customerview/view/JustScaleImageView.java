@@ -9,8 +9,8 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatImageView;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -24,7 +24,6 @@ import android.widget.FrameLayout;
 
 import com.example.rico.customerview.bean.PointData;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class JustScaleImageView extends AppCompatImageView {

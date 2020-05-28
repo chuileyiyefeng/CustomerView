@@ -1,7 +1,7 @@
 package com.example.rico.customerview.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
