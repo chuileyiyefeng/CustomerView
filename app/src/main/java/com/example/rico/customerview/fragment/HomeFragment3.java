@@ -26,8 +26,8 @@ import com.example.rico.customerview.view.MyItemDecoration;
  * Created by Tmp on 2019/6/27.
  */
 public class HomeFragment3 extends BaseFragment implements BaseAdapter.ItemClick {
-    RecyclerView rv;
-    FirstAdapter adapter;
+    private RecyclerView rv;
+    private FirstAdapter adapter;
 
     @Override
     protected int bindLayout() {

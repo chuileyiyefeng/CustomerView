@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 
@@ -21,6 +22,7 @@ import java.util.List;
 public class JumpLoadView extends ViewGroup {
     private List<RectF> originRectList;
     private int topDistance, bottomDistance, canMoveTopDistance, canMoveBottomDistance;
+    private float mTouchSlop;
 
     public JumpLoadView(Context context) {
         this(context, null);
@@ -40,6 +42,8 @@ public class JumpLoadView extends ViewGroup {
         for (int i = 0; i < 3; i++) {
             originRectList.add(new RectF());
         }
+        ViewConfiguration configuration = ViewConfiguration.get(context);
+        mTouchSlop = configuration.getScaledTouchSlop();
     }
 
     @Override
@@ -72,7 +76,7 @@ public class JumpLoadView extends ViewGroup {
             switch (i) {
                 case 0:
                     topDistance = childHeight;
-                    canMoveTopDistance = (int) (topDistance * 1.5f);
+                    canMoveTopDistance = (int) (topDistance * 2.5f);
                     top = currentTop - childHeight;
                     bottom = top + childHeight;
                     currentTop = bottom;
@@ -85,7 +89,7 @@ public class JumpLoadView extends ViewGroup {
                     break;
                 case 2:
                     bottomDistance = childHeight;
-                    canMoveBottomDistance = (int) (bottomDistance * 1.5f);
+                    canMoveBottomDistance = (int) (bottomDistance * 2.5f);
                     top = currentTop;
                     bottom = top + childHeight;
                     break;
@@ -139,12 +143,12 @@ public class JumpLoadView extends ViewGroup {
                         if (loadListener != null) {
                             loadListener.loadMore();
                         }
-                        startAnim(bottomDistance - scrollY);
                         isOnLoadMore = true;
+                        startAnim(bottomDistance - scrollY);
                     } else {
                         // 还原
-                        startAnim(-scrollY);
                         isOnLoadMore = false;
+                        startAnim(-scrollY);
                     }
                 } else {
                     //下拉状态
@@ -173,14 +177,21 @@ public class JumpLoadView extends ViewGroup {
 
     // 还原状态
     public void reductionScroll() {
-        startAnim(-getScrollY());
-        isIntercept = false;
+        startAnim(-getScrollY(), true);
     }
 
     // 偏移值
     int animScrollValue;
 
     private void startAnim(int distance) {
+        startAnim(distance, false);
+    }
+
+    static boolean mReduction;
+    int duration=3000;
+
+    private void startAnim(int distance, boolean isReduction) {
+        mReduction = isReduction;
         isOnAnim = true;
         if (scrollAnim == null) {
             scrollAnim = ValueAnimator.ofInt(0, distance);
@@ -188,6 +199,9 @@ public class JumpLoadView extends ViewGroup {
                 int value = (int) valueAnimator.getAnimatedValue();
                 animScrollValue = value - animScrollValue;
                 scrollBy(0, animScrollValue);
+                if (mReduction && isOnLoadMore) {
+                    rv.scrollBy(0, -animScrollValue);
+                }
                 animScrollValue = value;
             });
             scrollAnim.addListener(new AnimatorListenerAdapter() {
@@ -195,9 +209,14 @@ public class JumpLoadView extends ViewGroup {
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
                     isOnAnim = false;
+                    animScrollValue = 0;
+                    if (mReduction) {
+                        isOnLoadMore = false;
+                        isOnRefresh = false;
+                    }
                 }
             });
-            scrollAnim.setDuration(300);
+            scrollAnim.setDuration(duration);
             scrollAnim.setInterpolator(new DecelerateInterpolator());
         } else {
             scrollAnim.setIntValues(0, distance);
@@ -247,14 +266,6 @@ public class JumpLoadView extends ViewGroup {
     float downY;
     boolean isIntercept = true;
 
-    public boolean isIntercept() {
-        return isIntercept;
-    }
-
-    public void setIntercept(boolean intercept) {
-        isIntercept = intercept;
-    }
-
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -267,13 +278,55 @@ public class JumpLoadView extends ViewGroup {
 
     public void connect(RecyclerView rv) {
         this.rv = rv;
+        this.rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
+
+    float interceptDownY;
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_MOVE) {
-            downY = ev.getY();
+        if (isOnRefresh || isOnLoadMore) {
+            return true;
         }
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                isIntercept = false;
+                interceptDownY = ev.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                downY = ev.getY();
+                if (Math.abs(interceptDownY - ev.getY()) < mTouchSlop) {
+                    return false;
+                }
+                if (rv != null) {
+                    // 向下滑动
+                    // rv滑动的距离
+                    int offsetY = rv.computeVerticalScrollOffset();
+                    //   竖直方向的范围
+                    int extentY = rv.computeVerticalScrollExtent();
+                    // 可以滑动的Y范围
+                    int scrollRangeY = rv.computeVerticalScrollRange();
+                    if (ev.getY() - interceptDownY > 0) {
+                        if (offsetY == 0) {
+                            isIntercept = true;
+                        }
+                    }
+                    // 向上滑动
+                    else {
+                        if (offsetY + extentY >= scrollRangeY) {
+                            isIntercept = true;
+                        }
+                    }
+                }
+                interceptDownY = ev.getY();
+                break;
+        }
+
         return isIntercept;
     }
 
