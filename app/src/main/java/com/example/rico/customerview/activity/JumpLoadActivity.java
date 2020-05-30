@@ -21,6 +21,7 @@ public class JumpLoadActivity extends BaseActivity {
     RecyclerView rv;
     JumpLoadView jumpLoadView;
     MyHandler handler;
+    LinearLayoutManager manager;
 
     @Override
     public int bindLayout() {
@@ -32,12 +33,13 @@ public class JumpLoadActivity extends BaseActivity {
         handler = new MyHandler(this);
         rv = findViewById(R.id.rv);
         jumpLoadView = findViewById(R.id.jump_load);
-        jumpLoadView.connect(rv);
         adapter = new FirstAdapter(this);
         rv.addItemDecoration(new MyItemDecoration());
-        rv.setLayoutManager(new LinearLayoutManager(this));
+        manager = new LinearLayoutManager(this);
+        jumpLoadView.connect(rv);
+        rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
-        for (int i = 0; i <5; i++) {
+        for (int i = 0; i < 10; i++) {
             adapter.addItem(new ItemInfo("这是item" + i, null));
         }
         jumpLoadView.setLoadListener(new JumpLoadView.LoadListener() {
@@ -51,8 +53,12 @@ public class JumpLoadActivity extends BaseActivity {
                 handler.sendEmptyMessageDelayed(0, 300);
             }
         });
-        adapter.addItemClick(position -> Toast.makeText(JumpLoadActivity.this,"点击了 "+position,Toast.LENGTH_SHORT).show());
+        adapter.addItemClick(position ->
+                Toast.makeText(JumpLoadActivity.this, "点击了 " + position, Toast.LENGTH_SHORT).show());
+
     }
+
+    private static int upItem;
 
     static class MyHandler extends Handler {
         WeakReference<JumpLoadActivity> reference;
@@ -68,7 +74,7 @@ public class JumpLoadActivity extends BaseActivity {
                 case 0:
                     // 下拉刷新
                     reference.get().adapter.clearAllItem();
-
+                    upItem = 0;
                     for (int i = 0; i < 5; i++) {
                         long time = System.currentTimeMillis();
                         reference.get().adapter.addItem(new ItemInfo("这是刷新item 时间：" + time, null));
@@ -76,12 +82,13 @@ public class JumpLoadActivity extends BaseActivity {
                     break;
                 case 1:
                     // 上拉更多
-                    for (int i = 0; i < 5; i++) {
-                        reference.get().adapter.addItem(new ItemInfo("这是上拉item" + i, null));
+                    for (int i = 0; i < 3; i++) {
+                        reference.get().adapter.addItem(new ItemInfo("这是上拉item" + ++upItem, null));
                     }
                     break;
             }
-            reference.get().rv.post(() -> reference.get().jumpLoadView.reductionScroll());
+            reference.get().jumpLoadView.reductionScroll();
+
         }
     }
 }

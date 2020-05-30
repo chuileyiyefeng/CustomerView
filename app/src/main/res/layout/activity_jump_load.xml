@@ -20,11 +20,13 @@
             android:text="释放刷新..."
             android:textColor="@color/white" />
 
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:overScrollMode="never" />
+
 
         <TextView
             android:layout_width="match_parent"
@@ -36,10 +38,10 @@
     </com.example.rico.customerview.view.JumpLoadView>
 
     <com.example.rico.customerview.view.DragView
-        android:visibility="gone"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_centerInParent="true"
         android:background="@color/grassgreen"
-        android:src="@mipmap/ic_complete" />
+        android:src="@mipmap/ic_complete"
+        android:visibility="gone" />
 </RelativeLayout>

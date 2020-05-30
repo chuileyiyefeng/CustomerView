@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -12,8 +13,8 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public class JumpLoadView extends ViewGroup {
             switch (i) {
                 case 0:
                     topDistance = childHeight;
-                    canMoveTopDistance = (int) (topDistance * 2.5f);
+                    canMoveTopDistance = (int) (topDistance * 3f);
                     top = currentTop - childHeight;
                     bottom = top + childHeight;
                     currentTop = bottom;
@@ -89,7 +90,7 @@ public class JumpLoadView extends ViewGroup {
                     break;
                 case 2:
                     bottomDistance = childHeight;
-                    canMoveBottomDistance = (int) (bottomDistance * 2.5f);
+                    canMoveBottomDistance = (int) (bottomDistance * 3f);
                     top = currentTop;
                     bottom = top + childHeight;
                     break;
@@ -140,9 +141,6 @@ public class JumpLoadView extends ViewGroup {
                 if (scrollY > 0) {
                     // 上拉状态
                     if (scrollY > bottomDistance) {
-                        if (loadListener != null) {
-                            loadListener.loadMore();
-                        }
                         isOnLoadMore = true;
                         startAnim(bottomDistance - scrollY);
                     } else {
@@ -153,9 +151,6 @@ public class JumpLoadView extends ViewGroup {
                 } else {
                     //下拉状态
                     if (-scrollY > topDistance) {
-                        if (loadListener != null) {
-                            loadListener.refresh();
-                        }
                         startAnim(-scrollY - topDistance);
                         isOnRefresh = true;
                     } else {
@@ -169,6 +164,7 @@ public class JumpLoadView extends ViewGroup {
         return true;
     }
 
+
     ValueAnimator scrollAnim;
 
 
@@ -177,7 +173,9 @@ public class JumpLoadView extends ViewGroup {
 
     // 还原状态
     public void reductionScroll() {
-        startAnim(-getScrollY(), true);
+        if (rv != null) {
+            rv.post(() -> startAnim(-getScrollY(), true));
+        }
     }
 
     // 偏移值
@@ -187,21 +185,27 @@ public class JumpLoadView extends ViewGroup {
         startAnim(distance, false);
     }
 
+    // 是否是还原状态
     static boolean mReduction;
-    int duration=3000;
+    int duration = 300;
+
+
+    static int myDistance;
 
     private void startAnim(int distance, boolean isReduction) {
         mReduction = isReduction;
+        myDistance = distance;
         isOnAnim = true;
         if (scrollAnim == null) {
             scrollAnim = ValueAnimator.ofInt(0, distance);
             scrollAnim.addUpdateListener(valueAnimator -> {
                 int value = (int) valueAnimator.getAnimatedValue();
                 animScrollValue = value - animScrollValue;
-                scrollBy(0, animScrollValue);
-                if (mReduction && isOnLoadMore) {
-                    rv.scrollBy(0, -animScrollValue);
+                int offsetY = rv.computeVerticalScrollOffset();
+                if (mReduction && isOnLoadMore && offsetY != 0) {
+                    rv.layout(rv.getLeft(), rv.getTop() + animScrollValue, rv.getRight(), rv.getBottom());
                 }
+                scrollBy(0, animScrollValue);
                 animScrollValue = value;
             });
             scrollAnim.addListener(new AnimatorListenerAdapter() {
@@ -211,8 +215,22 @@ public class JumpLoadView extends ViewGroup {
                     isOnAnim = false;
                     animScrollValue = 0;
                     if (mReduction) {
+                        int offsetY = rv.computeVerticalScrollOffset();
+                        if (isOnLoadMore && offsetY != 0) {
+                            RectF rectF = originRectList.get(1);
+                            rv.layout((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom);
+                            rv.scrollBy(0, -myDistance);
+                        }
                         isOnLoadMore = false;
                         isOnRefresh = false;
+                        scrollBy(0, -getScrollY());
+                    } else {
+                        if (isOnLoadMore && loadListener != null) {
+                            loadListener.loadMore();
+                        }
+                        if (isOnRefresh && loadListener != null) {
+                            loadListener.refresh();
+                        }
                     }
                 }
             });
@@ -278,12 +296,6 @@ public class JumpLoadView extends ViewGroup {
 
     public void connect(RecyclerView rv) {
         this.rv = rv;
-        this.rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
     }
 
     float interceptDownY;
