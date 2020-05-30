@@ -77,6 +77,7 @@ public class JumpLoadActivity extends BaseActivity {
                     upItem = 0;
                     for (int i = 0; i < 5; i++) {
                         long time = System.currentTimeMillis();
+                        
                         reference.get().adapter.addItem(new ItemInfo("这是刷新item 时间：" + time, null));
                     }
                     break;
