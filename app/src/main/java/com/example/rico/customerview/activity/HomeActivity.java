@@ -1,5 +1,6 @@
 package com.example.rico.customerview.activity;
 
+import com.example.rico.customerview.fragment.HomeFragment3;
 import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -8,7 +9,6 @@ import com.example.rico.customerview.R;
 import com.example.rico.customerview.adapter.ViewPagerAdapter;
 import com.example.rico.customerview.fragment.HomeFragment1;
 import com.example.rico.customerview.fragment.HomeFragment2;
-import com.example.rico.customerview.fragment.HomeFragment3;
 
 import java.util.ArrayList;
 
