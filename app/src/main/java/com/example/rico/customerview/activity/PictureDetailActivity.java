@@ -208,6 +208,7 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
                 view.setClipBounds(clipRect);
             }
             if (enterAnimator == null) {
+
                 enterAnimator = ValueAnimator.ofInt(clipSize);
                 enterAnimator.setDuration(CLIP_DURATION);
                 enterAnimator.addUpdateListener(animation -> {

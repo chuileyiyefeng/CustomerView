@@ -321,6 +321,9 @@ public class JumpLoadView extends ViewGroup {
                     // 可以滑动的Y范围
                     int scrollRangeY = rv.computeVerticalScrollRange();
                     if (ev.getY() - interceptDownY > 0) {
+                        if (topDistance == 0) {
+                            return false;
+                        }
                         if (offsetY == 0) {
                             isIntercept = true;
                         }
