@@ -1,8 +1,12 @@
 package com.example.rico.customerview.activity;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -88,10 +92,16 @@ public class AllViewActivity extends BaseActivity {
                         .refreshView();
                 llALl.addView(view1);
                 return;
+            case 13:
+                // 悬浮窗
+
+                return;
             default:
                 view = new View(context);
                 break;
         }
         llALl.addView(view);
     }
-}
+
+
+    }

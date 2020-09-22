@@ -99,7 +99,7 @@ public class PictureViewerActivity extends BaseActivity implements BaseAdapter.I
         bean.setPosition(position);
         intent.putExtra("picInfoBean", bean);
         startActivity(intent);
-        overridePendingTransition(0, 0);
+        overridePendingTransition(R.anim.no_anim, R.anim.no_anim);
     }
 
     @Override

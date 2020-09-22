@@ -9,11 +9,6 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -29,6 +24,11 @@ import com.example.rico.customerview.view.MyViewPager;
 import com.example.rico.util.StatusBarUtil;
 
 import java.util.ArrayList;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * Created by Tmp on 2019/11/4.
@@ -260,8 +260,8 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
         }
         getSizeChange(view, bean.getMyRectList().get(lastPosition), false);
         if (clipSize != 0) {
-            ImageFragment fragment= (ImageFragment) fragments.get(lastPosition);
-            if (fragment.getMatrixScale()>1f) {
+            ImageFragment fragment = (ImageFragment) fragments.get(lastPosition);
+            if (fragment.getMatrixScale() > 1f) {
                 fragment.picSetOriginScale();
             }
             lastClipValue = clipSize;
@@ -357,8 +357,8 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
         }
         getSizeChange(view, myRect, false);
         if (clipSize != 0) {
-            ImageFragment fragment= (ImageFragment) fragments.get(lastPosition);
-            if (fragment.getMatrixScale()>1f) {
+            ImageFragment fragment = (ImageFragment) fragments.get(lastPosition);
+            if (fragment.getMatrixScale() > 1f) {
                 fragment.picSetOriginScale();
             }
             lastClipValue = clipSize;
@@ -368,8 +368,8 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
         Rect ivRect = new Rect();
         ivRect.set(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
         float newScale = originScale;
-        view.setPivotX(view.getWidth() / 2);
-        view.setPivotY(view.getHeight() / 2);
+        view.setPivotX((float) view.getWidth() / 2);
+        view.setPivotY((float) view.getHeight() / 2);
         int transLateX = myRect.getCenterX() - (ivRect.left + ivRect.right) / 2;
         int transLateY = myRect.getCenterY() - (ivRect.top + ivRect.bottom) / 2;
         TimeInterpolator sInterpolator = new DecelerateInterpolator();
@@ -396,7 +396,7 @@ public class PictureDetailActivity extends AppCompatActivity implements ViewPage
 
     @Override
     public void onBackPressed() {
-        if (enterAnimator.isRunning()) {
+        if (enterAnimator!=null&&enterAnimator.isRunning()) {
             return;
         }
         super.onBackPressed();

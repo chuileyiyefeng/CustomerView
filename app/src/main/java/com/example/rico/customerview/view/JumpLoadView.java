@@ -4,21 +4,18 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.FrameLayout;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 public class JumpLoadView extends ViewGroup {
     private List<RectF> originRectList;
@@ -52,7 +49,7 @@ public class JumpLoadView extends ViewGroup {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        //获取流式布局的高度和模式
+        //获取布局的高度和模式
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int realWidth = 0, realHeight = 0;
@@ -203,7 +200,7 @@ public class JumpLoadView extends ViewGroup {
                 animScrollValue = value - animScrollValue;
                 int offsetY = rv.computeVerticalScrollOffset();
                 if (mReduction && isOnLoadMore && offsetY != 0) {
-                    rv.layout(rv.getLeft(), rv.getTop() + animScrollValue, rv.getRight(), rv.getBottom());
+                    rv.layout(rv.getLeft(), rv.getTop() + animScrollValue, rv.getRight(), rv.getBottom() + animScrollValue);
                 }
                 scrollBy(0, animScrollValue);
                 animScrollValue = value;

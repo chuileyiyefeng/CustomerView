@@ -51,6 +51,7 @@ public class HomeFragment3 extends BaseFragment implements BaseAdapter.ItemClick
         adapter.addItem(new ItemInfo("图片操作", new Intent(context, PictureCtrlActivity.class)));
         adapter.addItem(new ItemInfo("滑动标签", new Intent(context, ScrollSignActivity.class)));
         adapter.addItem(new ItemInfo("上下拉刷新", new Intent(context, JumpLoadActivity.class)));
+        adapter.addItem(new ItemInfo("上下拉刷新",13));
         adapter.addItemClick(this);
     }
 

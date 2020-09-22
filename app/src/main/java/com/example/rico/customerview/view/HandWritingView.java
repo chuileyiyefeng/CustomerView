@@ -63,7 +63,6 @@ public class HandWritingView extends View {
                 break;
             case MotionEvent.ACTION_UP:
                 if (Math.abs(event.getX() - downX) < 10 && Math.abs(event.getY() - downY) < 30) {
-//                  先把鱼头方向转至点击的点
                     if (time==0) {
                         time=System.currentTimeMillis();
                     }else if (System.currentTimeMillis()-time<300){

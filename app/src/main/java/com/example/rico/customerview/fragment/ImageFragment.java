@@ -20,7 +20,7 @@ import com.example.rico.util.BitmapLruCache;
  * Created by Tmp on 2019/11/8.
  */
 public class ImageFragment extends BaseFragment implements RequestListener<Drawable> {
-    MyZoomImageView ivPic;
+    private MyZoomImageView ivPic;
 
 
     @Override
@@ -50,6 +50,7 @@ public class ImageFragment extends BaseFragment implements RequestListener<Drawa
                     Glide.with(getContext())
                             .load(url)
                             .listener(this)
+                            .placeholder(R.color.gray)
 //                            .diskCacheStrategy(DiskCacheStrategy.NONE)//不使用缓存
 //                            .skipMemoryCache(true)
                             .into(ivPic);
