@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 30
@@ -60,4 +61,10 @@ dependencies {
 
     // 仅支持 WebP 静态图，需要添加
     implementation 'com.facebook.fresco:webpsupport:1.9.0'
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    apply plugin:'kotlin-android-extensions'
+}
+repositories {
+    mavenCentral()
 }

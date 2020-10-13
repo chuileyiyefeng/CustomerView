@@ -21,6 +21,8 @@ public class JumpLoadView extends ViewGroup {
     private List<RectF> originRectList;
     private int topDistance, bottomDistance, canMoveTopDistance, canMoveBottomDistance;
     private float mTouchSlop;
+    // canMove 判断 如果是false  拦截子view的事件，并且本view不做touch事件
+    public boolean canMove = true;
 
     public JumpLoadView(Context context) {
         this(context, null);
@@ -117,6 +119,9 @@ public class JumpLoadView extends ViewGroup {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (!canMove) {
+            return  super.onInterceptTouchEvent(event);
+        }
         performClick();
         if (isOnAnim) {
             return false;
@@ -155,6 +160,9 @@ public class JumpLoadView extends ViewGroup {
                         startAnim(-scrollY);
                         isOnRefresh = false;
                     }
+                }
+                if (inTouchListener != null) {
+                    inTouchListener.up();
                 }
                 break;
         }
@@ -244,7 +252,9 @@ public class JumpLoadView extends ViewGroup {
     float moveScale, minScale = 0.3f;
 
     private void moveView(float distanceY) {
-
+        if (inTouchListener != null) {
+            inTouchListener.move();
+        }
         // 向下滑动
         if (distanceY < 0) {
             if (lastScrollType == lastDown) {
@@ -299,6 +309,9 @@ public class JumpLoadView extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (!canMove) {
+            return  true;
+        }
         if (isOnRefresh || isOnLoadMore) {
             return true;
         }
@@ -321,7 +334,7 @@ public class JumpLoadView extends ViewGroup {
                     // 可以滑动的Y范围
                     int scrollRangeY = rv.computeVerticalScrollRange();
                     if (ev.getY() - interceptDownY > 0) {
-                        if (topDistance == 0) {
+                        if (topDistance == 0) {// 头view=0表示下拉无效
                             return false;
                         }
                         if (offsetY == 0) {
@@ -348,10 +361,21 @@ public class JumpLoadView extends ViewGroup {
         this.loadListener = loadListener;
     }
 
+    private InTouchListener inTouchListener;
+
+    public void setInTouchListener(InTouchListener inTouchListener) {
+        this.inTouchListener = inTouchListener;
+    }
 
     public interface LoadListener {
         void loadMore();
 
         void refresh();
+    }
+
+    public interface InTouchListener {
+        void move();
+
+        void up();
     }
 }

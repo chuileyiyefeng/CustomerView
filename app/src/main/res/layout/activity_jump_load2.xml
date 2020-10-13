@@ -5,6 +5,11 @@
     android:layout_height="match_parent"
     tools:ignore="HardcodedText">
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_re"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
 
         <com.example.rico.customerview.view.JumpLoadView
             android:id="@+id/jump_load"
@@ -13,7 +18,7 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="0dp"
                 android:background="@color/lightgray"
                 android:gravity="center"
                 android:text="释放刷新..."
@@ -34,12 +39,6 @@
                 android:text="加载更多..."
                 android:textColor="@color/white" />
         </com.example.rico.customerview.view.JumpLoadView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <com.example.rico.customerview.view.DragView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_centerInParent="true"
-        android:background="@color/grassgreen"
-        android:src="@mipmap/ic_complete"
-        android:visibility="gone" />
 </RelativeLayout>

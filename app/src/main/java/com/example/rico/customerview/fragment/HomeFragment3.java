@@ -12,6 +12,7 @@ import com.example.rico.customerview.activity.AllViewActivity;
 import com.example.rico.customerview.activity.BannerLayoutActivity;
 import com.example.rico.customerview.activity.CardLayoutActivity;
 import com.example.rico.customerview.activity.JumpLoadActivity;
+import com.example.rico.customerview.activity.JumpLoadActivity2;
 import com.example.rico.customerview.activity.ListLinkageActivity;
 import com.example.rico.customerview.activity.PictureCtrlActivity;
 import com.example.rico.customerview.activity.PictureViewerActivity;
@@ -52,6 +53,7 @@ public class HomeFragment3 extends BaseFragment implements BaseAdapter.ItemClick
         adapter.addItem(new ItemInfo("图片操作", new Intent(context, PictureCtrlActivity.class)));
         adapter.addItem(new ItemInfo("滑动标签", new Intent(context, ScrollSignActivity.class)));
         adapter.addItem(new ItemInfo("上下拉刷新", new Intent(context, JumpLoadActivity.class)));
+        adapter.addItem(new ItemInfo("上下拉刷新 结合SwipeRefreshLayout", new Intent(context, JumpLoadActivity2.class)));
         String str = BuildConfig.FLAVOR;
         adapter.addItemClick(this);
     }
