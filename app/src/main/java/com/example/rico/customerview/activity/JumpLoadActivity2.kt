@@ -49,6 +49,7 @@ class JumpLoadActivity2 : BaseActivity() {
         jump_load.setLoadListener(object : LoadListener {
             override fun loadMore() {
                 handler.sendEmptyMessageDelayed(1, 300)
+                swipe_re.isEnabled=false
             }
 
             override fun refresh() {
@@ -105,6 +106,7 @@ class JumpLoadActivity2 : BaseActivity() {
                     } else {
                         Toast.makeText(reference.get(), "没有更多数据", Toast.LENGTH_SHORT).show()
                     }
+                    reference.get()?.swipe_re?.isEnabled=true
                 }
             }
             reference.get()?.jump_load?.reductionScroll()

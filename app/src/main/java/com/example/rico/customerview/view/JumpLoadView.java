@@ -51,7 +51,7 @@ public class JumpLoadView extends ViewGroup {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        //获取布局的高度和模式
+        //获取流式布局的高度和模式
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int realWidth = 0, realHeight = 0;
@@ -208,7 +208,7 @@ public class JumpLoadView extends ViewGroup {
                 animScrollValue = value - animScrollValue;
                 int offsetY = rv.computeVerticalScrollOffset();
                 if (mReduction && isOnLoadMore && offsetY != 0) {
-                    rv.layout(rv.getLeft(), rv.getTop() + animScrollValue, rv.getRight(), rv.getBottom() + animScrollValue);
+                    rv.layout(rv.getLeft(), rv.getTop() + animScrollValue, rv.getRight(), rv.getBottom());
                 }
                 scrollBy(0, animScrollValue);
                 animScrollValue = value;
