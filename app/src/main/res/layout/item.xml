@@ -5,10 +5,10 @@
     android:orientation="vertical">
 
     <TextView
-        android:background="@color/white"
         android:id="@+id/tv_content"
         android:layout_width="match_parent"
         android:layout_height="80dp"
+        android:background="@color/white"
         android:gravity="center"
         android:textColor="@color/text_normal"
         android:textSize="14sp" />

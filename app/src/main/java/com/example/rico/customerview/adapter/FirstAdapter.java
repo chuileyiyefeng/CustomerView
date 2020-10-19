@@ -1,6 +1,8 @@
 package com.example.rico.customerview.adapter;
 
 import android.content.Context;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 
 import com.example.rico.customerview.bean.ItemInfo;

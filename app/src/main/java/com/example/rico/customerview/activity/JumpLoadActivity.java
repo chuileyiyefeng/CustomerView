@@ -78,6 +78,7 @@ public class JumpLoadActivity extends BaseActivity {
                         ItemInfo itemInfo = new ItemInfo("这是刷新item 时间：" + time, null);
                         reference.get().adapter.addItem(itemInfo);
                     }
+                    reference.get().jumpLoadView.reductionScroll();
                     break;
                 case 1:
                     // 上拉更多
@@ -87,9 +88,6 @@ public class JumpLoadActivity extends BaseActivity {
                         list.add(info);
                     }
                     reference.get().adapter.addItem(list);
-                    sendEmptyMessageDelayed(2,300);
-                    break;
-                case 2:
                     reference.get().jumpLoadView.reductionScroll();
                     break;
             }

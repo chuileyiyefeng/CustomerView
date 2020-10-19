@@ -18,4 +18,11 @@
     <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@color/transparent</item>
     </style>
+    <style name="ProgressCircle">
+        <item name="android:indeterminateDrawable">@mipmap/loading_flat</item>
+        <item name="android:minWidth">25dp</item>
+        <item name="android:minHeight">25dp</item>
+        <item name="android:maxWidth">60dp</item>
+        <item name="android:maxHeight">60dp</item>
+    </style>
 </resources>

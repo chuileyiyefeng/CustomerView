@@ -57,7 +57,6 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
     }
 
     public void addItem(Collection<T> collections) {
-        int currentSize = getItemCount();
         list.addAll(collections);
         notifyDataSetChanged();
     }
@@ -71,6 +70,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
         list.clear();
         notifyDataSetChanged();
     }
+
 
     public T getItem(int position) {
         return list.get(position);
@@ -92,5 +92,14 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
 
     public interface ItemClick {
         void itemClick(int position);
+    }
+    private DataChangeListener dataChangeListener;
+
+    public void setDataChangeListener(DataChangeListener dataChangeListener) {
+        this.dataChangeListener = dataChangeListener;
+    }
+
+    public interface DataChangeListener {
+        void change();
     }
 }
