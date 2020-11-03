@@ -6,7 +6,6 @@ import android.content.Intent;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.rico.customerview.BuildConfig;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.activity.AllViewActivity;
 import com.example.rico.customerview.activity.BannerLayoutActivity;
