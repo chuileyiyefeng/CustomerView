@@ -19,6 +19,7 @@ import android.view.animation.DecelerateInterpolator;
 
 import com.example.rico.customerview.R;
 
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -73,7 +74,7 @@ public class MiniSunView extends BaseCustomerView {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         setBackgroundColor(getResources().getColor(R.color.azure));
-        radius = Math.min(w, h) / 4;
+        radius = Math.min(w, h) / 4f;
         tinyRadius = radius / 25;
         circlePath.addCircle(0, 0, radius, Path.Direction.CW);
         arcPaint.setStrokeWidth(tinyRadius);
@@ -140,11 +141,9 @@ public class MiniSunView extends BaseCustomerView {
         if (animIsRunning()) {
             return false;
         }
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_UP:
-                cancelAllAnim();
-                startBorderAnim();
-                break;
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            cancelAllAnim();
+            startBorderAnim();
         }
         return true;
     }
@@ -177,12 +176,9 @@ public class MiniSunView extends BaseCustomerView {
             circleAnim = ValueAnimator.ofFloat(tinyRadius, radius);
             circleAnim.setInterpolator(new DecelerateInterpolator());
             circleAnim.setDuration(duration);
-            circleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    smallRadius = (float) animation.getAnimatedValue();
-                    invalidate();
-                }
+            circleAnim.addUpdateListener(animation -> {
+                smallRadius = (float) animation.getAnimatedValue();
+                invalidate();
             });
             circleAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -204,12 +200,9 @@ public class MiniSunView extends BaseCustomerView {
             arcAnim = ValueAnimator.ofFloat(rotateBound);
             arcAnim.setInterpolator(new DecelerateInterpolator());
             arcAnim.setDuration(duration);
-            arcAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    sweepAngle = (float) animation.getAnimatedValue();
-                    invalidate();
-                }
+            arcAnim.addUpdateListener(animation -> {
+                sweepAngle = (float) animation.getAnimatedValue();
+                invalidate();
             });
             arcAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -240,33 +233,29 @@ public class MiniSunView extends BaseCustomerView {
         if (sunAnim == null) {
             sunAnim = ValueAnimator.ofFloat(radius / 10 * 9, radius / 10 * 11, radius, rectRadius);
             sunAnim.setDuration(duration * 2);
-            sunAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
+            sunAnim.addUpdateListener(animation -> {
 //                    阳光变换相关
-                    float value = (float) animation.getAnimatedValue();
-                    if (value < radius && value < lastValue) {
-                        lightShow = true;
-                        float f = (radius - value) + rectRadius;
-                        f = f - radius / 10;
-                        rectPath1.moveTo(-f, -f);
-                        rectPath1.lineTo(f, -f);
-                        rectPath1.lineTo(f, f);
-                        rectPath1.lineTo(-f, f);
-                        rectDiagonal = (float) (f / Math.cos(Math.toRadians(45)));
-                        rectPath2.moveTo(-rectDiagonal, 0);
-                        rectPath2.lineTo(0, -rectDiagonal);
-                        rectPath2.lineTo(rectDiagonal, 0);
-                        rectPath2.lineTo(0, rectDiagonal);
-                    } else {
-                        sunRadius = value;
-                    }
-                    lastValue = value;
-//                    阴影变换相关
-                    changShadow();
-                    invalidate();
+                float value = (float) animation.getAnimatedValue();
+                if (value < radius && value < lastValue) {
+                    lightShow = true;
+                    float f = (radius - value) + rectRadius;
+                    f = f - radius / 10;
+                    rectPath1.moveTo(-f, -f);
+                    rectPath1.lineTo(f, -f);
+                    rectPath1.lineTo(f, f);
+                    rectPath1.lineTo(-f, f);
+                    rectDiagonal = (float) (f / Math.cos(Math.toRadians(45)));
+                    rectPath2.moveTo(-rectDiagonal, 0);
+                    rectPath2.lineTo(0, -rectDiagonal);
+                    rectPath2.lineTo(rectDiagonal, 0);
+                    rectPath2.lineTo(0, rectDiagonal);
+                } else {
+                    sunRadius = value;
                 }
+                lastValue = value;
+//                    阴影变换相关
+                changShadow();
+                invalidate();
             });
             sunAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -314,9 +303,7 @@ public class MiniSunView extends BaseCustomerView {
         cloudPosition = 0;
         currentCloudRadius = 0;
         //        重置云朵半径
-        for (int i = 0; i < smallCloudRadius.length; i++) {
-            smallCloudRadius[i] = 0;
-        }
+        Arrays.fill(smallCloudRadius, 0);
         isClip = false;
         cloudIsFull = false;
         cloudShadowPaintAlpha = 0;

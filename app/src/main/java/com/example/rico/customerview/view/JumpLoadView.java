@@ -120,7 +120,7 @@ public class JumpLoadView extends ViewGroup {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (!canMove) {
-            return  super.onInterceptTouchEvent(event);
+            return super.onInterceptTouchEvent(event);
         }
         performClick();
         if (isOnAnim) {
@@ -191,11 +191,11 @@ public class JumpLoadView extends ViewGroup {
     }
 
     // 是否是还原状态
-    static boolean mReduction;
+    private boolean mReduction;
     int duration = 300;
 
 
-    static int myDistance;
+    private int myDistance;
 
     private void startAnim(int distance, boolean isReduction) {
         mReduction = isReduction;
@@ -310,7 +310,7 @@ public class JumpLoadView extends ViewGroup {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (!canMove) {
-            return  true;
+            return true;
         }
         if (isOnRefresh || isOnLoadMore) {
             return true;

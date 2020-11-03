@@ -1,6 +1,7 @@
 package com.example.rico.customerview.activity
 
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -60,7 +61,7 @@ class JumpLoadActivity3 : BaseActivity() {
         }
     }
 
-    class MyHandler internal constructor(activity: JumpLoadActivity3) : Handler() {
+    class MyHandler internal constructor(activity: JumpLoadActivity3) : Handler(Looper.getMainLooper()) {
         private var reference: WeakReference<JumpLoadActivity3> = WeakReference(activity)
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)

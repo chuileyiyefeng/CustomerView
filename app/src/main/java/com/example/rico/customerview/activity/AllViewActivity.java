@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
@@ -17,6 +18,7 @@ import com.example.rico.customerview.view.EvaluatorMoveView;
 import com.example.rico.customerview.view.FillTypeView;
 import com.example.rico.customerview.view.FishSwimView;
 import com.example.rico.customerview.view.HandWritingView;
+import com.example.rico.customerview.view.LoadView;
 import com.example.rico.customerview.view.MiniSunView;
 import com.example.rico.customerview.view.NetColorView;
 import com.example.rico.customerview.view.PageTurningView;
@@ -92,10 +94,6 @@ public class AllViewActivity extends BaseActivity {
                         .refreshView();
                 llALl.addView(view1);
                 return;
-            case 13:
-                // 悬浮窗
-
-                return;
             default:
                 view = new View(context);
                 break;
@@ -104,4 +102,4 @@ public class AllViewActivity extends BaseActivity {
     }
 
 
-    }
+}

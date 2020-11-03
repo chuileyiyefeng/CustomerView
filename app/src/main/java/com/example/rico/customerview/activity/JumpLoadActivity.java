@@ -1,9 +1,11 @@
 package com.example.rico.customerview.activity;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,7 +32,7 @@ public class JumpLoadActivity extends BaseActivity {
 
     @Override
     public void doBusiness() {
-        handler = new MyHandler(this);
+        handler = new MyHandler(Looper.getMainLooper(),this);
         rv = findViewById(R.id.rv);
         jumpLoadView = findViewById(R.id.jump_load);
         adapter = new FirstAdapter(this);
@@ -62,11 +64,14 @@ public class JumpLoadActivity extends BaseActivity {
 
     static class MyHandler extends Handler {
         WeakReference<JumpLoadActivity> reference;
-         MyHandler(JumpLoadActivity activity) {
+
+        public MyHandler(@NonNull Looper looper, JumpLoadActivity activity) {
+            super(looper);
             reference = new WeakReference<>(activity);
         }
+
         @Override
-        public void handleMessage(Message msg) {
+        public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 0:

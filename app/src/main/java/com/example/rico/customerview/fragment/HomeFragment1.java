@@ -2,9 +2,11 @@ package com.example.rico.customerview.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.rico.customerview.activity.LoadingActivity;
 import com.example.rico.customerview.bean.ItemInfo;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.activity.AllViewActivity;
@@ -50,6 +52,7 @@ public class HomeFragment1 extends BaseFragment implements BaseAdapter.ItemClick
         adapter.addItem(new ItemInfo("switch动画", new Intent(context, AnimatorSwitchActivity.class)));
         adapter.addItem(new ItemInfo("拼图", new Intent(context, PuzzleActivity.class)));
         adapter.addItem(new ItemInfo("曲线统计图", new Intent(context, CurveActivity.class)));
+        adapter.addItem(new ItemInfo("加载动画", new Intent(context, LoadingActivity.class)));
 
         adapter.addItem(new ItemInfo("小鱼游泳(静止)", 1));
         adapter.addItem(new ItemInfo("path填充模式", 2));

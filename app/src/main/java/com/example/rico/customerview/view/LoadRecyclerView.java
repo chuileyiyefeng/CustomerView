@@ -81,7 +81,6 @@ public class LoadRecyclerView extends LinearLayout implements BaseAdapter.DataCh
         if (animator.isStarted()) {
             animator.resume();
         }else {
-
             animator.start();
         }
     }
