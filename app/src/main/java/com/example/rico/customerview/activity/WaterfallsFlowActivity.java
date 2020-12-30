@@ -1,6 +1,8 @@
 package com.example.rico.customerview.activity;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.rico.customerview.R;
@@ -30,6 +32,7 @@ public class WaterfallsFlowActivity extends BaseActivity {
 //        rv.setLayoutManager(new SimpleLinearManager());
 //        rv.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
         rv.setAdapter(adapter);
+        Log.e("adapter", "doBusiness: "+System.currentTimeMillis() );
         for (int i = 0; i < 10; i++) {
             adapter.addItem("战争女神 " + 0);
             adapter.addItem("蒙多战争女神战争女神战争女神战争女神战争女神战争女神战争女神战争女神战争女神");
@@ -45,6 +48,7 @@ public class WaterfallsFlowActivity extends BaseActivity {
             adapter.addItem("永恒梦魇"+10);
             adapter.addItem("诺克萨斯之手"+11);
         }
+        Log.e("adapter", "doBusiness: "+System.currentTimeMillis() );
         adapter.addItemClick(new BaseAdapter.ItemClick() {
             @Override
             public void itemClick(int position) {

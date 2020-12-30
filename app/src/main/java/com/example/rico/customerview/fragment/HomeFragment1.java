@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.rico.customerview.activity.LoadingActivity;
+import com.example.rico.customerview.activity.ShadowActivity;
 import com.example.rico.customerview.bean.ItemInfo;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.activity.AllViewActivity;
@@ -53,6 +54,7 @@ public class HomeFragment1 extends BaseFragment implements BaseAdapter.ItemClick
         adapter.addItem(new ItemInfo("拼图", new Intent(context, PuzzleActivity.class)));
         adapter.addItem(new ItemInfo("曲线统计图", new Intent(context, CurveActivity.class)));
         adapter.addItem(new ItemInfo("加载动画", new Intent(context, LoadingActivity.class)));
+        adapter.addItem(new ItemInfo("阴影控件", new Intent(context, ShadowActivity.class)));
 
         adapter.addItem(new ItemInfo("小鱼游泳(静止)", 1));
         adapter.addItem(new ItemInfo("path填充模式", 2));
@@ -66,6 +68,7 @@ public class HomeFragment1 extends BaseFragment implements BaseAdapter.ItemClick
         adapter.addItem(new ItemInfo("网状view", 10));
         adapter.addItem(new ItemInfo("太阳动画", 11));
         adapter.addItem(new ItemInfo("圆环统计图", 12));
+        adapter.addItem(new ItemInfo("平行四边形", 13));
         adapter.addItemClick(this);
     }
 

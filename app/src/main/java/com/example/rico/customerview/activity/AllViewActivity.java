@@ -1,15 +1,11 @@
 package com.example.rico.customerview.activity;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
-
 import android.view.View;
 import android.widget.LinearLayout;
+
+import androidx.annotation.Nullable;
 
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.ArcSeekBarView;
@@ -18,10 +14,10 @@ import com.example.rico.customerview.view.EvaluatorMoveView;
 import com.example.rico.customerview.view.FillTypeView;
 import com.example.rico.customerview.view.FishSwimView;
 import com.example.rico.customerview.view.HandWritingView;
-import com.example.rico.customerview.view.LoadView;
 import com.example.rico.customerview.view.MiniSunView;
 import com.example.rico.customerview.view.NetColorView;
 import com.example.rico.customerview.view.PageTurningView;
+import com.example.rico.customerview.view.ParallelogramView;
 import com.example.rico.customerview.view.RegionClickView;
 import com.example.rico.customerview.view.RingView;
 import com.example.rico.customerview.view.WaveBubbleView;
@@ -94,6 +90,9 @@ public class AllViewActivity extends BaseActivity {
                         .refreshView();
                 llALl.addView(view1);
                 return;
+            case 13:
+                view = new ParallelogramView(context);
+                break;
             default:
                 view = new View(context);
                 break;

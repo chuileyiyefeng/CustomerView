@@ -292,6 +292,7 @@ public class MyZoomImageView extends AppCompatImageView {
 
     int touchType;
 
+    // 设置能否点击缩放滑动
     public void setCanLayoutChange(boolean canLayoutChange) {
         isNewTouch = touchType == 0 || touchType == MotionEvent.ACTION_UP;
         this.canLayoutChange = canLayoutChange;

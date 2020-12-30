@@ -11,6 +11,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         flavorDimensions "versionCode"
+        flavorDimensions "channel"
     }
     buildTypes {
         release {
@@ -26,12 +27,16 @@ android {
     productFlavors {
 
         production {   //正式发布版本
-            manifestPlaceholders = [APP_NAME: "@string/app_name"]
-            buildConfigField "int","CURRENT_VERSION","1"
+            dimension "channel"
+            manifestPlaceholders = [CHANNEL_VALUE: "production"]
         }
         dev {          //开发测试版本
-            manifestPlaceholders = [APP_NAME: "@string/app_name2"]
-            buildConfigField "int","CURRENT_VERSION","0"
+            dimension "channel"
+            manifestPlaceholders = [CHANNEL_VALUE: "dev"]
+        }
+        alp1004 {          //开发测试版本
+            dimension "channel"
+            manifestPlaceholders = [CHANNEL_VALUE: "alp1004"]
         }
     }
 }
@@ -63,7 +68,7 @@ dependencies {
     implementation 'com.facebook.fresco:webpsupport:1.9.0'
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    apply plugin:'kotlin-android-extensions'
+    apply plugin: 'kotlin-android-extensions'
 }
 repositories {
     mavenCentral()

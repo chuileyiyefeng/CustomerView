@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Tmp on 2019/8/9.
+ * 圆环
  */
 public class RingView extends BaseCustomerView {
 

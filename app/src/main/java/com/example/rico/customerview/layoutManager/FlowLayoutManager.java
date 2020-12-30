@@ -1,7 +1,11 @@
 package com.example.rico.customerview.layoutManager;
 
 import android.graphics.Rect;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +31,9 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
     //    RecyclerView的宽高
     private int parentWidth;
 
-
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+
         if (getItemCount() == 0 && state.isPreLayout()) {
             return;
         }
@@ -46,6 +50,7 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
             measureChildWithMargins(childView, 0, 0);
             int width = getDecoratedMeasuredWidth(childView);
             int height = getDecoratedMeasuredHeight(childView);
+            Log.e("TAG", "onLayoutChildren: "+width+" "+height );
             if (left + width <= parentWidth) {
                 layout(i, childView, left, top, width, height);
                 left += width;
@@ -61,6 +66,7 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
                 maxHeight = height;
             }
         }
+        onMeasure(recycler,state,getWidth(),maxHeight);
     }
 
     private int scrollY,firstTop;
