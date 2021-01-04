@@ -48,10 +48,11 @@ public class ShadowView extends BaseCustomerView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         float rd =dpToPx(shadowDistance);
-        paint.setShadowLayer(width/10f,0,0,  Color.parseColor("#90000000"));
+
+        paint.setShadowLayer(width/10f,0,0,  Color.parseColor("#90000000"));//绘制阴影的主要方法
         rectF.set(rd, rd, width-rd, height-rd);
-//        canvas.drawRoundRect(rectF, 100, 100, paint);
-        canvas.drawCircle(width/2f, height/2f, width/2f-rd, paint);
+        canvas.drawRoundRect(rectF, 100, 100, paint);
+//        canvas.drawCircle(width/2f, height/2f, width/2f-rd, paint);
         canvas.save();
     }
 }
