@@ -3,7 +3,9 @@ package com.example.rico.customerview.activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
@@ -14,6 +16,7 @@ import com.example.rico.customerview.view.EvaluatorMoveView;
 import com.example.rico.customerview.view.FillTypeView;
 import com.example.rico.customerview.view.FishSwimView;
 import com.example.rico.customerview.view.HandWritingView;
+import com.example.rico.customerview.view.ImageTextView;
 import com.example.rico.customerview.view.MiniSunView;
 import com.example.rico.customerview.view.NetColorView;
 import com.example.rico.customerview.view.PageTurningView;
@@ -77,6 +80,14 @@ public class AllViewActivity extends BaseActivity {
                 break;
             case 11:
                 view = new MiniSunView(context);
+//                MiniSunView miniSunView = (MiniSunView) view;
+//                TextView textView =findViewById(R.id.tv_text);
+//                miniSunView.setCompleteListener(new MiniSunView.AnimCompleteListener() {
+//                    @Override
+//                    public void complete() {
+//                        textView.setVisibility(View.VISIBLE);
+//                    }
+//                });
                 break;
             case 12:
                 view = new RingView(context);
@@ -92,6 +103,9 @@ public class AllViewActivity extends BaseActivity {
                 return;
             case 13:
                 view = new ParallelogramView(context);
+                break;
+            case 14:
+                view = new ImageTextView(context);
                 break;
             default:
                 view = new View(context);

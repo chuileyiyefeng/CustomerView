@@ -12,17 +12,21 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.Shader;
+
 import androidx.annotation.Nullable;
+
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Toast;
 
 import com.example.rico.customerview.R;
 
 import java.util.Arrays;
 import java.util.Random;
 
-/**
+/**Cu
  * Created by Tmp on 2019/6/19.
  * 太阳天气动画
  */
@@ -88,7 +92,7 @@ public class MiniSunView extends BaseCustomerView {
         sunShadowRectF = new RectF();
 
         shadowRectFLeft = -radius * 0.7f;
-        shadowRectFTop = radius * 2;
+        shadowRectFTop = radius * 2.0f;
         shadowRectFRight = radius * 0.7f;
         shadowRectFBottom = radius * 2.2f;
 //       圆的排序点为从上到下
@@ -151,11 +155,12 @@ public class MiniSunView extends BaseCustomerView {
     private void cancelAllAnim() {
         cancelAnim(circleAnim, arcAnim, sunAnim, lightAnim);
     }
-    public  boolean animIsRunning(){
-        if (circleAnim!=null&&circleAnim.isRunning()) {
+
+    public boolean animIsRunning() {
+        if (circleAnim != null && circleAnim.isRunning()) {
             return true;
         }
-        if (arcAnim!=null&&arcAnim.isRunning()) {
+        if (arcAnim != null && arcAnim.isRunning()) {
             return true;
         }
         return sunAnim != null && sunAnim.isRunning();
@@ -171,6 +176,7 @@ public class MiniSunView extends BaseCustomerView {
 
     //    从小到大的圆环动画
     private void startBorderAnim() {
+        isInvokeAnimComplete = false;
         animType = BORDER;
         if (circleAnim == null) {
             circleAnim = ValueAnimator.ofFloat(tinyRadius, radius);
@@ -342,21 +348,21 @@ public class MiniSunView extends BaseCustomerView {
 //                    云一朵一朵出来 第一朵的云半径画满之后画第二朵云以此类推
                     if (!cloudIsFull) {
                         cloudPath.reset();
-                        currentCloudRadius +=cloudRadius[cloudPosition]/8;
-                        boolean b=false;
+                        currentCloudRadius += cloudRadius[cloudPosition] / 8;
+                        boolean b = false;
                         for (int i = 0; i < cloudPosition + 1; i++) {
                             smallCloudRadius[i] = cloudRadius[i];
                             if (currentCloudRadius <= cloudRadius[cloudPosition]) {
                                 smallCloudRadius[cloudPosition] = currentCloudRadius;
-                            }else {
-                                b=true;
+                            } else {
+                                b = true;
                             }
                             Path path = new Path();
                             PointF p = cloudPoint[i];
                             path.addCircle(p.x, p.y, smallCloudRadius[i], Path.Direction.CW);
                             cloudPath.op(path, Path.Op.UNION);
                         }
-                        cloudIsFull=cloudPosition==cloudRadius.length-1&&b;
+                        cloudIsFull = cloudPosition == cloudRadius.length - 1 && b;
                         if (currentCloudRadius >= cloudRadius[cloudPosition] && cloudPosition < cloudRadius.length - 1) {
                             currentCloudRadius = 0;
                             cloudPosition++;
@@ -391,6 +397,7 @@ public class MiniSunView extends BaseCustomerView {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        Log.e("MiniSun", "drawLight: "+"completeListener" );
         canvas.translate(centerP.x, centerP.y);
         switch (animType) {
             case BORDER:
@@ -479,6 +486,9 @@ public class MiniSunView extends BaseCustomerView {
     //    画太阳光 云朵 及阴影
     int cloudShadowPaintAlpha;
 
+    // 动画完成监听是否调用
+    boolean isInvokeAnimComplete;
+
     private void drawLight(Canvas canvas) {
         canvas.drawPath(rectPath1, lightPaint);
         canvas.drawPath(rectPath2, lightPaint);
@@ -492,6 +502,12 @@ public class MiniSunView extends BaseCustomerView {
                 cloudShadowPaint.setAlpha(cloudShadowPaintAlpha);
             }
             canvas.drawPath(cloudShadowPath, cloudShadowPaint);
+            if (!isInvokeAnimComplete) {
+                isInvokeAnimComplete = true;
+                if (completeListener!=null) {
+                    completeListener.complete();
+                }
+            }
         }
         canvas.drawPath(cloudPath, cloudPaint);
         canvas.drawOval(sunShadowRectF, sunShadowPaint);
@@ -519,5 +535,14 @@ public class MiniSunView extends BaseCustomerView {
                 animator1.cancel();
             }
         }
+    }
+    private  AnimCompleteListener completeListener;
+
+    public void setCompleteListener(AnimCompleteListener completeListener) {
+        this.completeListener = completeListener;
+    }
+
+    public interface AnimCompleteListener {
+        void complete();
     }
 }

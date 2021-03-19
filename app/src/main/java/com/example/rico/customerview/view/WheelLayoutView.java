@@ -46,6 +46,7 @@ public class WheelLayoutView extends LinearLayout {
     private ArrayList<WheelData> wheelDataList;
     private ArrayList<ViewInfo> infoList;
 
+    // 填充数据
     public void setData(ArrayList<WheelData> wheelDataList) {
         this.wheelDataList = wheelDataList;
         ViewInfo parent = infoList.get(0);
@@ -183,6 +184,7 @@ public class WheelLayoutView extends LinearLayout {
             });
         }
 
+        // 滚动时的数据变化
         private void dataChange(@NonNull RecyclerView recyclerView, int newState) {
             View view = helper.findSnapView(manager);
             int position;
@@ -265,6 +267,7 @@ public class WheelLayoutView extends LinearLayout {
     SelectionListener listener;
 
     public interface SelectionListener {
+        // 第一个滚轮、第二个滚轮、第三个滚轮的值 第一个滚轮、第二个滚轮、第三个滚轮的下标
         void selected(String parent, String middle, String child, int parentPos, int middlePos, int childPos);
     }
 }

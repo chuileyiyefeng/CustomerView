@@ -1,6 +1,8 @@
 package com.example.rico.customerview.activity;
 
 import android.content.res.AssetManager;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
@@ -45,11 +47,12 @@ public class ListLinkageActivity extends BaseActivity {
         rv = findViewById(R.id.rv);
         manager = new WheelLayoutManager(this);
         rv.setLayoutManager(manager);
+//        rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(adapter);
         helper = new LinearSnapHelper();
         helper.attachToRecyclerView(rv);
         ArrayList<String> strings = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 80; i++) {
             strings.add(" " + i + " 哈哈哈哈哈哈哈哈哈哈哈哈");
         }
         adapter.addData(strings);

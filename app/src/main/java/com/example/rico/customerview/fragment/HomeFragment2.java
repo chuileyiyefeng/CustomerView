@@ -2,6 +2,7 @@ package com.example.rico.customerview.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,7 +27,7 @@ public class HomeFragment2 extends BaseFragment implements BaseAdapter.ItemClick
     FirstAdapter adapter;
 
     @Override
-    protected  int bindLayout() {
+    protected int bindLayout() {
         return R.layout.activity_main;
     }
 
@@ -35,16 +36,19 @@ public class HomeFragment2 extends BaseFragment implements BaseAdapter.ItemClick
         rv = (RecyclerView) findViewById(R.id.rv);
         adapter = new FirstAdapter(getActivity());
         rv.addItemDecoration(new MyItemDecoration());
-        rv.setLayoutManager(new GridLayoutManager(getActivity(),2));
+        rv.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         rv.setAdapter(adapter);
-        Context context = getActivity();
-        adapter.addItem(new ItemInfo("无限循环view", new Intent(context, CircleLayoutActivity.class)));
-        adapter.addItem(new ItemInfo("循环滚动", new Intent(context, RotateActivity.class)));
-        adapter.addItem(new ItemInfo("标签流式布局", new Intent(context, FlowActivity.class)));
-        adapter.addItem(new ItemInfo("小鱼游泳(移动)", new Intent(context, FishSwimActivity.class)));
-        adapter.addItem(new ItemInfo("侧滑删除", new Intent(context, SideDeleteActivity.class)));
-        adapter.addItem(new ItemInfo("标签切换",  new Intent(context, BannerExchangeActivity.class)));
+        addItem("无限循环view", CircleLayoutActivity.class);
+        addItem("循环滚动", RotateActivity.class);
+        addItem("标签流式布局", FlowActivity.class);
+        addItem("小鱼游泳(移动)", FishSwimActivity.class);
+        addItem("侧滑删除", SideDeleteActivity.class);
+        addItem("标签切换", BannerExchangeActivity.class);
         adapter.addItemClick(this);
+    }
+
+    public void addItem(String name, Class<?> cls) {
+        adapter.addItem(new ItemInfo(name, new Intent(getActivity(), cls)));
     }
 
     @Override

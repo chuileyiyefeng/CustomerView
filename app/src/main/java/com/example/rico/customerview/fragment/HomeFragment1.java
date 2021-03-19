@@ -43,35 +43,42 @@ public class HomeFragment1 extends BaseFragment implements BaseAdapter.ItemClick
         rv.addItemDecoration(new MyItemDecoration());
         rv.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         rv.setAdapter(adapter);
-        Context context = getActivity();
-        adapter.addItem(new ItemInfo("圆角ImageView", new Intent(context, CornerImageActivity.class)));
-        adapter.addItem(new ItemInfo("文字滚动", new Intent(context, TextMoveActivity.class)));
-        adapter.addItem(new ItemInfo("drawBitmap动画", new Intent(context, DrawBitmapActivity.class)));
-        adapter.addItem(new ItemInfo("雷达网图", new Intent(context, RadarActivity.class)));
-        adapter.addItem(new ItemInfo("贝塞尔曲线", new Intent(context, BezierMoveActivity.class)));
-        adapter.addItem(new ItemInfo("上滑翻页", new Intent(context, FlipBoardActivity.class)));
-        adapter.addItem(new ItemInfo("switch动画", new Intent(context, AnimatorSwitchActivity.class)));
-        adapter.addItem(new ItemInfo("拼图", new Intent(context, PuzzleActivity.class)));
-        adapter.addItem(new ItemInfo("曲线统计图", new Intent(context, CurveActivity.class)));
-        adapter.addItem(new ItemInfo("加载动画", new Intent(context, LoadingActivity.class)));
-        adapter.addItem(new ItemInfo("阴影控件", new Intent(context, ShadowActivity.class)));
+        addItem("圆角ImageView", CornerImageActivity.class);
+        addItem("文字滚动", TextMoveActivity.class);
+        addItem("drawBitmap动画", DrawBitmapActivity.class);
+        addItem("雷达网图", RadarActivity.class);
+        addItem("贝塞尔曲线", BezierMoveActivity.class);
+        addItem("上滑翻页", FlipBoardActivity.class);
+        addItem("switch动画", AnimatorSwitchActivity.class);
+        addItem("拼图", PuzzleActivity.class);
+        addItem("曲线统计图", CurveActivity.class);
+        addItem("加载动画", LoadingActivity.class);
+        addItem("阴影控件", ShadowActivity.class);
 
-        adapter.addItem(new ItemInfo("小鱼游泳(静止)", 1));
-        adapter.addItem(new ItemInfo("path填充模式", 2));
-        adapter.addItem(new ItemInfo("不同区域点击", 3));
-        adapter.addItem(new ItemInfo("写字板", 4));
-        adapter.addItem(new ItemInfo("圆弧SeekBar", 5));
-        adapter.addItem(new ItemInfo("气泡波浪", 6));
-        adapter.addItem(new ItemInfo("Evaluator(Value)", 7));
-        adapter.addItem(new ItemInfo("Evaluator(Object)", 8));
-        adapter.addItem(new ItemInfo("翻页", 9));
-        adapter.addItem(new ItemInfo("网状view", 10));
-        adapter.addItem(new ItemInfo("太阳动画", 11));
-        adapter.addItem(new ItemInfo("圆环统计图", 12));
-        adapter.addItem(new ItemInfo("平行四边形", 13));
+        addItem2("小鱼游泳(静止)", 1);
+        addItem2("path填充模式", 2);
+        addItem2("不同区域点击", 3);
+        addItem2("写字板", 4);
+        addItem2("圆弧SeekBar", 5);
+        addItem2("气泡波浪", 6);
+        addItem2("Evaluator(Value)", 7);
+        addItem2("Evaluator(Object)", 8);
+        addItem2("翻页", 9);
+        addItem2("网状view", 10);
+        addItem2("太阳动画", 11);
+        addItem2("圆环统计图", 12);
+        addItem2("平行四边形", 13);
+        addItem2("图片文字", 14);
         adapter.addItemClick(this);
     }
 
+    public void addItem(String name, Class<?> cls) {
+        adapter.addItem(new ItemInfo(name, new Intent(getActivity(), cls)));
+    }
+
+    public void addItem2(String name, int type) {
+        adapter.addItem(new ItemInfo(name, type));
+    }
 
     @Override
     public void itemClick(int position) {

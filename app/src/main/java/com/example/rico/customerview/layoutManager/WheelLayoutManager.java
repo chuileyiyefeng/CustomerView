@@ -3,6 +3,8 @@ package com.example.rico.customerview.layoutManager;
 import android.content.Context;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -112,6 +114,7 @@ public class WheelLayoutManager extends LinearLayoutManager {
         return true;
     }
 
+    // allType第一次加载显示三个view 例如时间选择器 ，halfType第一加载显示两个view 例如城市选择器
     public static final int allType = 1, halfType = 2;
     private int firstPos, lastPos, parentHeight, centerY, firstTop, distanceHeight, layoutType = halfType;
     private int scrollY;
@@ -233,14 +236,14 @@ public class WheelLayoutManager extends LinearLayoutManager {
         for (int i = 0; i < getChildCount(); i++) {
             View view = getChildAt(i);
             int height = getDecoratedMeasuredHeight(view);
-            //        分两种情况，从右边到中间为变大，即是 scaleF到1.0f,从中间到左边即是1.0f到scaleF
+            //        分两种情况，从上边到中间为变大，即是 scaleF到1.0f,从中间到下边即是1.0f到scaleF
             int centerViewY = view.getTop() + height / 2;
             int viewCenter = (view.getTop() + view.getBottom());
 //        子view的中心点到控件中心的距离
             float distance = Math.abs(centerY - centerViewY);
 
-//        子view的中心点到控件中心的距离所占总view宽度的百分比
-            double percent = distance / (getWidth() / 2);
+//        子view的中心点到控件中心的距离所占总view宽度的百分比f
+            double percent = distance / (getWidth() / 2f);
             float realScaleF = getRealScaleF(scaleF, height, percent);
             float realAlpha = getRealScaleF(alpha, height, percent);
 //        X是1-100 而Y的值是80到100

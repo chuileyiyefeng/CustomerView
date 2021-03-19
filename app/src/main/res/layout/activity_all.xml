@@ -3,10 +3,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:background="@color/azure"-->
+<!--        android:orientation="vertical" />-->
+
     <LinearLayout
         android:id="@+id/ll_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center"
         android:background="@color/white"
         android:orientation="vertical" />
+
+<!--    <TextView-->
+<!--        android:id="@+id/tv_text"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="260dp"-->
+<!--        android:gravity="center"-->
+<!--        android:text="谢谢观看"-->
+<!--        android:textColor="@color/gray"-->
+<!--        android:textSize="16sp"-->
+<!--        android:visibility="gone" />-->
 </FrameLayout>

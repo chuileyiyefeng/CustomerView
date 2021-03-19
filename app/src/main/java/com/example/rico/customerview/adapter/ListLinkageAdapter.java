@@ -3,6 +3,8 @@ package com.example.rico.customerview.adapter;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,8 +70,8 @@ public class ListLinkageAdapter extends RecyclerView.Adapter<ListLinkageAdapter.
     }
 
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        private View itemView;
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
+        private final View itemView;
 
         MyViewHolder(@NonNull View itemView) {
             super(itemView);

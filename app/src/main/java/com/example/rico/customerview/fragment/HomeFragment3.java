@@ -24,11 +24,13 @@ import com.example.rico.customerview.adapter.FirstAdapter;
 import com.example.rico.customerview.bean.ItemInfo;
 import com.example.rico.customerview.view.MyItemDecoration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Tmp on 2019/6/27.
  */
 public class HomeFragment3 extends BaseFragment implements BaseAdapter.ItemClick {
-    private RecyclerView rv;
     private FirstAdapter adapter;
 
     @Override
@@ -38,24 +40,27 @@ public class HomeFragment3 extends BaseFragment implements BaseAdapter.ItemClick
 
     @Override
     protected void initView() {
-        rv = (RecyclerView) findViewById(R.id.rv);
+        RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
         adapter = new FirstAdapter(getActivity());
         rv.addItemDecoration(new MyItemDecoration());
         rv.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         rv.setAdapter(adapter);
-        Context context = getActivity();
-        adapter.addItem(new ItemInfo("揭示动画", new Intent(context, RevealActivity.class)));
-        adapter.addItem(new ItemInfo("瀑布流", new Intent(context, WaterfallsFlowActivity.class)));
-        adapter.addItem(new ItemInfo("Banner RecyclerView", new Intent(context, BannerLayoutActivity.class)));
-        adapter.addItem(new ItemInfo("卡片RecyclerView", new Intent(context, CardLayoutActivity.class)));
-        adapter.addItem(new ItemInfo("列表联动选择", new Intent(context, ListLinkageActivity.class)));
-        adapter.addItem(new ItemInfo("图片浏览", new Intent(context, PictureViewerActivity.class)));
-        adapter.addItem(new ItemInfo("图片操作", new Intent(context, PictureCtrlActivity.class)));
-        adapter.addItem(new ItemInfo("滑动标签", new Intent(context, ScrollSignActivity.class)));
-//        adapter.addItem(new ItemInfo("上下拉刷新", new Intent(context, JumpLoadActivity.class)));
-        adapter.addItem(new ItemInfo("上下拉刷新 结合SwipeRefreshLayout", new Intent(context, JumpLoadActivity2.class)));
-        adapter.addItem(new ItemInfo("刷新 空状态", new Intent(context, JumpLoadActivity3.class)));
+        addItem("揭示动画",RevealActivity.class);
+        addItem("瀑布流",  WaterfallsFlowActivity.class);
+        addItem("Banner RecyclerView",  BannerLayoutActivity.class);
+        addItem("卡片RecyclerView",  CardLayoutActivity.class);
+        addItem("列表联动选择",  ListLinkageActivity.class);
+        addItem("图片浏览",  PictureViewerActivity.class);
+        addItem("图片操作",  PictureCtrlActivity.class);
+        addItem("滑动标签",  ScrollSignActivity.class);
+//        addItem("上下拉刷新",  JumpLoadActivity.class);
+        addItem("上下拉刷新 结合SwipeRefreshLayout",  JumpLoadActivity2.class);
+        addItem("刷新 空状态",  JumpLoadActivity3.class);
         adapter.addItemClick(this);
+    }
+
+    public void addItem(String name, Class<?> cls) {
+        adapter.addItem(new ItemInfo(name, new Intent(getActivity(), cls)));
     }
 
     @Override

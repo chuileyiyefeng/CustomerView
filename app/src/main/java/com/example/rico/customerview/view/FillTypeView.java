@@ -6,7 +6,9 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.RectF;
+
 import androidx.annotation.Nullable;
+
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -31,6 +33,7 @@ public class FillTypeView extends View {
     int width, height, radius;
     RectF rectF;
     Point point;
+    Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -70,15 +73,15 @@ public class FillTypeView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+//        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(getResources().getColor(R.color.text_normal));
         int sRadius = radius / 2;
         canvas.drawPath(lCircle, paint);
         paint.setColor(getResources().getColor(R.color.white));
         canvas.drawCircle(point.x, point.y - sRadius, 20, paint);
-//        canvas.drawPath(rCircle, paint);
-//        paint.setPointColor(getResources().getPointColor(R.color.text_normal));
-//        canvas.drawCircle(point.x, point.y + sRadius, 20, paint);
+        canvas.drawPath(rCircle, paint);
+        paint.setColor(getResources().getColor(R.color.text_normal));
+        canvas.drawCircle(point.x, point.y + sRadius, 20, paint);
     }
 }
