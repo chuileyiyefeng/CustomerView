@@ -59,6 +59,7 @@ public class CornerImageView extends AppCompatImageView {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        // clipPath会有毛边锯齿
         canvas.clipPath(path);
         super.onDraw(canvas);
     }

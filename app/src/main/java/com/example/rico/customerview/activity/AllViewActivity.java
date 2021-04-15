@@ -1,5 +1,6 @@
 package com.example.rico.customerview.activity;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.ArcSeekBarView;
+import com.example.rico.customerview.view.CameraChangeView;
 import com.example.rico.customerview.view.EvaluatorAttrView;
 import com.example.rico.customerview.view.EvaluatorMoveView;
 import com.example.rico.customerview.view.FillTypeView;
@@ -19,6 +21,7 @@ import com.example.rico.customerview.view.HandWritingView;
 import com.example.rico.customerview.view.ImageTextView;
 import com.example.rico.customerview.view.MiniSunView;
 import com.example.rico.customerview.view.NetColorView;
+import com.example.rico.customerview.view.ObjectAnimView;
 import com.example.rico.customerview.view.PageTurningView;
 import com.example.rico.customerview.view.ParallelogramView;
 import com.example.rico.customerview.view.RegionClickView;
@@ -107,12 +110,26 @@ public class AllViewActivity extends BaseActivity {
             case 14:
                 view = new ImageTextView(context);
                 break;
+            case 15:
+                view = new ObjectAnimView(context);
+                ObjectAnimView animView = (ObjectAnimView) view;
+                ObjectAnimator animator=ObjectAnimator.ofInt(animView,"radius",dpToPx(50));
+                animator.setStartDelay(300);
+                animator.start();
+                break;
+            case 16:
+                view = new CameraChangeView(context);
+                CameraChangeView cameraChangeView= (CameraChangeView) view;
+                cameraChangeView.startAnim();
+                break;
             default:
                 view = new View(context);
                 break;
         }
         llALl.addView(view);
     }
-
+    private int dpToPx(int dp) {
+        return (int) (getResources().getDisplayMetrics().density * dp + 0.5f);
+    }
 
 }

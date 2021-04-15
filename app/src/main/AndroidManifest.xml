@@ -20,6 +20,7 @@
         <meta-data
             android:name="CHANNEL_NAME"
             android:value="${CHANNEL_VALUE}" />
+
         <activity android:name=".activity.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -57,6 +58,7 @@
         <activity android:name=".activity.JumpLoadActivity3" />
         <activity android:name=".activity.LoadingActivity" />
         <activity android:name=".activity.ShadowActivity" />
+        <activity android:name=".activity.ChangeChildViewActivity" />
         <activity
             android:name=".activity.PictureDetailActivity"
             android:theme="@style/PicTheme" />

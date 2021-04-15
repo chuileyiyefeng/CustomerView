@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.example.rico.customerview.view.ChangeChildView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:background="@color/blue_thumb"
+            android:gravity="center"
+            android:text="第一控件"
+            android:textColor="@color/white" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="500dp"
+            android:background="@color/blue_thumb"
+            android:gravity="center"
+            android:text="第二个控件"
+            android:textColor="@color/white" />
+
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:background="@color/black"
+            android:gravity="center"
+            android:text="第三个控件"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="500dp"
+            android:background="@color/black"
+            android:gravity="center"
+            android:text="第四个控件"
+            android:textColor="@color/white" />
+    </com.example.rico.customerview.view.ChangeChildView>
+</LinearLayout>

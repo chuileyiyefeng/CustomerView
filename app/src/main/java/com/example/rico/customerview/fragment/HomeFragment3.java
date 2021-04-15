@@ -10,6 +10,7 @@ import com.example.rico.customerview.R;
 import com.example.rico.customerview.activity.AllViewActivity;
 import com.example.rico.customerview.activity.BannerLayoutActivity;
 import com.example.rico.customerview.activity.CardLayoutActivity;
+import com.example.rico.customerview.activity.ChangeChildViewActivity;
 import com.example.rico.customerview.activity.JumpLoadActivity;
 import com.example.rico.customerview.activity.JumpLoadActivity2;
 import com.example.rico.customerview.activity.JumpLoadActivity3;
@@ -56,6 +57,7 @@ public class HomeFragment3 extends BaseFragment implements BaseAdapter.ItemClick
 //        addItem("上下拉刷新",  JumpLoadActivity.class);
         addItem("上下拉刷新 结合SwipeRefreshLayout",  JumpLoadActivity2.class);
         addItem("刷新 空状态",  JumpLoadActivity3.class);
+        addItem("viewPager 切换效果",  ChangeChildViewActivity.class);
         adapter.addItemClick(this);
     }
 

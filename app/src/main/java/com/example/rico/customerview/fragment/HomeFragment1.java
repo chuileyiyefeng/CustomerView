@@ -69,6 +69,8 @@ public class HomeFragment1 extends BaseFragment implements BaseAdapter.ItemClick
         addItem2("圆环统计图", 12);
         addItem2("平行四边形", 13);
         addItem2("图片文字", 14);
+        addItem2("Object属性动画", 15);
+        addItem2("Camera旋转", 16);
         adapter.addItemClick(this);
     }
 

@@ -2,6 +2,7 @@ package com.example.rico.customerview.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -208,21 +209,21 @@ public class SideDeleteView extends ViewGroup {
     //    是否拦截
     boolean isIntercept;
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                isIntercept = false;
-                downX = ev.getX();
-                downY = ev.getY();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                isIntercept = Math.abs(downX - ev.getX()) > Math.abs(downY - ev.getY());
-                break;
-
-        }
-        return isIntercept;
-    }
+//    @Override
+//    public boolean onInterceptTouchEvent(MotionEvent ev) {
+//        switch (ev.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//                isIntercept = false;
+//                downX = ev.getX();
+//                downY = ev.getY();
+//                break;
+//            case MotionEvent.ACTION_MOVE:
+//                isIntercept = Math.abs(downX - ev.getX()) > Math.abs(downY - ev.getY());
+//                break;
+//
+//        }
+//        return isIntercept;
+//    }
 
     @Override
     public void computeScroll() {
