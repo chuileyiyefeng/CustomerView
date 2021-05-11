@@ -24,6 +24,15 @@ public class ChangeChildView extends ViewGroup {
     private static final String TAG = "ChangeChildView";
     protected int width, height;
     private List<RectF> originLeftRS, originRightRS, changeRectS;// 默认的控件左边位置rect,右边位置rect,变动的rect
+
+    public int getTopRightDistance() {
+        return topRightDistance;
+    }
+
+    public void setTopRightDistance(int topRightDistance) {
+        this.topRightDistance = topRightDistance;
+    }
+
     private int topRightDistance = 30;// 上面右边的view突出距离左边view的距离
     private int topBottomDistance = 20;// 上下两个view的间距
 
