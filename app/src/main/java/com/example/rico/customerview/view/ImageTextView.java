@@ -103,6 +103,7 @@ public class ImageTextView extends BaseCustomerView {
             return;
         }
         canvas.drawBitmap(bitmap, imgLeft, imgTop, textPaint);
+        startY=50;
         drawText(canvas);
     }
 

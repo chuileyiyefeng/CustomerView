@@ -1,6 +1,5 @@
 package com.example.rico.customerview.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -11,7 +10,7 @@ import com.example.rico.customerview.activity.AllViewActivity;
 import com.example.rico.customerview.activity.BannerLayoutActivity;
 import com.example.rico.customerview.activity.CardLayoutActivity;
 import com.example.rico.customerview.activity.ChangeChildViewActivity;
-import com.example.rico.customerview.activity.JumpLoadActivity;
+import com.example.rico.customerview.activity.CropImageActivity;
 import com.example.rico.customerview.activity.JumpLoadActivity2;
 import com.example.rico.customerview.activity.JumpLoadActivity3;
 import com.example.rico.customerview.activity.ListLinkageActivity;
@@ -24,9 +23,6 @@ import com.example.rico.customerview.adapter.BaseAdapter;
 import com.example.rico.customerview.adapter.FirstAdapter;
 import com.example.rico.customerview.bean.ItemInfo;
 import com.example.rico.customerview.view.MyItemDecoration;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Tmp on 2019/6/27.
@@ -58,6 +54,7 @@ public class HomeFragment3 extends BaseFragment implements BaseAdapter.ItemClick
         addItem("上下拉刷新 结合SwipeRefreshLayout",  JumpLoadActivity2.class);
         addItem("刷新 空状态",  JumpLoadActivity3.class);
         addItem("viewPager 切换效果",  ChangeChildViewActivity.class);
+        addItem("裁剪框",  CropImageActivity.class);
         adapter.addItemClick(this);
     }
 

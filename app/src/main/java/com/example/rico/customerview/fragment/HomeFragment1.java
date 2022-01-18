@@ -1,14 +1,10 @@
 package com.example.rico.customerview.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.rico.customerview.activity.LoadingActivity;
-import com.example.rico.customerview.activity.ShadowActivity;
-import com.example.rico.customerview.bean.ItemInfo;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.activity.AllViewActivity;
 import com.example.rico.customerview.activity.AnimatorSwitchActivity;
@@ -17,11 +13,14 @@ import com.example.rico.customerview.activity.CornerImageActivity;
 import com.example.rico.customerview.activity.CurveActivity;
 import com.example.rico.customerview.activity.DrawBitmapActivity;
 import com.example.rico.customerview.activity.FlipBoardActivity;
+import com.example.rico.customerview.activity.LoadingActivity;
 import com.example.rico.customerview.activity.PuzzleActivity;
 import com.example.rico.customerview.activity.RadarActivity;
+import com.example.rico.customerview.activity.ShadowActivity;
 import com.example.rico.customerview.activity.TextMoveActivity;
 import com.example.rico.customerview.adapter.BaseAdapter;
 import com.example.rico.customerview.adapter.FirstAdapter;
+import com.example.rico.customerview.bean.ItemInfo;
 import com.example.rico.customerview.view.MyItemDecoration;
 
 /**
@@ -71,6 +70,8 @@ public class HomeFragment1 extends BaseFragment implements BaseAdapter.ItemClick
         addItem2("图片文字", 14);
         addItem2("Object属性动画", 15);
         addItem2("Camera旋转", 16);
+        addItem2("文字对齐", 17);
+        addItem2("裁剪框", 18);
         adapter.addItemClick(this);
     }
 

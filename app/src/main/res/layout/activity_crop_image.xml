@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/black"
+    tools:ignore="ContentDescription">
+
+        <com.example.rico.customerview.view.CropImageView
+            android:id="@+id/ivThumb"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+
+        <com.example.rico.customerview.view.CropBgFrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.example.rico.customerview.view.CropView
+                android:id="@+id/cropView"
+                android:layout_width="match_parent"
+                android:layout_height="379dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginHorizontal="45dp" />
+        </com.example.rico.customerview.view.CropBgFrameLayout>
+
+
+
+    </FrameLayout>

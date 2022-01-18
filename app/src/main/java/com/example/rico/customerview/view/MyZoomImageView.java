@@ -7,8 +7,10 @@ import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
+
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -252,7 +254,7 @@ public class MyZoomImageView extends AppCompatImageView {
             centerY = height / 2;
             drawableWidth = drawable.getIntrinsicWidth();
             drawableHeight = drawable.getIntrinsicHeight();
-            picMatrix.postTranslate((width - drawableWidth) / 2, (height - drawableHeight) / 2);
+            picMatrix.postTranslate((width - drawableWidth) / 2f, (height - drawableHeight) / 2f);
             originScale = Math.min((float) width / drawableWidth, (float) height / drawableHeight);
             picMatrix.postScale(originScale, originScale, (float) width / 2, (float) height / 2);
             float left = (width - originScale * drawableWidth) / 2;
@@ -464,7 +466,7 @@ public class MyZoomImageView extends AppCompatImageView {
                     super.onAnimationEnd(animation);
                     isOnZooming = false;
                     resetMatrix();
-                    picMatrix.postTranslate((width - drawableWidth) / 2, (height - drawableHeight) / 2);
+                    picMatrix.postTranslate((width - drawableWidth) / 2f, (height - drawableHeight) / 2f);
                     picMatrix.postScale(originScale, originScale, (float) width / 2, (float) height / 2);
                     setImageMatrix(picMatrix);
                 }
@@ -621,6 +623,8 @@ public class MyZoomImageView extends AppCompatImageView {
             reductionScale(needScale);
         } else {
             // 需要向各个方向移动的距离
+            shouldMoveX = 0;
+            shouldMoveY = 0;
             if (currentRectF.left > 0) {
                 if (currentRectF.right < width) {
                     shouldMoveX = centerX - (currentRectF.right + currentRectF.left) / 2;
@@ -739,10 +743,10 @@ public class MyZoomImageView extends AppCompatImageView {
         isScaleToParentWidth = false;
         // 宽小于屏幕，高大于等于屏幕 缩放宽度和屏幕一样宽
         if (picWidth <= width) {
-            scaleCenterX = width / 2;
+            scaleCenterX = width / 2f;
         }
         if (picHeight <= height) {
-            scaleCenterY = height / 2;
+            scaleCenterY = height / 2f;
         }
         Log.e("currentScale", "toDoubleClickScale: " + currentScale);
         if (currentScale >= maxScale || doubleScaleCount == 2) {

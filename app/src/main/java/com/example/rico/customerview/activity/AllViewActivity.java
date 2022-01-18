@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.ArcSeekBarView;
 import com.example.rico.customerview.view.CameraChangeView;
+import com.example.rico.customerview.view.CropView;
 import com.example.rico.customerview.view.EvaluatorAttrView;
 import com.example.rico.customerview.view.EvaluatorMoveView;
 import com.example.rico.customerview.view.FillTypeView;
@@ -26,6 +27,7 @@ import com.example.rico.customerview.view.PageTurningView;
 import com.example.rico.customerview.view.ParallelogramView;
 import com.example.rico.customerview.view.RegionClickView;
 import com.example.rico.customerview.view.RingView;
+import com.example.rico.customerview.view.SideTextView;
 import com.example.rico.customerview.view.WaveBubbleView;
 
 /**
@@ -121,6 +123,17 @@ public class AllViewActivity extends BaseActivity {
                 view = new CameraChangeView(context);
                 CameraChangeView cameraChangeView= (CameraChangeView) view;
                 cameraChangeView.startAnim();
+                break;
+            case 17:
+                view = new SideTextView(context);
+                SideTextView sideTextView= (SideTextView) view;
+                sideTextView.addColorText("先帝创业未半而中道崩殂",R.color.red)
+                        .addColorText("，今天下三分，益州疲弊",R.color.black)
+                        .addColorText("，此诚危急存亡之秋也",R.color.text_select_color)
+                        .create();
+                break;
+            case 18:
+                view = new CropView(context);
                 break;
             default:
                 view = new View(context);
