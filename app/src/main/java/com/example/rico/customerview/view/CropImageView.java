@@ -242,7 +242,7 @@ public class CropImageView extends AppCompatImageView {
 
 
     boolean startChangePos;
-    
+
     // 是否抬起了手指,可以拖拽view的Boolean变了，要完全抬起手指，有一个新的滑动事件才能拖拽
     boolean isNewTouch;
 

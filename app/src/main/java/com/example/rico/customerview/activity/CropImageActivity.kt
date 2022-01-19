@@ -53,5 +53,6 @@ class CropImageActivity : BaseActivity() {
                 return false
             }
         }).into(ivThumb)
+
     }
 }

@@ -306,5 +306,23 @@
     <color name="gray_cc">#cccccc</color>
     <!--灰色8f -->
     <color name="gray_8f">#8f8f8f</color>
-
+    <color name="translucent_black_05">#f2000000</color>
+    <color name="translucent_black_10">#e6000000</color>
+    <color name="translucent_black_15">#d9000000</color>
+    <color name="translucent_black_20">#cc000000</color>
+    <color name="translucent_black_25">#bf000000</color>
+    <color name="translucent_black_30">#b3000000</color>
+    <color name="translucent_black_35">#a6000000</color>
+    <color name="translucent_black_40">#99000000</color>
+    <color name="translucent_black_45">#8c000000</color>
+    <color name="translucent_black_50">#80000000</color>
+    <color name="translucent_black_55">#73000000</color>
+    <color name="translucent_black_60">#66000000</color>
+    <color name="translucent_black_65">#59000000</color>
+    <color name="translucent_black_70">#4d000000</color>
+    <color name="translucent_black_75">#40000000</color>
+    <color name="translucent_black_80">#33000000</color>
+    <color name="translucent_black_90">#26000000</color>
+    <color name="translucent_black_95">#0d000000</color>
+    <color name="translucent_black_99">#0f000000</color>
 </resources>

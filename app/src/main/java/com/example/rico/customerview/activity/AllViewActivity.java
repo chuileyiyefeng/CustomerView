@@ -4,16 +4,14 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.ArcSeekBarView;
 import com.example.rico.customerview.view.CameraChangeView;
-import com.example.rico.customerview.view.CropView;
 import com.example.rico.customerview.view.EvaluatorAttrView;
 import com.example.rico.customerview.view.EvaluatorMoveView;
 import com.example.rico.customerview.view.FillTypeView;
@@ -85,14 +83,6 @@ public class AllViewActivity extends BaseActivity {
                 break;
             case 11:
                 view = new MiniSunView(context);
-//                MiniSunView miniSunView = (MiniSunView) view;
-//                TextView textView =findViewById(R.id.tv_text);
-//                miniSunView.setCompleteListener(new MiniSunView.AnimCompleteListener() {
-//                    @Override
-//                    public void complete() {
-//                        textView.setVisibility(View.VISIBLE);
-//                    }
-//                });
                 break;
             case 12:
                 view = new RingView(context);
@@ -115,25 +105,22 @@ public class AllViewActivity extends BaseActivity {
             case 15:
                 view = new ObjectAnimView(context);
                 ObjectAnimView animView = (ObjectAnimView) view;
-                ObjectAnimator animator=ObjectAnimator.ofInt(animView,"radius",dpToPx(50));
+                ObjectAnimator animator = ObjectAnimator.ofInt(animView, "radius", dpToPx(50));
                 animator.setStartDelay(300);
                 animator.start();
                 break;
             case 16:
                 view = new CameraChangeView(context);
-                CameraChangeView cameraChangeView= (CameraChangeView) view;
+                CameraChangeView cameraChangeView = (CameraChangeView) view;
                 cameraChangeView.startAnim();
                 break;
             case 17:
                 view = new SideTextView(context);
-                SideTextView sideTextView= (SideTextView) view;
-                sideTextView.addColorText("先帝创业未半而中道崩殂",R.color.red)
-                        .addColorText("，今天下三分，益州疲弊",R.color.black)
-                        .addColorText("，此诚危急存亡之秋也",R.color.text_select_color)
+                SideTextView sideTextView = (SideTextView) view;
+                sideTextView.addColorText("先帝创业未半而中道崩殂，今天下三分，益州疲弊，此诚危急存亡之秋也。", R.color.red, () -> Toast.makeText(context, "红红红", Toast.LENGTH_SHORT).show())
+                        .addColorText("然侍卫之臣不懈于内，忠志之士忘身于外者，盖追先帝之殊遇，欲报之于陛下也。诚宜开张圣听，", R.color.black, () -> Toast.makeText(context, "黑黑黑", Toast.LENGTH_SHORT).show())
+                        .addColorText("以光先帝遗德，恢弘志士之气，不宜妄自菲薄，引喻失义，以塞忠谏之路也。", R.color.text_select_color, () -> Toast.makeText(context, "蓝蓝蓝", Toast.LENGTH_SHORT).show())
                         .create();
-                break;
-            case 18:
-                view = new CropView(context);
                 break;
             default:
                 view = new View(context);
@@ -141,6 +128,7 @@ public class AllViewActivity extends BaseActivity {
         }
         llALl.addView(view);
     }
+
     private int dpToPx(int dp) {
         return (int) (getResources().getDisplayMetrics().density * dp + 0.5f);
     }

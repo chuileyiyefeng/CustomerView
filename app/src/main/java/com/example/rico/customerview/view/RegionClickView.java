@@ -7,7 +7,9 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.Region;
+
 import androidx.annotation.Nullable;
+
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -43,6 +45,8 @@ public class RegionClickView extends View {
     //    四个方向的path 中间的 点击的path
     Path pL, pT, pR, pB, pC, pS;
 
+    Region globalRegion;
+
     private void init() {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStyle(Paint.Style.FILL);
@@ -58,9 +62,11 @@ public class RegionClickView extends View {
         rgR = new Region();
         rgB = new Region();
         rgC = new Region();
+        globalRegion = new Region();
     }
 
     float touchX, touchY;
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -103,7 +109,7 @@ public class RegionClickView extends View {
         int smallRadius = radius / 4;
 
         int inWidth = smallRadius * 2;
-        Region globalRegion = new Region();
+
         globalRegion.set(0, 0, w, h);
 
         pC.addCircle(centerPoint.x, centerPoint.y, smallRadius, Path.Direction.CW);
@@ -115,29 +121,29 @@ public class RegionClickView extends View {
 //        添加路径 从270-40°C开始,大小圆弧要反着来
 
         int bigAngle = 80;
-        int spaceAngle=10;
-        int disAngleLength = (int) (spaceAngle * Math.PI * (radius-inWidth) / 180 + 0.5);
-        int disAngle= (int) (disAngleLength/Math.PI * inWidth / 180 + 0.5);
+        int spaceAngle = 10;
+        int disAngleLength = (int) (spaceAngle * Math.PI * (radius - inWidth) / 180 + 0.5);
+        int disAngle = (int) (disAngleLength / Math.PI * inWidth / 180 + 0.5);
 //        里面的角度应当小的距离
-        int lessAngle= (int) (disAngle/2+0.5f);
+        int lessAngle = (int) (disAngle / 2 + 0.5f);
 
 //        上
-        pT.addArc(rSmall, 270 - bigAngle / 2+lessAngle, bigAngle-lessAngle);
+        pT.addArc(rSmall, 270 - bigAngle / 2f + lessAngle, bigAngle - lessAngle);
         pT.arcTo(rBig, 310, -bigAngle);
         pT.close();
         rgT.setPath(pT, globalRegion);
 //         右
-        pR.addArc(rSmall, 0 - bigAngle / 2+lessAngle, bigAngle-lessAngle);
+        pR.addArc(rSmall, 0 - bigAngle / 2f + lessAngle, bigAngle - lessAngle);
         pR.arcTo(rBig, 40, -bigAngle);
         pR.close();
         rgR.setPath(pR, globalRegion);
 //        下
-        pB.addArc(rSmall, 90 - bigAngle / 2+lessAngle, bigAngle-lessAngle);
+        pB.addArc(rSmall, 90 - bigAngle / 2f + lessAngle, bigAngle - lessAngle);
         pB.arcTo(rBig, 130, -bigAngle);
         pB.close();
         rgB.setPath(pB, globalRegion);
 //        左
-        pL.addArc(rSmall, 180 - bigAngle / 2+lessAngle, bigAngle-lessAngle);
+        pL.addArc(rSmall, 180 - bigAngle / 2f + lessAngle, bigAngle - lessAngle);
         pL.arcTo(rBig, 220, -bigAngle);
         pL.close();
         rgL.setPath(pL, globalRegion);

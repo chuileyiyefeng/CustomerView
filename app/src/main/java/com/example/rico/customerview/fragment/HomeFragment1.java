@@ -71,7 +71,6 @@ public class HomeFragment1 extends BaseFragment implements BaseAdapter.ItemClick
         addItem2("Object属性动画", 15);
         addItem2("Camera旋转", 16);
         addItem2("文字对齐", 17);
-        addItem2("裁剪框", 18);
         adapter.addItemClick(this);
     }
 
