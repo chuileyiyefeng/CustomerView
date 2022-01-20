@@ -43,7 +43,7 @@ public class SideTextView extends BaseCustomerView {
     private TextInfo lastDrawTextInfo;
     private Region globalRegion;
     private float touchSlop;
-    private int measureWidth,measureHeight;
+    private int measureWidth, measureHeight;
 
     public SideTextView(Context context) {
         super(context);
@@ -73,20 +73,20 @@ public class SideTextView extends BaseCustomerView {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         globalRegion.set(0, 0, w, h);
-        isReMeasure=false;
+        isReMeasure = false;
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        if (MeasureSpec.getMode(heightMeasureSpec)==MeasureSpec.EXACTLY){
+        if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY) {
             return;
         }
-        measureWidth=widthMeasureSpec;
-        measureHeight=heightMeasureSpec;
-        int heightMode=MeasureSpec.UNSPECIFIED;
-        int realHeight= (int) (startY+textPaint.getFontMetrics().bottom);
-        setMeasuredDimension(widthMeasureSpec, MeasureSpec.makeMeasureSpec(realHeight,heightMode));
+        measureWidth = widthMeasureSpec;
+        measureHeight = heightMeasureSpec;
+        int heightMode = MeasureSpec.UNSPECIFIED;
+        int realHeight = (int) (startY + textPaint.getFontMetrics().bottom);
+        setMeasuredDimension(widthMeasureSpec, MeasureSpec.makeMeasureSpec(realHeight, heightMode));
     }
 
     private int dpToSp(int dp) {
@@ -197,7 +197,7 @@ public class SideTextView extends BaseCustomerView {
             info.region.setPath(info.path, globalRegion);
         }
         if (!isReMeasure) {
-            measure(measureWidth,measureHeight);
+            requestLayout();
             isReMeasure = true;
         }
     }
