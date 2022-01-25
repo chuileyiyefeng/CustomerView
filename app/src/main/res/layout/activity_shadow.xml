@@ -24,23 +24,51 @@
             tools:ignore="HardcodedText" />
     </com.example.rico.customerview.view.ShadowLayout>
 
-    <com.example.rico.customerview.view.ShadowLayout
-        android:layout_width="match_parent"
-        android:layout_height="162dp"
-        android:layout_gravity="center_horizontal"
-        android:padding="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="这是文字测试"
-            tools:ignore="HardcodedText" />
-    </com.example.rico.customerview.view.ShadowLayout>
-
-    <com.example.rico.customerview.view.SideTextView
-        android:id="@+id/side_text"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+
+        <com.example.rico.customerview.view.ShadowLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:padding="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:gravity="center"
+                    android:text="这是文字测试"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:gravity="center"
+                    android:text="这是文字测试"
+                    tools:ignore="HardcodedText" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:overScrollMode="never" />
+
+            </LinearLayout>
+        </com.example.rico.customerview.view.ShadowLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/skyblue" />
-
+        android:text="这是文字测试"
+        tools:ignore="HardcodedText" />
 </LinearLayout>
