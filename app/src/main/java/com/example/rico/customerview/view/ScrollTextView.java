@@ -5,13 +5,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Handler;
-import android.os.Message;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
-import java.lang.ref.WeakReference;
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 
 /**
@@ -28,7 +26,6 @@ public class ScrollTextView extends BaseCustomerView {
     private ValueAnimator animator;
     private Paint.FontMetrics metrics;
     private float everyHeightMove;
-    private MyHandler handler;
 
     public ScrollTextView(Context context) {
         super(context);
@@ -58,7 +55,6 @@ public class ScrollTextView extends BaseCustomerView {
         newInfoList = new ArrayList<>();
         lastRemove = new ArrayList<>();
         newRemove = new ArrayList<>();
-        handler = new MyHandler(this);
     }
 
     @Override
@@ -77,7 +73,7 @@ public class ScrollTextView extends BaseCustomerView {
     //    设置滚动次数
     public void setMoveCount(int moveCount) {
         this.moveCount = moveCount;
-        moveCount = moveCount > 255 ? 255 : moveCount;
+        moveCount = Math.min(moveCount, 255);
         alphaValue = 255 / moveCount;
     }
 
@@ -90,7 +86,7 @@ public class ScrollTextView extends BaseCustomerView {
 
     //    初始化一些值
     private void initBeginValue() {
-        lastHeight = height / 2 + metrics.bottom;
+        lastHeight = height / 2f + metrics.bottom;
         newHeight = lastHeight * 2 + metrics.bottom;
         firstHeight = lastHeight;
         lastAlpha = 255;
@@ -186,7 +182,12 @@ public class ScrollTextView extends BaseCustomerView {
                         animation.cancel();
                         initBeginValue();
                         setText();
-                        handler.sendEmptyMessageDelayed(1, 500);
+                        postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                animator.start();
+                            }
+                        },500);
                     }
                 }
             });
@@ -288,28 +289,14 @@ public class ScrollTextView extends BaseCustomerView {
         if (animator != null) {
             animator.cancel();
         }
-        handler.removeCallbacksAndMessages(null);
     }
 
-    ArrayList<CharInfo> lastInfoList, newInfoList, lastRemove, newRemove;
+    private ArrayList<CharInfo> lastInfoList, newInfoList, lastRemove, newRemove;
 
     //    字符类，包含当前单个字符的内容以及位置
-    class CharInfo {
+    private class CharInfo {
         String aChar;
         float position, distance, moveX, everyMove;
     }
 
-    private static class MyHandler extends Handler {
-        WeakReference<ScrollTextView> reference;
-
-        private MyHandler(ScrollTextView scrollTextView) {
-            reference = new WeakReference<>(scrollTextView);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            reference.get().animator.start();
-        }
-    }
 }

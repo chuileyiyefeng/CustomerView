@@ -55,7 +55,7 @@ public class AnimatorSwitchView extends BaseCustomerView {
     RectF rectF;
     Path path, clipPath;
     PathMeasure pathMeasure;
-    float tan[] = new float[2];
+    float[] tan = new float[2];
     int leftColor, rightColor;
 
     @Override
@@ -67,15 +67,15 @@ public class AnimatorSwitchView extends BaseCustomerView {
         left = top = borderPaint.getStrokeWidth()/2;
         rectF = new RectF(left, top, width - top, height - top);
         textPaint.setTextSize(dpToPx(20));
-        RectF rect2 = new RectF(height / 2, 0, width - height / 2, height);
+        RectF rect2 = new RectF(height / 2f, 0, width - height / 2f, height);
         clipPath.addRect(rect2, Path.Direction.CW);
-        clipPath.addCircle(height/2, height / 2, height / 2, Path.Direction.CW);
-        clipPath.addCircle(width - height / 2, height / 2, height / 2, Path.Direction.CW);
+        clipPath.addCircle(height/2f, height / 2f, height / 2f, Path.Direction.CW);
+        clipPath.addCircle(width - height / 2f, height / 2f, height / 2f, Path.Direction.CW);
         measureText();
 
-        radius = width / 2;
+        radius = width / 2f;
         path.moveTo(0, height);
-        path.quadTo(width / 2, height + radius * 2, width, height);
+        path.quadTo(width / 2f, height + radius * 2, width, height);
         tan[0] = 0;
         tan[1] = height;
         pathMeasure = new PathMeasure();
@@ -100,8 +100,8 @@ public class AnimatorSwitchView extends BaseCustomerView {
     private void measureText() {
         leftStrLength = textPaint.measureText(leftStr);
         rightStrLength = textPaint.measureText(rightStr);
-        leftStrStart = ((width / 2) - leftStrLength) / 2;
-        rightStrStart = ((width / 2) - leftStrLength) / 2 + width / 2;
+        leftStrStart = ((width / 2f) - leftStrLength) / 2;
+        rightStrStart = ((width / 2f) - leftStrLength) / 2 + width / 2f;
         strHeight = textPaint.getFontMetrics().bottom;
     }
 
@@ -119,7 +119,7 @@ public class AnimatorSwitchView extends BaseCustomerView {
                 break;
             case MotionEvent.ACTION_UP:
                 if ((Math.abs(event.getX() - downX) < touchSloop && Math.abs(event.getY() - downY) < touchSloop)) {
-                    isLeft = !(event.getX() > width / 2);
+                    isLeft = !(event.getX() > width / 2f);
                     if (!lastIsLeft == isLeft) {
                         startAnimator();
                     }
@@ -145,7 +145,7 @@ public class AnimatorSwitchView extends BaseCustomerView {
             animator.addUpdateListener(animation -> {
                 float value = (float) animation.getAnimatedValue();
                 pathMeasure.getPosTan(value, tan, null);
-                if (value >= width / 2) {
+                if (value >= width / 2f) {
                     circlePaint.setColor(rightColor);
                 } else {
                     circlePaint.setColor(leftColor);
@@ -170,8 +170,8 @@ public class AnimatorSwitchView extends BaseCustomerView {
         }
         canvas.clipPath(clipPath);
         canvas.drawCircle(tan[0], tan[1], radius, circlePaint);
-        canvas.drawRoundRect(rectF, height / 2, height / 2, borderPaint);
-        canvas.drawText(leftStr, leftStrStart, height / 2 + strHeight, textPaint);
-        canvas.drawText(rightStr, rightStrStart, height / 2 + strHeight, textPaint);
+        canvas.drawRoundRect(rectF, height / 2f, height / 2f, borderPaint);
+        canvas.drawText(leftStr, leftStrStart, height / 2f + strHeight, textPaint);
+        canvas.drawText(rightStr, rightStrStart, height / 2f + strHeight, textPaint);
     }
 }

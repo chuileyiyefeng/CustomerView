@@ -63,8 +63,7 @@ public class CameraChangeView extends BaseCustomerView {
             cameraAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    float value = (float) animation.getAnimatedValue();
-                    cameraDegree = value;
+                    cameraDegree = (float) animation.getAnimatedValue();
                     invalidate();
                 }
             });
@@ -87,8 +86,7 @@ public class CameraChangeView extends BaseCustomerView {
             canvasAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    float value = (float) animation.getAnimatedValue();
-                    canvasDegree = value;
+                    canvasDegree = (float) animation.getAnimatedValue();
                     invalidate();
                 }
             });
