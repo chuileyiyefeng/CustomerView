@@ -119,7 +119,9 @@ public class AllViewActivity extends BaseActivity {
                 SideTextView sideTextView = (SideTextView) view;
                 sideTextView.addColorText("先帝创业未半而中道崩殂，今天下三分，益州疲弊，此诚危急存亡之秋也。", R.color.red, () -> Toast.makeText(context, "红红红", Toast.LENGTH_SHORT).show())
                         .addColorText("然侍卫之臣不懈于内，忠志之士忘身于外者，盖追先帝之殊遇，欲报之于陛下也。诚宜开张圣听，", R.color.black, () -> Toast.makeText(context, "黑黑黑", Toast.LENGTH_SHORT).show())
+                        .addColorText("<test english>",R.color.black)
                         .addColorText("以光先帝遗德，恢弘志士之气，不宜妄自菲薄，引喻失义，以塞忠谏之路也。", R.color.text_select_color, () -> Toast.makeText(context, "蓝蓝蓝", Toast.LENGTH_SHORT).show())
+                        .addColorText("无点击事件。",R.color.black)
                         .create();
                 break;
             default:

@@ -192,7 +192,7 @@ public class SideTextView extends BaseCustomerView {
 
         for (TextInfo info : textInfoList) {
             info.paint.setStyle(Paint.Style.STROKE);
-            canvas.drawPath(info.path, info.paint);
+//            canvas.drawPath(info.path, info.paint);
             info.region.setEmpty();
             info.region.setPath(info.path, globalRegion);
         }
@@ -234,34 +234,39 @@ public class SideTextView extends BaseCustomerView {
         float count = end - start;
         String result = text.substring(start, end);
         char[] arrays = result.toCharArray();
+        //测量每一个字的宽度
         float everyDistance;
         if (isLastRow) {
-            everyDistance = textPaint.measureText("中");
+            everyDistance = 0;
         } else {
-            everyDistance = width / count;
+            everyDistance = (width - textPaint.measureText(result)) / count;
         }
         float startX = 0;
         drawStringBuilder.delete(0, drawStringBuilder.length());
         for (int i = 0; i < count; i++) {
             //判断当前这个字该是什么颜色
+            String drawText = String.valueOf(arrays[i]);
+
+            float currentTextWidth = textPaint.measureText(drawText);
             for (TextInfo info : textInfoList) {
                 int index1 = drawStringBuilder.length();
                 drawStringBuilder.append(info.text);
                 int index2 = drawStringBuilder.length();
+
                 if (i + start >= index1 && i + start <= index2) {
                     if (lastDrawTextInfo != info) {
                         textPaint.setColor(info.paint.getColor());
                     }
-                    info.path.addRoundRect(x + startX, (float) y + textBaseLineTop, x + startX + everyDistance, (float) y + textBaseLineBottom, 0, 0, Path.Direction.CW);
+                    info.path.addRoundRect(x + startX, (float) y + textBaseLineTop, x + startX + everyDistance + currentTextWidth, (float) y + textBaseLineBottom, 0, 0, Path.Direction.CW);
                 }
                 lastDrawTextInfo = info;
             }
             drawStringBuilder.delete(0, drawStringBuilder.length());
-            canvas.drawText(String.valueOf(arrays[i]), x + startX, y, textPaint);
-            startX += everyDistance;
+
+            canvas.drawText(drawText, x + startX, y, textPaint);
+            startX += (everyDistance + currentTextWidth);
         }
     }
-
 
     //储存文字画笔信息
     private class TextInfo {
