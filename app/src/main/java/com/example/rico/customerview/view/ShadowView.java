@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 
 /**
  * create by pan yi on 2020/12/29
- * desc : 阴影控件
+ * desc : 阴影控件 此方式会有兼容问题
  */
 public class ShadowView extends BaseCustomerView {
 

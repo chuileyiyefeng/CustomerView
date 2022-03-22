@@ -39,6 +39,7 @@ android {
             manifestPlaceholders = [CHANNEL_VALUE: "alp1004"]
         }
     }
+    ndkVersion '21.1.6352462'
 }
 
 dependencies {

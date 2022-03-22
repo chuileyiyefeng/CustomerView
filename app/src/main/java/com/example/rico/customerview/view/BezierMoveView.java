@@ -7,7 +7,9 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
+
 import androidx.annotation.Nullable;
+
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
@@ -89,14 +91,16 @@ public class BezierMoveView extends BaseCustomerView {
     float downX = 0, downY = 0;
     int tapSlop;
 
+
     @Override
     public boolean performClick() {
+        startAnimator();
         return super.performClick();
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        performClick();
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 downX = event.getX();
@@ -106,7 +110,8 @@ public class BezierMoveView extends BaseCustomerView {
                 float upX = event.getX();
                 float upY = event.getY();
                 if (Math.abs(upX - downX) < tapSlop && Math.abs(upY - downY) < tapSlop) {
-                    startAnimator();
+//                    startAnimator();
+                    performClick();
                 }
                 break;
         }

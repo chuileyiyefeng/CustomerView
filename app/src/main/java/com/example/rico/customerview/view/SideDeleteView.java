@@ -24,7 +24,7 @@ public class SideDeleteView extends ViewGroup {
     }
 
     private Scroller scroller;
-    private int duration = 300;
+    private final int duration = 300;
     private int scrollDx;
 
     private int height, sideWidth, moveLimit;

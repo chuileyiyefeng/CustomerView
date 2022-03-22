@@ -9,7 +9,6 @@ import android.graphics.Region;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
@@ -43,7 +42,6 @@ public class SideTextView extends BaseCustomerView {
     private TextInfo lastDrawTextInfo;
     private Region globalRegion;
     private float touchSlop;
-    private int measureWidth, measureHeight;
 
     public SideTextView(Context context) {
         super(context);
@@ -82,8 +80,6 @@ public class SideTextView extends BaseCustomerView {
         if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY) {
             return;
         }
-        measureWidth = widthMeasureSpec;
-        measureHeight = heightMeasureSpec;
         int heightMode = MeasureSpec.UNSPECIFIED;
         int realHeight = (int) (startY + textPaint.getFontMetrics().bottom);
         setMeasuredDimension(widthMeasureSpec, MeasureSpec.makeMeasureSpec(realHeight, heightMode));

@@ -3,6 +3,8 @@ package com.example.rico.customerview.fragment;
 import android.content.Intent;
 
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.rico.customerview.R;
@@ -22,6 +24,7 @@ import com.example.rico.customerview.adapter.BaseAdapter;
 import com.example.rico.customerview.adapter.FirstAdapter;
 import com.example.rico.customerview.bean.ItemInfo;
 import com.example.rico.customerview.view.MyItemDecoration;
+import com.example.rico.util.itemdrag.ItemDragHelperCallback;
 
 /**
  * Created by Tmp on 2019/6/27.
@@ -42,6 +45,10 @@ public class HomeFragment1 extends BaseFragment implements BaseAdapter.ItemClick
         rv.addItemDecoration(new MyItemDecoration());
         rv.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         rv.setAdapter(adapter);
+        ItemDragHelperCallback callback = new ItemDragHelperCallback(adapter);
+         ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(rv);
+
         addItem("圆角ImageView", CornerImageActivity.class);
         addItem("文字滚动", TextMoveActivity.class);
         addItem("drawBitmap动画", DrawBitmapActivity.class);
