@@ -16,6 +16,7 @@ import com.example.rico.customerview.activity.CurveActivity;
 import com.example.rico.customerview.activity.DrawBitmapActivity;
 import com.example.rico.customerview.activity.FlipBoardActivity;
 import com.example.rico.customerview.activity.LoadingActivity;
+import com.example.rico.customerview.activity.LoveViewActivity;
 import com.example.rico.customerview.activity.PuzzleActivity;
 import com.example.rico.customerview.activity.RadarActivity;
 import com.example.rico.customerview.activity.ShadowActivity;
@@ -60,6 +61,7 @@ public class HomeFragment1 extends BaseFragment implements BaseAdapter.ItemClick
         addItem("曲线统计图", CurveActivity.class);
         addItem("加载动画", LoadingActivity.class);
         addItem("阴影控件", ShadowActivity.class);
+        addItem("爱心控件", LoveViewActivity.class);
 
         addItem2("小鱼游泳(静止)", 1);
         addItem2("path填充模式", 2);

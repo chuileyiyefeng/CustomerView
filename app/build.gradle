@@ -71,6 +71,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     implementation 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'
+
+    implementation 'com.github.xiaofeidev:round:1.1.1'
     apply plugin: 'kotlin-android-extensions'
 }
 repositories {

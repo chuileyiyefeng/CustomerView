@@ -1,5 +1,8 @@
 package com.example.rico.util.itemdrag;
 
+import android.view.animation.CycleInterpolator;
+
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +30,17 @@ public class ItemDragHelperCallback extends ItemTouchHelper.Callback {
         return makeMovementFlags(dragFlags, swipeFlags);
     }
 
+    @Override
+    public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
+        super.onSelectedChanged(viewHolder, actionState);
+        if (actionState == 2 && viewHolder != null) {
+            viewHolder.itemView.animate()
+                    .translationX(20)
+                    .setInterpolator(new CycleInterpolator(2))
+                    .setDuration(300)
+                    .start();
+        }
+    }
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
         mRecyclerAdapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());

@@ -30,10 +30,11 @@ public class FirstAdapter extends BaseAdapter<ItemInfo> implements IItemHelper {
 
     @Override
     public void onItemMove(int fromPosition, int toPosition) {
-        ItemInfo prev = list.remove(fromPosition);
-        list.add(toPosition > fromPosition ? toPosition - 1 : toPosition, prev);
+        ItemInfo item = list.get(fromPosition);
+        list.remove(fromPosition);
+        list.add(toPosition, item);
         notifyItemMoved(fromPosition, toPosition);
-        notifyItemRangeChanged(Math.min(fromPosition, toPosition), Math.abs(fromPosition -toPosition) +1);
+        notifyItemRangeChanged(Math.min(fromPosition, toPosition), Math.abs(fromPosition - toPosition) + 1);
     }
 
     @Override

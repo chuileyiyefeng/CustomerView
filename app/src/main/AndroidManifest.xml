@@ -58,6 +58,7 @@
         <activity android:name=".activity.JumpLoadActivity3" />
         <activity android:name=".activity.LoadingActivity" />
         <activity android:name=".activity.ShadowActivity" />
+        <activity android:name=".activity.LoveViewActivity" />
         <activity android:name=".activity.ChangeChildViewActivity" />
         <activity
             android:name=".activity.PictureDetailActivity"
