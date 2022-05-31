@@ -2,11 +2,14 @@ package com.example.rico.customerview.view;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.RectF;
 import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -14,6 +17,8 @@ import android.view.View;
 import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.Nullable;
+
+import com.example.rico.customerview.R;
 
 /**
  * @Description: 爱心动画控件
@@ -27,6 +32,17 @@ public class WaveView extends View {
 
     private final float[] mData = new float[8];               // 顺时针记录绘制圆形的四个数据点
     private final float[] mCtrl = new float[16];              // 顺时针记录绘制圆形的八个控制点
+
+    private float everyMoveX = 15;
+
+    private final int UP = 1;
+    private final int DOWN = 2;
+    private int currentType = UP;
+
+
+    private float progressEnd;
+    private float progressDistance;
+
 
     public WaveView(Context context) {
         super(context);
@@ -44,10 +60,8 @@ public class WaveView extends View {
     }
 
     int[] arcColors = new int[]{
-            Color.parseColor("#08E7E7"),
-            Color.parseColor("#08D6D6"),
-            Color.parseColor("#07C6C6"),
-            Color.parseColor("#059494"),
+            Color.parseColor("#FF4C90"),
+            Color.parseColor("#D390FF"),
 
     };
 
@@ -62,45 +76,64 @@ public class WaveView extends View {
 
         borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         borderPaint.setColor(Color.parseColor("#FFA5C7"));
-        borderPaint.setStrokeWidth(10f);
+        borderPaint.setStrokeWidth(dpToPx(1));
         borderPaint.setStyle(Paint.Style.STROKE);
     }
 
     int width, height, offsetX;
+
+    private int dpToPx(int dp) {
+        return (int) (getResources().getDisplayMetrics().density * dp + 0.5f);
+    }
+
+    public void setBorderWidth(int dp) {
+        borderPaint.setStrokeWidth(dpToPx(dp));
+    }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         width = w;
         height = h;
-        baseLine = -height / 2;
-        underLine = baseLine;
+
+
         // 圆的半径
         float mCircleRadius = w / 2f;
-        waveHeight=mCircleRadius/2f;
-        // 圆形的控制点与数据点的差值
-        // 一个常量，用来计算绘制圆形贝塞尔曲线控制点的位置
-        float c = 0.551915024494f;
-        float mDifference = mCircleRadius * c;
+        waveHeight = mCircleRadius / 6f;
+        float borderWidth = borderPaint.getStrokeWidth() / 2f;
+
+
+
+        baseLine = (int) (-height / 2-waveHeight/4);
+        underLine = baseLine;
+
         LinearGradient gradient = new LinearGradient(0, baseLine, 0, height, arcColors, null, Shader.TileMode.CLAMP);
         paint.setShader(gradient);
-        resetPath();
+        borderPaint.setShader(gradient);
+        everyMoveX = mCircleRadius / 10f;
+        progressEnd = height / 2f- waveHeight*1.2f ;
+        lastProgressEnd=underLine;
+        progressDistance = progressEnd - underLine;
+        setPath();
 
         // 初始化数据点
 
         mData[0] = 0;
-        mData[1] = mCircleRadius;
+        mData[1] = mCircleRadius - borderWidth;
 
-        mData[2] = mCircleRadius;
+        mData[2] = mCircleRadius - borderWidth;
         mData[3] = 0;
 
         mData[4] = 0;
-        mData[5] = -mCircleRadius;
+        mData[5] = -mCircleRadius + borderWidth;
 
-        mData[6] = -mCircleRadius;
+        mData[6] = -mCircleRadius + borderWidth;
         mData[7] = 0;
 
-
+        // 圆形的控制点与数据点的差值
+        // 一个常量，用来计算绘制圆形贝塞尔曲线控制点的位置
+        float c = 0.551915024494f;
+        float mDifference = mCircleRadius * c;
         // 初始化控制点
 
         mCtrl[0] = mData[0] + mDifference;
@@ -144,32 +177,32 @@ public class WaveView extends View {
         path.cubicTo(mCtrl[12], mCtrl[13], mCtrl[14], mCtrl[15], mData[0], mData[1]);
 
         lovePath = path;
+//        lovePath.addRect(new RectF(-width/2f,-height/2f,width/2f,height/2f), Path.Direction.CCW);
     }
-
-
-    long drawTime;
 
 
     ValueAnimator animator;
 
     public void startAnimator() {
-        resetPath();
         if (null != animator && animator.isRunning()) {
-            return;
+            animator.cancel();
+//            return;
         }
-        drawTime = System.currentTimeMillis();
-
         animator = ValueAnimator.ofFloat(0, width);
         animator.setInterpolator(new LinearInterpolator());
         animator.addUpdateListener(animation -> {
-            offsetX += 15;
+            offsetX += everyMoveX;
             if (offsetX >= width) {
                 offsetX = 0;
             }
-            baseLine++;
-            resetPath();
-//                画波浪线的path与矩形path相交的值为波浪线的path
-//                原波浪线的path包含的内容太多，影响性能
+            if (currentType == UP) {
+                baseLine++;
+            } else {
+                baseLine--;
+            }
+            setPath();
+            //     画波浪线的path与矩形path相交的值为波浪线的path
+            //    原波浪线的path包含的内容太多，影响性能
             wavePath.op(lovePath, Path.Op.INTERSECT);
             invalidate();
         });
@@ -178,16 +211,24 @@ public class WaveView extends View {
         animator.start();
     }
 
-    private void resetPath() {
-        if (baseLine > height / 2) {
-            animator.cancel();
-            return;
+    private void setPath() {
+        if (currentType == UP) {
+            if (baseLine > progressEnd) {
+                animator.cancel();
+                return;
+            }
+        } else {
+            if (baseLine < progressEnd) {
+                animator.cancel();
+                return;
+            }
         }
+
         wavePath.reset();
         wavePath.moveTo(-width - width / 2f, baseLine);
         for (int i = -3; i < 2; i++) {
             int start = i * width / 2 + offsetX;
-            wavePath.quadTo(start + width / 4f-width / 2f, getY(i), start + width / 2f-width / 2f, baseLine);
+            wavePath.quadTo(start + width / 4f - width / 2f, getY(i), start, baseLine);
         }
         wavePath.lineTo(width / 2f, underLine);
         wavePath.lineTo(-width / 2f, underLine);
@@ -203,13 +244,8 @@ public class WaveView extends View {
         }
     }
 
-
     @Override
     protected void onDraw(Canvas canvas) {
-//        clipPath操作要在画图之前操作，clipPath不会影响到已经画好的图形
-//        canvas.clipPath(rectPath);
-//        canvas.drawPath(path, paint);
-
         canvas.translate(width / 2f, height / 2f); // 将坐标系移动到画布中央
         canvas.scale(1, -1);                 // 翻转Y轴
         canvas.drawPath(lovePath, borderPaint);
@@ -217,6 +253,41 @@ public class WaveView extends View {
         canvas.clipPath(lovePath);
         canvas.drawPath(wavePath, paint);
     }
+
+
+    private int lastProgress = 0;
+    private float lastProgressEnd=0;
+
+    public void setProgress(int progress) {
+        Log.e("wave progress",progress+"");
+        if (progress > 100) {
+            progress = 100;
+        }
+        if (progress < 0) {
+            progress = 0;
+        }
+        //修正底部和顶部波浪效果不明显
+        if(progress<=10&&progress>0){
+            progress=15;
+        }
+        if (progress>=90&&progress<100) {
+            progress=85;
+        }
+        if (progress==lastProgress) {
+            return;
+        }
+
+        progressEnd =lastProgressEnd+ (progress-lastProgress)*progressDistance/100f;
+        if (progress > lastProgress) {
+            currentType = UP;
+        } else {
+            currentType = DOWN;
+        }
+        lastProgress = progress;
+        lastProgressEnd=progressEnd;
+        startAnimator();
+    }
+
 
     @Override
     protected void onDetachedFromWindow() {

@@ -45,7 +45,7 @@ public class DrawBitmapView extends View {
         int bitmapHeight = bitmap.getHeight();
         float widthScale = (float) radius * 2 / bitmapWidth;
         float heightScale = (float) radius * 2 / bitmapHeight;
-        float scale = widthScale > heightScale ? heightScale : widthScale;
+        float scale = Math.min(widthScale, heightScale);
         Matrix matrix = new Matrix();
         matrix.postScale(scale, scale);
         this.bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmapWidth, bitmapHeight, matrix, true);
@@ -72,7 +72,7 @@ public class DrawBitmapView extends View {
                     float value = (float) animation.getAnimatedValue();
                     rightX = (int) value;
                     rect.set(0, 0, rightX, bitmap.getHeight());
-                    dst.set(-bitmap.getWidth() / 2, -bitmap.getHeight() / 2, -bitmap.getWidth() / 2 + rightX, bitmap.getHeight() / 2);
+                    dst.set(-bitmap.getWidth() / 2f, -bitmap.getHeight() / 2f, -bitmap.getWidth() / 2f + rightX, bitmap.getHeight() / 2f);
                     invalidate();
                 }
             });
@@ -106,7 +106,7 @@ public class DrawBitmapView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.translate(width / 2, height / 2);
+        canvas.translate(width / 2f, height / 2f);
         canvas.drawCircle(0, 0, radius, paint);
         if (bitmap != null) {
             canvas.drawBitmap(bitmap, rect, dst, paint);
