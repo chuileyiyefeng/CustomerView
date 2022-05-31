@@ -183,7 +183,7 @@ public class WaveBubbleView extends View {
         path.moveTo(-width, baseLine);
         for (int i = -3; i < 2; i++) {
             int start = i * width / 2 + offsetX;
-            path.quadTo(start + width / 4, getY(i), start + width / 2, baseLine);
+            path.quadTo(start + width / 4f, getY(i), start + width / 2f, baseLine);
         }
         path.lineTo(width, height);
         path.lineTo(0, height);
