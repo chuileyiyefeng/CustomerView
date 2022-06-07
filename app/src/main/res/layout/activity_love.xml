@@ -45,10 +45,22 @@
         android:layout_gravity="center_horizontal"
         android:visibility="gone" />
 
-    <com.example.rico.customerview.view.DrawBitmapViewWave
-        android:background="@color/thistle"
-        android:id="@+id/wave_drawable"
-        android:layout_gravity="center_horizontal"
+    <FrameLayout
         android:layout_width="200dp"
-        android:layout_height="200dp" />
+        android:layout_height="200dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/thistle">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/love_empty" />
+
+        <com.example.rico.customerview.view.DrawBitmapWaveView
+            android:id="@+id/wave_drawable"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
 </LinearLayout>

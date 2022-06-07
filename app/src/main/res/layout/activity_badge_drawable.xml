@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:ignore="HardcodedText">
+
+
+    <FrameLayout
+        android:id="@+id/fl_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:background="@color/aliceblue"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingTop="5dp">
+
+
+        <TextView
+            android:id="@+id/tvBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/cornflowerblue"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="测试红点"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="50dp"
+            android:src="@mipmap/dog"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:cornerFamily="rounded"
+            app:cornerSize="30dp"/>
+    </FrameLayout>
+</FrameLayout>

@@ -5,7 +5,10 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.example.rico.customerview.fragment.HomeFragment3;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayout;
+
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -48,16 +51,21 @@ public class HomeActivity extends BaseActivity {
         for (int i = 0; i < strings.size(); i++) {
             tab.getTabAt(i).setText(strings.get(i));
         }
+
         ApplicationInfo applicationInfo = null;
         try {
             applicationInfo = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-            if (applicationInfo == null) {
-                return;
-            }
             String value = applicationInfo.metaData.getString("CHANNEL_NAME");
-            Log.e("CHANNEL_NAME", "doBusiness: "+value );
+            Log.e("CHANNEL_NAME", "doBusiness: " + value);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+//        TabLayout.Tab tabItem = tab.getTabAt(0);
+//        if (tabItem != null) {
+//            BadgeDrawable drawable = tabItem.getOrCreateBadge();
+//            drawable.setBackgroundColor(ContextCompat.getColor(this, R.color.red));
+//            drawable.setBadgeTextColor(ContextCompat.getColor(this, R.color.white));
+//            drawable.setNumber(6);
+//        }
     }
 }

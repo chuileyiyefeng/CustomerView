@@ -60,11 +60,13 @@
         <activity android:name=".activity.ShadowActivity" />
         <activity android:name=".activity.LoveViewActivity" />
         <activity android:name=".activity.ChangeChildViewActivity" />
+        <activity android:name=".activity.BadgeDrawableTestActivity" />
         <activity
             android:name=".activity.PictureDetailActivity"
             android:theme="@style/PicTheme" />
-        <activity android:name=".activity.CropImageActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.CropImageActivity"
+            android:screenOrientation="fullSensor" />
     </application>
 
 

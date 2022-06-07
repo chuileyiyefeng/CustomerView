@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.activity.AllViewActivity;
+import com.example.rico.customerview.activity.BadgeDrawableTestActivity;
 import com.example.rico.customerview.activity.BannerLayoutActivity;
 import com.example.rico.customerview.activity.CardLayoutActivity;
 import com.example.rico.customerview.activity.ChangeChildViewActivity;
@@ -55,6 +56,7 @@ public class HomeFragment3 extends BaseFragment implements BaseAdapter.ItemClick
         addItem("刷新 空状态",  JumpLoadActivity3.class);
         addItem("viewPager 切换效果",  ChangeChildViewActivity.class);
         addItem("裁剪框",  CropImageActivity.class);
+        addItem("红点测试",  BadgeDrawableTestActivity.class);
         adapter.addItemClick(this);
     }
 

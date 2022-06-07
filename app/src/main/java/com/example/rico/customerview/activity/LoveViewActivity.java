@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.rico.customerview.R;
-import com.example.rico.customerview.view.DrawBitmapViewWave;
+import com.example.rico.customerview.view.DrawBitmapWaveView;
 import com.example.rico.customerview.view.WaveDrawable;
 import com.example.rico.customerview.view.WaveView;
 
@@ -54,11 +54,11 @@ public class LoveViewActivity extends BaseActivity {
         waveDrawable.setWaveLength(50);
         waveDrawable.setWaveSpeed(50);
 
-        DrawBitmapViewWave wave = findViewById(R.id.wave_drawable);
+        DrawBitmapWaveView wave = findViewById(R.id.wave_drawable);
         wave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                wave.setBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.chrome_logo));
+                wave.setBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.love_full));
             }
         });
 

@@ -16,16 +16,15 @@ import android.view.animation.DecelerateInterpolator;
 import androidx.annotation.Nullable;
 
 import com.example.rico.customerview.R;
+import com.google.android.material.badge.BadgeUtils;
 
 /**
- * @Description:
+ * @Description: 贝塞尔path加图片
  * @Author: pan yi
  * @Date: 2022/5/30
  */
-public class DrawBitmapViewWave extends View {
+public class DrawBitmapWaveView extends View {
     Paint paint;
-    RectF dst;
-    Rect rect;
     Bitmap bitmap;
     private Path wavePath, rectPath;
 
@@ -33,17 +32,18 @@ public class DrawBitmapViewWave extends View {
     private final int DOWN = 2;
     private int currentType = UP;
     private int offsetX;
+    private float everyMoveX = 15f;
 
 
     private float progressEnd;
 
-    public DrawBitmapViewWave(Context context) {
+    public DrawBitmapWaveView(Context context) {
         super(context);
         initView();
     }
 
 
-    public DrawBitmapViewWave(Context context, @Nullable AttributeSet attrs) {
+    public DrawBitmapWaveView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initView();
     }
@@ -60,6 +60,8 @@ public class DrawBitmapViewWave extends View {
         float scale = Math.min(widthScale, heightScale);
         Matrix matrix = new Matrix();
         matrix.postScale(scale, scale);
+        waveHeight = (bitmapHeight * scale) / 8f;
+        everyMoveX = width / 50f;
         progressEnd = heightScale * scale + waveHeight;
         this.bitmap = Bitmap.createBitmap(bitmap, 0, 0, (int) bitmapWidth, (int) bitmapHeight, matrix, true);
         startAnimator();
@@ -81,7 +83,7 @@ public class DrawBitmapViewWave extends View {
             animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    offsetX += 15;
+                    offsetX += everyMoveX;
                     if (offsetX >= width) {
                         offsetX = 0;
                     }
@@ -107,7 +109,7 @@ public class DrawBitmapViewWave extends View {
 
     private void setPath() {
         if (currentType == UP) {
-            if (baseLine < 0) {
+            if (baseLine < -waveHeight) {
                 animator.cancel();
                 return;
             }
@@ -129,28 +131,21 @@ public class DrawBitmapViewWave extends View {
     }
 
     private void initView() {
-        rect = new Rect();
-        dst = new RectF();
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(getResources().getColor(R.color.bottom_bg));
-        paint.setStyle(Paint.Style.FILL);
     }
 
-    int width, height, mCircleRadius;
+    int width, height;
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         width = w;
         height = h;
-        mCircleRadius = Math.min(w, h) / 2;
-        rect.set(0, 0, width, height);
-        dst.set(0, 0, width, height);
         wavePath = new Path();
         rectPath = new Path();
         rectPath.addRect(0, 0, width, height, Path.Direction.CW);
 
-        waveHeight = mCircleRadius / 2f;
+        waveHeight = height / 2f;
         baseLine = height;
         underLine = baseLine;
     }
@@ -172,7 +167,7 @@ public class DrawBitmapViewWave extends View {
     protected void onDraw(Canvas canvas) {
         canvas.clipPath(wavePath);
         if (bitmap != null) {
-            canvas.drawBitmap(bitmap, rect, dst, paint);
+            canvas.drawBitmap(bitmap, 0, 0, paint);
         }
 
     }
