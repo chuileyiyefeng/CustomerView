@@ -370,7 +370,6 @@ public class CropImageView extends AppCompatImageView {
         getEndValueRectF(targetRectF, needScale);
         needMoveX = picOriginRealRectF.left - targetRectF.left;
         needMoveY = picOriginRealRectF.top - targetRectF.top;
-        Log.e("reductionScale", "scaling value " + targetRectF.toString() + " " + needMoveX + " " + needMoveY);
         testX = 0;
         testY = 0;
         needMoveX = needMoveX / (needScale - 1f);
@@ -652,7 +651,6 @@ public class CropImageView extends AppCompatImageView {
         drawable.draw(canvas);
         return bitmap;
     }
-
 
 }
 

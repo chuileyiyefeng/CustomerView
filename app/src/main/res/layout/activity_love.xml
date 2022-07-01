@@ -6,6 +6,11 @@
     android:orientation="vertical"
     tools:ignore="HardcodedText">
 
+    <TextView
+        android:text="哈哈哈哈哈哈哈哈哈哈哈"
+        android:autoSizeTextType="uniform"
+        android:layout_width="200dp"
+        android:layout_height="30dp"/>
     <com.example.rico.customerview.view.WaveView
 
         android:id="@+id/wave_view"
@@ -45,22 +50,11 @@
         android:layout_gravity="center_horizontal"
         android:visibility="gone" />
 
-    <FrameLayout
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+    <com.example.rico.customerview.view.DrawBitmapWaveView
         android:layout_gravity="center_horizontal"
-        android:background="@color/thistle">
+        android:id="@+id/wave_drawable"
+        android:layout_width="200dp"
+        android:layout_height="200dp" />
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@mipmap/love_empty" />
-
-        <com.example.rico.customerview.view.DrawBitmapWaveView
-            android:id="@+id/wave_drawable"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </FrameLayout>
 
 </LinearLayout>

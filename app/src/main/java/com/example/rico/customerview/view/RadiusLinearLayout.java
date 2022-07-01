@@ -2,6 +2,7 @@ package com.example.rico.customerview.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -16,6 +17,8 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.rico.customerview.R;
+
 /**
  * @Description: 圆角控件 drawPath方式
  * @Author: pan yi
@@ -23,14 +26,14 @@ import androidx.annotation.Nullable;
  */
 public class RadiusLinearLayout extends LinearLayout {
     private final int INVALID_VALUE = -1;
-    //圆角效果主要存在这个路径里
+
     private Path mPath;
-    //圆角矩形描述
+
     private RectF mRectF;
-    //画笔
+
     private Paint mPaint;
 
-    //绘制缓冲，避免击穿整个 window 的画布出现黑色背景的情况
+
     private Bitmap mBitmap = null;
     private final Canvas mCanvas = new Canvas();
     private final Matrix mMatrix = new Matrix();
@@ -63,7 +66,6 @@ public class RadiusLinearLayout extends LinearLayout {
         super.onSizeChanged(w, h, oldw, oldh);
         if (w > 0) {
             mPath.reset();
-            //Path 的填充模式为反奇偶规则
             mPath.setFillType(Path.FillType.INVERSE_EVEN_ODD);
             if (getRadius() < 0) {
                 mPath.addCircle((float) (w / 2), (float) (h / 2), (float) (Math.min(w, h) / 2), Path.Direction.CW);
@@ -114,7 +116,6 @@ public class RadiusLinearLayout extends LinearLayout {
     //绘制刷新时的必要逻辑
     private void update() {
         mPath.reset();
-        //Path 的填充模式为反奇偶规则
         mPath.setFillType(Path.FillType.INVERSE_EVEN_ODD);
         if (getRadius() < 0) {
             mPath.addCircle((float) (getWidth() / 2), (float) (getHeight() / 2), (float) (Math.min(getWidth(), getHeight()) / 2), Path.Direction.CW);

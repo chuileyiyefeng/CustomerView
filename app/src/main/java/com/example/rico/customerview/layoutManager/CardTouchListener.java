@@ -5,11 +5,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
 
+import com.example.rico.customerview.adapter.BaseAdapter;
+
 public class CardTouchListener extends ItemTouchHelper.SimpleCallback {
 
-    private com.example.rico.customerview.adapter.BaseAdapter adapter;
+    private BaseAdapter adapter;
 
-    public CardTouchListener(com.example.rico.customerview.adapter.BaseAdapter adapter) {
+    public CardTouchListener(BaseAdapter adapter) {
         super(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT | ItemTouchHelper.DOWN | ItemTouchHelper.UP);
         this.adapter = adapter;
     }

@@ -64,8 +64,8 @@ public class ArcSeekBarView extends View {
         width = w;
         height = h;
         radius = Math.min(w, h) / 2;
-        rectF = new RectF(w / 2 - radius + paintWidth * 2, h / 2 - radius + paintWidth * 2, w / 2 + radius - paintWidth * 2, h / 2 + radius - paintWidth * 2);
-        mGradient = new SweepGradient(width / 2, height / 2, arcColors, null);
+        rectF = new RectF(w / 2f - radius + paintWidth * 2, h / 2f - radius + paintWidth * 2, w / 2f + radius - paintWidth * 2, h / 2f + radius - paintWidth * 2);
+        mGradient = new SweepGradient(width / 2f, height / 2f, arcColors, null);
     }
 
     private void init(Context context) {
@@ -137,8 +137,8 @@ public class ArcSeekBarView extends View {
         if (degrees > cRotate) {
             degrees = cRotate;
         }
-        canvas.rotate(degrees, width / 2, height / 2);
-        canvas.drawCircle(width / 2, height - rectF.top, paintWidth / 2 - 4, circlePaint);
+        canvas.rotate(degrees, width / 2f, height / 2f);
+        canvas.drawCircle(width / 2f, height - rectF.top, paintWidth / 2f - 4, circlePaint);
         degrees += 4;
 
     }

@@ -1,11 +1,12 @@
 package com.example.rico.customerview.adapter;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,11 +59,14 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
 
     public void addItem(Collection<T> collections) {
         list.addAll(collections);
-        notifyDataSetChanged();
+//        notifyDataSetChanged();
+        notifyItemRangeInserted(list.size()-1, collections.size());
     }
 
     public void removePosition(int position) {
         list.remove(position);
+//        notifyItemRemoved(position);
+//        notifyItemRangeChanged(position,list.size());
         notifyDataSetChanged();
     }
 

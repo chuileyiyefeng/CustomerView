@@ -47,12 +47,10 @@ public class NetColorView extends BaseCustomerView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_UP:
-                if (animator == null || !animator.isRunning()) {
-                    changePosition();
-                }
-                break;
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            if (animator == null || !animator.isRunning()) {
+                changePosition();
+            }
         }
         return true;
     }
@@ -83,11 +81,11 @@ public class NetColorView extends BaseCustomerView {
         int area;
         int pointCount=100;
         for (int i = 0; i < pointCount; i++) {
-            if (i >= 0 && i < pointCount/4) {
+            if ( i < pointCount/4) {
                 area = 1;
-            } else if (i >=  pointCount/4 && i <  pointCount/2) {
+            } else if (i >=  pointCount/4f && i <  pointCount/2) {
                 area = 2;
-            } else if (i >=  pointCount/2 && i <  pointCount/4*3) {
+            } else if (i >=  pointCount/2f && i <  pointCount/4*3) {
                 area = 3;
             } else {
                 area = 4;

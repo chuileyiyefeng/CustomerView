@@ -58,7 +58,7 @@ public class HexagonPathView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         width = w;
         height = h;
-        standWidth = w > h ? h : w;
+        standWidth = Math.min(w, h);
     }
 
     @Override
@@ -68,9 +68,9 @@ public class HexagonPathView extends View {
             return;
         }
         allRadius = (int) (standWidth / 2 - dpToPx(20) - maxTextLength);
-        canvas.translate(width / 2, height / 2);
+        canvas.translate(width / 2f, height / 2f);
         int count = dataList.size();
-        int fullAngle = 360;
+        float fullAngle = 360;
         double area = fullAngle / count;
         int everyLess = allRadius / levelCount;
         //        画多边形
@@ -114,8 +114,9 @@ public class HexagonPathView extends View {
         int firstX = 0, firstY = 0;
         for (int i = 0; i < count; i++) {
             double currentLength = everyLess+(allRadius-everyLess) * dataList.get(i).percent;
-            double sin = Math.sin(Math.toRadians(area / 2 + area * i));
-            double cos = Math.cos(Math.toRadians(area / 2 + area * i));
+            double angle = Math.toRadians(area / 2 + area * i);
+            double sin = Math.sin(angle);
+            double cos = Math.cos(angle);
             int x = (int) (currentLength * sin + 0.5);
             int y = (int) (currentLength * cos + 0.5);
             int textX = (int) ((allRadius + dpToPx(10)) * sin + 0.5);
@@ -150,7 +151,7 @@ public class HexagonPathView extends View {
                 canvas.drawText(s, x, y + textH / 2, textPaint);
             }
 //            第二象限
-            else if (x > 0 && y > 0) {
+            else if (x > 0) {
                 canvas.drawText(s, x, y + textH / 2, textPaint);
             }
 //            第三象限
@@ -158,7 +159,7 @@ public class HexagonPathView extends View {
                 canvas.drawText(s, x - textLength, y + textH / 2, textPaint);
             }
 //            第四象限
-            else if (x < 0 && y < 0) {
+            else if (x < 0) {
                 canvas.drawText(s, x - textLength, y + textH / 2, textPaint);
             }
         } else {

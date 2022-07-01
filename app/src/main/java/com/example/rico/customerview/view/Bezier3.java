@@ -32,6 +32,8 @@ public class Bezier3 extends View {
     private float mCount = 100;                         // 将时长总共划分多少份
     private float mPiece = mDuration/mCount;            // 每一份的时长
 
+    private   Path path;
+
 
     public Bezier3(Context context) {
         this(context, null);
@@ -46,6 +48,7 @@ public class Bezier3 extends View {
         mPaint.setStrokeWidth(8);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setTextSize(60);
+        path = new Path();
     }
 
 
@@ -112,7 +115,7 @@ public class Bezier3 extends View {
         mPaint.setColor(Color.RED);
         mPaint.setStrokeWidth(8);
 
-        Path path = new Path();
+
         path.moveTo(mData[0],mData[1]);
 
         path.cubicTo(mCtrl[0],  mCtrl[1],  mCtrl[2],  mCtrl[3],     mData[2], mData[3]);

@@ -1,6 +1,7 @@
 package com.example.rico.customerview.activity;
 
 
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,7 +20,7 @@ import com.example.rico.customerview.view.WaveView;
 public class LoveViewActivity extends BaseActivity {
     TextView tvStart, tvUp, tvDown;
     WaveView waveView;
-    int progress = 10;
+    int progress = 50;
 
     ImageView imageView;
 
@@ -55,10 +56,15 @@ public class LoveViewActivity extends BaseActivity {
         waveDrawable.setWaveSpeed(50);
 
         DrawBitmapWaveView wave = findViewById(R.id.wave_drawable);
+        Bitmap bgBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.love_empty);
+        Bitmap drawBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.love_full);
+        wave.setDrawBitmap(bgBitmap, drawBitmap);
+        wave.setSpeed(3f);
         wave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                wave.setBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.love_full));
+                wave.setProgress(progress);
+                progress+=10;
             }
         });
 
