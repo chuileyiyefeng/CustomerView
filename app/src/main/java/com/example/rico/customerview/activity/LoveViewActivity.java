@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.DrawBitmapWaveView;
 import com.example.rico.customerview.view.WaveDrawable;
+import com.example.rico.customerview.view.WaveDrawable2;
 import com.example.rico.customerview.view.WaveView;
 
 /**
@@ -22,7 +23,7 @@ public class LoveViewActivity extends BaseActivity {
     WaveView waveView;
     int progress = 50;
 
-    ImageView imageView;
+    ImageView imageView,imageView2;
 
     @Override
     public int bindLayout() {
@@ -36,6 +37,7 @@ public class LoveViewActivity extends BaseActivity {
         tvDown = findViewById(R.id.tv_down);
         waveView = findViewById(R.id.wave_view);
         imageView = findViewById(R.id.iv_image);
+        imageView2 = findViewById(R.id.iv_image2);
 
         tvUp.setOnClickListener(v -> {
             waveView.setProgress(progress);
@@ -46,25 +48,30 @@ public class LoveViewActivity extends BaseActivity {
             progress -= 10;
         });
 
-        WaveDrawable waveDrawable = new WaveDrawable(this, R.mipmap.chrome_logo);
+        WaveDrawable2 waveDrawable = new WaveDrawable2(this, R.mipmap.love_progress);
+        WaveDrawable2 waveDrawable2 = new WaveDrawable2(this, R.mipmap.love_progress);
+        waveDrawable2.setBg(true);
         imageView.setImageDrawable(waveDrawable);
+        imageView2.setImageDrawable(waveDrawable2);
+        waveDrawable.setMax(1000);
+        waveDrawable.setProgress(500f);
+
+        waveDrawable2.setMax(1000);
+        waveDrawable2.setProgress(500f);
 
 
-        waveDrawable.setLevel(800);
-        waveDrawable.setWaveAmplitude(10);
-        waveDrawable.setWaveLength(50);
-        waveDrawable.setWaveSpeed(50);
 
         DrawBitmapWaveView wave = findViewById(R.id.wave_drawable);
-        Bitmap bgBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.love_empty);
-        Bitmap drawBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.love_full);
+        Bitmap bgBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.love_hollow);
+        Bitmap drawBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.love_progress);
         wave.setDrawBitmap(bgBitmap, drawBitmap);
+//        wave.setProgress(progress);
         wave.setSpeed(3f);
         wave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 wave.setProgress(progress);
-                progress+=10;
+                progress += 10;
             }
         });
 

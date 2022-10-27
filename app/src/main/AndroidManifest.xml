@@ -61,6 +61,7 @@
         <activity android:name=".activity.LoveViewActivity" />
         <activity android:name=".activity.ChangeChildViewActivity" />
         <activity android:name=".activity.BadgeDrawableTestActivity" />
+        <activity android:name=".activity.SpreadViewActivity" />
         <activity
             android:name=".activity.PictureDetailActivity"
             android:theme="@style/PicTheme" />

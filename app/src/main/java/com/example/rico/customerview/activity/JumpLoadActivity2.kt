@@ -3,6 +3,8 @@ package com.example.rico.customerview.activity
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -69,7 +71,6 @@ class JumpLoadActivity2 : BaseActivity() {
             override fun up() {
                 swipe_re.isEnabled = true
             }
-
         })
     }
 
@@ -112,7 +113,6 @@ class JumpLoadActivity2 : BaseActivity() {
             }
             reference.get()?.jump_load?.reductionScroll()
         }
-
     }
 
     companion object {

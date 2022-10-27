@@ -19,7 +19,7 @@ import java.util.*
  *  desc :  刷新控件，有显示状态
  */
 class JumpLoadActivity3 : BaseActivity() {
-    val adapter: FirstAdapter by lazy {
+    val adapter: FirstAdapter by lazy(LazyThreadSafetyMode.NONE) {
         FirstAdapter(this)
     }
     val handler: MyHandler by lazy {

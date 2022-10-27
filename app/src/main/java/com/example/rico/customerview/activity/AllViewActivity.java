@@ -26,6 +26,7 @@ import com.example.rico.customerview.view.ParallelogramView;
 import com.example.rico.customerview.view.RegionClickView;
 import com.example.rico.customerview.view.RingView;
 import com.example.rico.customerview.view.SideTextView;
+import com.example.rico.customerview.view.SpreadView;
 import com.example.rico.customerview.view.WaveBubbleView;
 
 /**

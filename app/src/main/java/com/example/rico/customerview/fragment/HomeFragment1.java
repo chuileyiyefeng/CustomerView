@@ -20,6 +20,7 @@ import com.example.rico.customerview.activity.LoveViewActivity;
 import com.example.rico.customerview.activity.PuzzleActivity;
 import com.example.rico.customerview.activity.RadarActivity;
 import com.example.rico.customerview.activity.ShadowActivity;
+import com.example.rico.customerview.activity.SpreadViewActivity;
 import com.example.rico.customerview.activity.TextMoveActivity;
 import com.example.rico.customerview.adapter.BaseAdapter;
 import com.example.rico.customerview.adapter.FirstAdapter;
@@ -47,7 +48,7 @@ public class HomeFragment1 extends BaseFragment implements BaseAdapter.ItemClick
         rv.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         rv.setAdapter(adapter);
         ItemDragHelperCallback callback = new ItemDragHelperCallback(adapter);
-         ItemTouchHelper helper = new ItemTouchHelper(callback);
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(rv);
 
         addItem("圆角ImageView", CornerImageActivity.class);
@@ -62,6 +63,7 @@ public class HomeFragment1 extends BaseFragment implements BaseAdapter.ItemClick
         addItem("加载动画", LoadingActivity.class);
         addItem("阴影控件", ShadowActivity.class);
         addItem("爱心控件", LoveViewActivity.class);
+        addItem("浮动", SpreadViewActivity.class);
 
         addItem2("小鱼游泳(静止)", 1);
         addItem2("path填充模式", 2);
@@ -80,6 +82,7 @@ public class HomeFragment1 extends BaseFragment implements BaseAdapter.ItemClick
         addItem2("Object属性动画", 15);
         addItem2("Camera旋转", 16);
         addItem2("文字对齐", 17);
+
         adapter.addItemClick(this);
     }
 

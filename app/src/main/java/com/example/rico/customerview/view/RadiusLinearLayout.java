@@ -64,7 +64,7 @@ public class RadiusLinearLayout extends LinearLayout {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        if (w > 0) {
+        if (w > 0 && h > 0) {
             mPath.reset();
             mPath.setFillType(Path.FillType.INVERSE_EVEN_ODD);
             if (getRadius() < 0) {
@@ -107,6 +107,10 @@ public class RadiusLinearLayout extends LinearLayout {
 
     @Override
     public void draw(Canvas canvas) {
+        if (mBitmap==null) {
+            super.draw(canvas);
+            return;
+        }
         mBitmap.eraseColor(Color.TRANSPARENT);
         super.draw(mCanvas);
         mCanvas.drawPath(mPath, mPaint);
