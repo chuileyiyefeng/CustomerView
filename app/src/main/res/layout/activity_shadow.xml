@@ -56,15 +56,18 @@
                     android:text="这是文字测试"
                     tools:ignore="HardcodedText" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:overScrollMode="never" />
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/rv"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:overScrollMode="never" />
 
             </LinearLayout>
         </com.example.rico.customerview.view.ShadowLayout>
     </androidx.core.widget.NestedScrollView>
+
+
 
     <TextView
         android:layout_width="wrap_content"

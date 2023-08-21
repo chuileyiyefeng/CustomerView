@@ -56,22 +56,6 @@ public class ImageFragment extends BaseFragment implements RequestListener<Drawa
                             .into(ivPic);
                 }
             }
-//            fresco加载方法，matrix不适用
-//            ivPic.setCanLayoutChange(true);
-//            Uri uri = Uri.parse(url);
-//            GenericDraweeHierarchyBuilder builder = new GenericDraweeHierarchyBuilder(getResources());
-//            GenericDraweeHierarchy hierarchy;
-//            if (getMessage() != null) {
-//                builder.setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER)
-//                        .setProgressBarImage(new ProgressBarDrawable());
-//                if (bitmap != null) {
-//                    builder.setPlaceholderImage(new BitmapDrawable(getResources(), bitmap))
-//                            .setPlaceholderImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
-//                }
-//                hierarchy = builder.build();
-//                ivPic.setImageURI(uri);
-//                ivPic.setHierarchy(hierarchy);
-//            }
             ivPic.setOnClickListener(v -> {
                 if (getActivity() != null) {
                     getActivity().finish();

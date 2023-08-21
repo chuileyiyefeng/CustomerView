@@ -254,6 +254,9 @@ public class CropImageView extends AppCompatImageView {
         performClick();
         disallowParent(true);
         setMatrixType();
+        if (getDrawable()==null) {
+            return super.onTouchEvent(event);
+        }
         int pointCount = event.getPointerCount();
         touchType = event.getAction();
         switch (event.getAction()) {

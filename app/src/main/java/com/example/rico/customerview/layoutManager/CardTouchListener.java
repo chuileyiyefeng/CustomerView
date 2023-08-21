@@ -32,5 +32,5 @@ public class CardTouchListener extends ItemTouchHelper.SimpleCallback {
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         int position = viewHolder.getAdapterPosition();
-        adapter.removePosition(position);
+        adapter.removeNotAnim(position);
     }}

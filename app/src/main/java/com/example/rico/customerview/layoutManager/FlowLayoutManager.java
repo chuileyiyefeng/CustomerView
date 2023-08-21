@@ -2,7 +2,6 @@ package com.example.rico.customerview.layoutManager;
 
 import android.graphics.Rect;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -114,13 +113,13 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
 //            赋值dy为-scrollY，还原滑动为0（就是拉到顶部时的状态）
             dy = -scrollY;
         }
-        dy = fillViews(recycler, dy);
+        fillViews(recycler, dy);
         offsetChildrenVertical(-dy);
         scrollY += dy;
         return dy;
     }
 
-    private int fillViews(RecyclerView.Recycler recycler, int dy) {
+    private void fillViews(RecyclerView.Recycler recycler, int dy) {
         int top = getPaddingTop();
         int bottom = getHeight() - getPaddingBottom();
         int left = getPaddingLeft();
@@ -128,7 +127,7 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
         for (int i = getChildCount() - 1; i >= 0; i--) {
             View childView = getChildAt(i);
             if (childView == null) {
-                return dy;
+                return;
             }
             if (dy > 0 && getDecoratedBottom(childView) - dy < top) {
                 removeAndRecycleView(childView, recycler);
@@ -179,7 +178,7 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
                 if (firstView != null) {
                     maxPos = getPosition(firstView) - 1;
                 } else {
-                    return dy;
+                    return;
                 }
             }
             for (int i = maxPos; i >= firstPos; i--) {
@@ -200,6 +199,5 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
             firstPos = getPosition(firstView);
             firstTop = getDecoratedTop(firstView) - getPaddingTop();
         }
-        return dy;
     }
 }

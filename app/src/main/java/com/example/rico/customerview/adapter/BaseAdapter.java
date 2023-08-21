@@ -57,17 +57,36 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
         notifyItemInserted(list.size());
     }
 
+    public void addItemNotRefresh(T t) {
+        list.add(t);
+    }
+
     public void addItem(Collection<T> collections) {
         list.addAll(collections);
 //        notifyDataSetChanged();
-        notifyItemRangeInserted(list.size()-1, collections.size());
+        notifyItemRangeInserted(list.size() - 1, collections.size());
     }
 
     public void removePosition(int position) {
         list.remove(position);
 //        notifyItemRemoved(position);
 //        notifyItemRangeChanged(position,list.size());
+
+        notifyItemRemoved(position);
+        compatibilityDataSizeChanged(0);
+        notifyItemRangeChanged(position, list.size() - position);
+    }
+
+    public void removeNotAnim(int position) {
+        list.remove(position);
         notifyDataSetChanged();
+    }
+
+    private void compatibilityDataSizeChanged(int size) {
+        final int dataSize = list == null ? 0 : list.size();
+        if (dataSize == size) {
+            notifyDataSetChanged();
+        }
     }
 
     public void clearAllItem() {
@@ -97,6 +116,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseViewHolder
     public interface ItemClick {
         void itemClick(int position);
     }
+
     private DataChangeListener dataChangeListener;
 
     public void setDataChangeListener(DataChangeListener dataChangeListener) {

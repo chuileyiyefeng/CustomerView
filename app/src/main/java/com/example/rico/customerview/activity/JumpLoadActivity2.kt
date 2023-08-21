@@ -6,6 +6,7 @@ import android.os.Message
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rico.customerview.R
@@ -52,7 +53,7 @@ class JumpLoadActivity2 : BaseActivity() {
         jump_load.setLoadListener(object : LoadListener {
             override fun loadMore() {
                 handler.sendEmptyMessageDelayed(1, 300)
-                swipe_re.isEnabled=false
+                swipe_re.isEnabled = false
             }
 
             override fun refresh() {
@@ -60,7 +61,7 @@ class JumpLoadActivity2 : BaseActivity() {
         })
         adapter.addItemClick { position: Int -> Toast.makeText(this@JumpLoadActivity2, "点击了 $position", Toast.LENGTH_SHORT).show() }
         swipe_re.setOnRefreshListener {
-            jump_load.canMove=false
+            jump_load.canMove = false
             handler.sendEmptyMessageDelayed(0, 300)
         }
         jump_load.setInTouchListener(object : JumpLoadView.InTouchListener {
@@ -84,12 +85,37 @@ class JumpLoadActivity2 : BaseActivity() {
                     reference.get()?.adapter?.clearAllItem()
                     upItem = 0
                     var i = 0
+                    val count = reference.get()?.adapter?.itemCount ?: 0
                     while (i < 5) {
                         val time = System.currentTimeMillis()
-                        val itemInfo = ItemInfo("这是刷新item 时间：$time", null)
-                        reference.get()?.adapter?.addItem(itemInfo)
+                        val itemInfo = ItemInfo("这是item$i", null)
+                        reference.get()?.adapter?.addItemNotRefresh(itemInfo)
                         i++
                     }
+                    reference.get()?.adapter?.run {
+                        DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+                            override fun getOldListSize(): Int {
+                                return count
+                            }
+
+                            override fun getNewListSize(): Int {
+                                return count + 5
+                            }
+
+                            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                                return getItem(oldItemPosition).equals(getItem(newItemPosition))
+
+
+                            }
+
+                            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                                return getItem(oldItemPosition) == getItem(newItemPosition)
+
+                            }
+
+                        }, false).dispatchUpdatesTo(this)
+                    }
+
                     reference.get()?.swipe_re?.isRefreshing = false
                     reference.get()?.jump_load?.canMove = true
                 }
@@ -108,7 +134,7 @@ class JumpLoadActivity2 : BaseActivity() {
                     } else {
                         Toast.makeText(reference.get(), "没有更多数据", Toast.LENGTH_SHORT).show()
                     }
-                    reference.get()?.swipe_re?.isEnabled=true
+                    reference.get()?.swipe_re?.isEnabled = true
                 }
             }
             reference.get()?.jump_load?.reductionScroll()
