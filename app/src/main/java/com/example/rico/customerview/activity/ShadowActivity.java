@@ -1,14 +1,11 @@
 package com.example.rico.customerview.activity;
 
-import android.widget.Toast;
-
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.adapter.DeleteAdapter;
 import com.example.rico.customerview.view.MyItemDecoration;
-import com.example.rico.customerview.view.SideTextView;
 
 /**
  * create by pan yi on 2020/12/30

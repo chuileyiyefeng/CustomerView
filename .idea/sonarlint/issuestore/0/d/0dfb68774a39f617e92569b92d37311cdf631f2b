@@ -1,0 +1,17 @@
+
+V
+java:S2184F"@Cast one of the operands of this integer division to a "double".(–ù‹³
+b
+java:S1659"GDeclare "coverPaint" and all following declarations on a separate line.(ÃöÙ‚ýÿÿÿÿ
+^
+java:S16594"CDeclare "height" and all following declarations on a separate line.(ô£çÛýÿÿÿÿ
+?
+java:S1659r"$Declare "firstY" on a separate line.(ä«Ÿ×ûÿÿÿÿ
+T
+java:S1155C">Use isEmpty() to check whether the collection is empty or not.(¥Ë©Ñ
+i
+java:S3776‘"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(àÆŠ½
+d
+java:S1871š"MThis branch's code block is the same as the block for the branch on line 150.(•‚ì‹
+i
+java:S1871¢"MThis branch's code block is the same as the block for the branch on line 158.(˜©Ö³ûÿÿÿÿ

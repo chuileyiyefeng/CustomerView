@@ -1,0 +1,23 @@
+
+K
+java:S1066Â"/Merge this if statement with the enclosing one.(ğ‰¶şúÿÿÿÿ
+]
+java:S2184­"ACast one of the operands of this division operation to a "float".(£Áß¶øÿÿÿÿ
+]
+java:S2184­"ACast one of the operands of this division operation to a "float".(£Áß¶øÿÿÿÿ
+]
+java:S2184®"ACast one of the operands of this division operation to a "float".(ï­¥õùÿÿÿÿ
+]
+java:S2184®"ACast one of the operands of this division operation to a "float".(ï­¥õùÿÿÿÿ
+U
+java:S3516‹"9Refactor this method to not always return the same value.(Óı°ûÿÿÿÿ
+P
+java:S3516ä"9Refactor this method to not always return the same value.(ıÄƒ­
+O
+java:S3516W"9Refactor this method to not always return the same value.(¹´Ÿñ
+o	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(Şıµõ
+n
+java:S3776‹"RRefactor this method to reduce its Cognitive Complexity from 25 to the 15 allowed.(Óı°ûÿÿÿÿ
+=	java:S131ª""Add a default case to this switch.(ãÁğ™øÿÿÿÿ
+g	java:S116¨"QRename this field "BIGGER" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ßÈ„„
+h	java:S116©"RRename this field "SMALLER" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(îê¹×

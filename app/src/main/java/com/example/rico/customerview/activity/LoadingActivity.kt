@@ -15,9 +15,16 @@ class LoadingActivity : BaseActivity() {
     override fun doBusiness() {
         tv_start.setOnClickListener {
             loading_view.startLoading()
+
         }
         tv_stop.setOnClickListener {
             loading_view.stopLoading()
         }
+
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
 }

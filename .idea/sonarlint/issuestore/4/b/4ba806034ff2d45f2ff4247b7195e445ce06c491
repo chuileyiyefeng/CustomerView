@@ -1,0 +1,7 @@
+
+f
+java:S1301A"KReplace this "switch" statement by "if" statements to increase readability.(ãÁğ™øÿÿÿÿ
+Q	java:S125;"<This block of commented-out lines of code should be removed.(òƒ€Í
+<	java:S131A""Add a default case to this switch.(ãÁğ™øÿÿÿÿ
+M
+java:S1117b"7Rename "dst" which hides the field declared at line 26.(ŸÊí—

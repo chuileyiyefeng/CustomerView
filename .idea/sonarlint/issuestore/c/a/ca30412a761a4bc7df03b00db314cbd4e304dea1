@@ -1,0 +1,14 @@
+
+V
+java:S1659A"@Declare "top" and all following declarations on a separate line.(—á£Ã
+C
+java:S1185:"(Remove this method to simply inherit it.(æî³Žøÿÿÿÿ
+h
+java:S3776D"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(ôó§è
+<	java:S131G""Add a default case to this switch.(ãÁð™øÿÿÿÿ
+T
+java:S1659Q">Declare "r" and all following declarations on a separate line.(ßí˜Û
+V	java:S125p"<This block of commented-out lines of code should be removed.(úüÍþÿÿÿÿ
+V	java:S125t"<This block of commented-out lines of code should be removed.(úüÍþÿÿÿÿ
+@
+java:S1068"+Remove this unused "context" private field.(êÝç

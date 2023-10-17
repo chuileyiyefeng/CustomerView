@@ -1,0 +1,9 @@
+
+J
+java:S1066/"/Merge this if statement with the enclosing one.(×Ê¹áüÿÿÿÿ
+f
+java:S1301["KReplace this "switch" statement by "if" statements to increase readability.(¯·ø‹úÿÿÿÿ
+<	java:S131=""Add a default case to this switch.(ãÁð™øÿÿÿÿ
+h
+java:S3776Z"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(žÑÆ
+<	java:S131[""Add a default case to this switch.(¯·ø‹úÿÿÿÿ

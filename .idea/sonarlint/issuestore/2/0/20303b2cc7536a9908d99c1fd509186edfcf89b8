@@ -1,0 +1,15 @@
+
+f
+java:S1301e"KReplace this "switch" statement by "if" statements to increase readability.(¯·ø‹úÿÿÿÿ
+Y
+java:S1659,"CDeclare "height" and all following declarations on a separate line.(ê¦û 
+X
+java:S1659Q"BDeclare "lastY" and all following declarations on a separate line.(»Ùæ
+?
+java:S1659_"$Declare "mDownY" on a separate line.(’İ”úşÿÿÿÿ
+<	java:S131e""Add a default case to this switch.(¯·ø‹úÿÿÿÿ
+>
+java:S1185}"(Remove this method to simply inherit it.(Ù´ôı
+=	java:S131‡""Add a default case to this switch.(ãÁğ™øÿÿÿÿ
+B
+java:S1068"'Remove this unused "TAG" private field.(›ÍÇªûÿÿÿÿ

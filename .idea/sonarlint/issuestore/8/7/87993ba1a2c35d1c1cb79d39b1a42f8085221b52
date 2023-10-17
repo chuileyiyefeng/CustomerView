@@ -1,0 +1,46 @@
+
+D
+java:S1604œ"(Make this anonymous inner class a lambda(§Œÿüÿÿÿÿ
+g
+java:S1301á"KReplace this "switch" statement by "if" statements to increase readability.(éî“ôıÿÿÿÿ
+g
+java:S1301§"KReplace this "switch" statement by "if" statements to increase readability.(éî“ôıÿÿÿÿ
+g
+java:S1301»"KReplace this "switch" statement by "if" statements to increase readability.(éî“ôıÿÿÿÿ
+<
+java:S1170("!Make this final field static too.(şÒ‡ÿÿÿÿÿ
+<
+java:S1170("!Make this final field static too.(şÒ‡ÿÿÿÿÿ
+:
+java:S1659"$Declare "height" on a separate line.(øáïı
+`
+java:S1659"JDeclare "originRightRS" and all following declarations on a separate line.(îã‰ó
+B
+java:S1659("'Declare "rightMode" on a separate line.(şÒ‡ÿÿÿÿÿ
+A
+java:S1659,"+Declare "topRightScale" on a separate line.(èš­‚
+=
+java:S1659±"'Declare "lastMoveX" on a separate line.(ÛşÄ
+
+D
+java:S1172;".Remove this unused method parameter "context".(ş¢š½
+?
+java:S1905­"(Remove this unnecessary cast to "float".(ÔÁòŒ
+?
+java:S1905®"(Remove this unnecessary cast to "float".(üÖÒ
+i
+java:S3776·"RRefactor this method to reduce its Cognitive Complexity from 46 to the 15 allowed.(ôó§è
+=	java:S131»""Add a default case to this switch.(ãÁğ™øÿÿÿÿ
+W	java:S125È"<This block of commented-out lines of code should be removed.(£û‘øüÿÿÿÿ
+W	java:S125Ë"<This block of commented-out lines of code should be removed.(˜Ï ùÿÿÿÿ
+W	java:S125Ğ"<This block of commented-out lines of code should be removed.(éØ»Úûÿÿÿÿ
+W	java:S125Ò"<This block of commented-out lines of code should be removed.(£û‘øüÿÿÿÿ
+W	java:S125Õ"<This block of commented-out lines of code should be removed.(Ò‹Ø×ıÿÿÿÿ
+W	java:S125Ú"<This block of commented-out lines of code should be removed.(éØ»Úûÿÿÿÿ
+R	java:S125Ş"<This block of commented-out lines of code should be removed.(æ“ËÙ
+=	java:S131á""Add a default case to this switch.(éî“ôıÿÿÿÿ
+W	java:S125ë"<This block of commented-out lines of code should be removed.(‘Í¹Íûÿÿÿÿ
+n
+java:S3776—"RRefactor this method to reduce its Cognitive Complexity from 27 to the 15 allowed.(˜ƒ®¶şÿÿÿÿ
+=	java:S131§""Add a default case to this switch.(éî“ôıÿÿÿÿ
+=	java:S131»""Add a default case to this switch.(éî“ôıÿÿÿÿ

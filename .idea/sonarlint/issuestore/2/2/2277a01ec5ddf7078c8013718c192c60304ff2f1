@@ -1,0 +1,16 @@
+
+@
+java:S16595"%Declare "radiusY" on a separate line.(Ò≠Ùª¯ˇˇˇˇ
+n
+java:S14506"SRemove the "path" field and declare it as a local variable in the relevant methods.(å‡€ù˛ˇˇˇˇ
+i
+java:S14507"TRemove the "path2" field and declare it as a local variable in the relevant methods.(–È—=
+F
+java:S1874/"0Remove this use of "getColor"; it is deprecated.(·ÁŸ”
+>
+java:S1185F"(Remove this method to simply inherit it.(Ãß«ı
+Q	java:S125W"<This block of commented-out lines of code should be removed.(øˆ∫•
+C
+java:S10686"(Remove this unused "path" private field.(å‡€ù˛ˇˇˇˇ
+>
+java:S10687")Remove this unused "path2" private field.(–È—=

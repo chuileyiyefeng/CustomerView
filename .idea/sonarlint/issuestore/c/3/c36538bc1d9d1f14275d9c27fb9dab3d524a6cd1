@@ -1,0 +1,37 @@
+
+:
+java:S1659"$Declare "height" on a separate line.(ô…ğ­
+Y
+java:S1659">Declare "b" and all following declarations on a separate line.(ÏõŞıÿÿÿÿ
+^
+java:S1659"CDeclare "paintB" and all following declarations on a separate line.(ğ½ÓÖùÿÿÿÿ
+X
+java:S1659"BDeclare "pathB" and all following declarations on a separate line.(€Â„Ä
+K
+java:S18745"0Remove this use of "getColor"; it is deprecated.(‚òùÿÿÿÿ
+F
+java:S18746"0Remove this use of "getColor"; it is deprecated.(å¶üï
+F
+java:S18747"0Remove this use of "getColor"; it is deprecated.(¾Ø£˜
+V	java:S125B"<This block of commented-out lines of code should be removed.(ÊÚ³‹øÿÿÿÿ
+<	java:S131I""Add a default case to this switch.(ãÁğ™øÿÿÿÿ
+V	java:S125y"<This block of commented-out lines of code should be removed.(Äˆõıÿÿÿÿ
+U
+java:S1659¡">Declare "p" and all following declarations on a separate line.(Ó°êß
+;
+java:S1659¨"Declare "y" on a separate line.(ãï€şúÿÿÿÿ
+L
+java:S1117¡"5Rename "k" which hides the field declared at line 22.(Ó°êß
+R	java:S125 "<This block of commented-out lines of code should be removed.(°Íºµ
+R	java:S125 "<This block of commented-out lines of code should be removed.(°Íºµ
+L
+java:S1117¡"5Rename "j" which hides the field declared at line 22.(Ó°êß
+R	java:S125 "<This block of commented-out lines of code should be removed.(°Íºµ
+R	java:S125 "<This block of commented-out lines of code should be removed.(°Íºµ
+R	java:S125©"<This block of commented-out lines of code should be removed.(¬¨£ô
+R	java:S125´"<This block of commented-out lines of code should be removed.(‰µ±˜
+I
+java:S1172»"-Remove this unused method parameter "canvas".(ÖÕŒ€şÿÿÿÿ
+W	java:S125ë"<This block of commented-out lines of code should be removed.( äŸšùÿÿÿÿ
+E
+java:S1144î".Remove this unused private "drawLines" method.(¹ë¸İ

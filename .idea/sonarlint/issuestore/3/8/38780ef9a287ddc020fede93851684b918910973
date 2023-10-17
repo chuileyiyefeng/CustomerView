@@ -1,0 +1,16 @@
+
+J
+java:S10663"/Merge this if statement with the enclosing one.(ÈÈÉùÿÿÿÿ
+C
+java:S1604<"(Make this anonymous inner class a lambda(§Œÿüÿÿÿÿ
+<
+java:S1170"!Make this final field static too.(›Î·êûÿÿÿÿ
+:
+java:S1659 "$Declare "height" on a separate line.(’¼ÊÒ
+7	java:S131m""Add a default case to this switch.(À÷‚…
+8	java:S131€""Add a default case to this switch.(À÷‚…
+R	java:S125”"<This block of commented-out lines of code should be removed.(Ã³ùÎ
+n
+java:S3776ª"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(õ°Ìşÿÿÿÿ
+T
+java:S1659Ì">Declare "y" and all following declarations on a separate line.(çÂy

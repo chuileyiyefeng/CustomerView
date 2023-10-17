@@ -1,0 +1,19 @@
+
+V
+java:S2184k"@Cast one of the operands of this integer division to a "double".(œ¡Æš
+b	java:S116&"MRename this field "UP" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ö×ûÀ
+d	java:S116'"ORename this field "DOWN" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.( œôø
+7
+java:S1170&"!Make this final field static too.(ö×ûÀ
+7
+java:S1170'"!Make this final field static too.( œôø
+?
+java:S1659")Declare "borderPaint" on a separate line.(©ÅÊï
+<
+java:S1659"&Declare "lovePath" on a separate line.(‘¡¹÷
+=
+java:S1659"'Declare "underLine" on a separate line.(’ñŠÿ
+Y
+java:S1659S"CDeclare "height" and all following declarations on a separate line.(×©û·
+W	java:S125´"<This block of commented-out lines of code should be removed.(½»ì¹úÿÿÿÿ
+R	java:S125½"<This block of commented-out lines of code should be removed.(Êşÿò

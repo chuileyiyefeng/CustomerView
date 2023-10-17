@@ -2,7 +2,6 @@ package com.example.rico.customerview.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -16,8 +15,6 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.example.rico.customerview.R;
 
 /**
  * @Description: 圆角控件 drawPath方式

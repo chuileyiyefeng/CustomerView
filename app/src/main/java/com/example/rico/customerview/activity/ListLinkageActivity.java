@@ -2,7 +2,6 @@ package com.example.rico.customerview.activity;
 
 import android.content.res.AssetManager;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;

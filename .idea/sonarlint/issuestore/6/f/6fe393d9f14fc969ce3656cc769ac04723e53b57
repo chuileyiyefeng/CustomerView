@@ -1,0 +1,12 @@
+
+n	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(ŒùÆ@
+n	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(ŒùÆ@
+n	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(ŒùÆ@
+W
+java:S1659"BDeclare "right" and all following declarations on a separate line.(ŒùÆ@
+C
+java:S1659!"(Declare "realBitmap" on a separate line.(Îˆ«òùÿÿÿÿ
+@
+java:S16598"*Declare "bitmapHeight" on a separate line.(œ¬ÁÒ
+Y
+java:S1659W">Declare "y" and all following declarations on a separate line.(É·¥ñüÿÿÿÿ

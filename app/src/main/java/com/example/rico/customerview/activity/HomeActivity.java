@@ -5,10 +5,8 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.example.rico.customerview.fragment.HomeFragment3;
-import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayout;
 
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 

@@ -1,7 +1,6 @@
 package com.example.rico.customerview.bean;
 
 import android.content.Intent;
-import android.view.View;
 
 /**
  * Created by Tmp on 2019/5/16.

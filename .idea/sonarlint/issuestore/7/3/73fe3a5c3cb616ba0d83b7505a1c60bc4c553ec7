@@ -1,0 +1,22 @@
+
+f
+java:S1301s"KReplace this "switch" statement by "if" statements to increase readability.(ãÁğ™øÿÿÿÿ
+^
+java:S1659"HDeclare "borderPaint" and all following declarations on a separate line.(‘¾Øƒ
+V
+java:S16596"@Declare "top" and all following declarations on a separate line.(–ê¼í
+A
+java:S16598"&Declare "clipPath" on a separate line.(‘ş½‚ùÿÿÿÿ
+>
+java:S1659;"(Declare "rightColor" on a separate line.(ş²îË
+;
+java:S1659Y"&Declare "rightStr" on a separate line.(´¿êN
+f
+java:S1659["KDeclare "rightStrLength" and all following declarations on a separate line.(Íà™şÿÿÿÿ
+X
+java:S1659l"BDeclare "downY" and all following declarations on a separate line.(ŞÌÏÏ
+?
+java:S1659‹"(Declare "lastIsLeft" on a separate line.(ÆÂïû
+<	java:S131s""Add a default case to this switch.(ãÁğ™øÿÿÿÿ
+D
+java:S1940z")Use the opposite operator ("<=") instead.(ø’»×úÿÿÿÿ

@@ -1,0 +1,45 @@
+
+t	java:S135å"YReduce the total number of break and continue statements in this loop to use at most one.(ÔÄôúüÿÿÿÿ
+z
+java:S1319À"dThe type of "list" should be an interface such as "List" rather than the implementation "ArrayList".(–Ðð
+‡
+java:S1319Õ"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(€ªé›
+f
+java:S1301Q"KReplace this "switch" statement by "if" statements to increase readability.(ãÁð™øÿÿÿÿ
+8
+java:S1170œ"!Make this final field static too.(…ë’Œ
+œ
+java:S1186C"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(þñÊëÿÿÿÿÿ
+:
+java:S1659'"$Declare "height" on a separate line.(ô…ð­
+\
+java:S1659+"ADeclare "left" and all following declarations on a separate line.(·„Š‹ÿÿÿÿÿ
+:
+java:S1659K"$Declare "touchY" on a separate line.(ö›ç¾
+k
+java:S1450'"URemove the "height" field and declare it as a local variable in the relevant methods.(ô…ð­
+>
+java:S1185G"(Remove this method to simply inherit it.(Ù´ôý
+<	java:S131Q""Add a default case to this switch.(ãÁð™øÿÿÿÿ
+V	java:S125d"<This block of commented-out lines of code should be removed.(ÉãÄ‰þÿÿÿÿ
+L
+java:S1874¸"0Remove this use of "getColor"; it is deprecated.(¦ÉÆåúÿÿÿÿ
+R	java:S125ß"<This block of commented-out lines of code should be removed.(è·»Š
+n
+java:S3776ä"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(ÎÇÙÍÿÿÿÿÿ
+i
+java:S3776£"RRefactor this method to reduce its Cognitive Complexity from 21 to the 15 allowed.(‡¨û
+@
+java:S1659¸"$Declare "startY" on a separate line.(Ûí£Èýÿÿÿÿ
+V
+java:S1117¯":Rename "radius" which hides the field declared at line 65.(‹ûŠµüÿÿÿÿ
+F
+java:S1874Û"0Remove this use of "getColor"; it is deprecated.(º±Æg
+G
+java:S1874ç"0Remove this use of "getColor"; it is deprecated.(ÆÃìÈ
+@
+java:S1068'"*Remove this unused "height" private field.(ô…ð­
+E
+java:S1144‘".Remove this unused private "drawPoint" method.(§ÿûµ
+I
+java:S1144£"2Remove this unused private "drawClickInfo" method.(‡¨û

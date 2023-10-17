@@ -1,0 +1,17 @@
+
+h
+java:S1104,"RMake startY a static final constant or non-public and provide accessors if needed.(®¬’—
+c	java:S116`"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(İù½‘
+;
+java:S1659&"%Declare "imgLeft" on a separate line.(¡î¤
+@
+java:S1659)"%Declare "bitmapH" on a separate line.(ÉÃÍÛùÿÿÿÿ
+p
+java:S1450"ZRemove the "fontMetrics" field and declare it as a local variable in the relevant methods.(­Êàí
+Q	java:S125E"<This block of commented-out lines of code should be removed.(¬Öö¡
+<
+java:S1659p"&Declare "oldIndex" on a separate line.(Û˜
+E
+java:S1068"/Remove this unused "fontMetrics" private field.(­Êàí
+@
+java:S1068"*Remove this unused "layout" private field.(ˆ‡ŸÄ

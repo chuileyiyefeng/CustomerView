@@ -1,0 +1,56 @@
+
+E
+java:S16594"*Declare "scaleCenterY" on a separate line.(»¶Şãüÿÿÿÿ
+Y
+java:S1659?"CDeclare "height" and all following declarations on a separate line.(äœî“
+>
+java:S1659A"(Declare "showHeight" on a separate line.(ï½Š
+E
+java:S1659C"*Declare "currentRectF" on a separate line.(Œ‚Ğ€ùÿÿÿÿ
+d
+java:S1659E"IDeclare "picRealRectF" and all following declarations on a separate line.(à¸¼Éúÿÿÿÿ
+;
+java:S1659I"%Declare "centerY" on a separate line.(Ó©Á§
+C
+java:S1659R"-Declare "lastScrollRight" on a separate line.(šöçŸ
+=
+java:S1659X"'Declare "lastDownY" on a separate line.(Óı¾Ù
+@
+java:S1659Y"*Declare "lastDownRowY" on a separate line.(î‡²å
+>
+java:S1659Z"(Declare "currentTop" on a separate line.(‹Ç‰ä
+>
+java:S1659]"(Declare "originLeft" on a separate line.(‘ÎÿÀ
+?
+java:S1659Æ")Declare "shouldMoveY" on a separate line.(¤åÑ
+>
+java:S1659Ç"'Declare "lastMoveY" on a separate line.(›ô¿™
+>
+java:S1659æ"'Declare "needMoveY" on a separate line.(•Çîâ
+?
+java:S1659é"#Declare "testY" on a separate line.(«ëïñûÿÿÿÿ
+N
+java:S1659›"2Declare "isScaleToParentWidth" on a separate line.(ÑšÅ¡ûÿÿÿÿ
+h
+java:S3776h"RRefactor this method to reduce its Cognitive Complexity from 35 to the 15 allowed.(íõ¥’
+W
+java:S1659”"@Declare "top" and all following declarations on a separate line.(ú˜¹
+Z
+java:S1659•"CDeclare "endTop" and all following declarations on a separate line.(‰Êû½
+?
+java:S1185è"(Remove this method to simply inherit it.(Ù´ôı
+i
+java:S3776ı"RRefactor this method to reduce its Cognitive Complexity from 21 to the 15 allowed.(ôó§è
+=	java:S131†""Add a default case to this switch.(ãÁğ™øÿÿÿÿ
+W	java:S125¦"<This block of commented-out lines of code should be removed.(ãœˆœüÿÿÿÿ
+R	java:S125µ"<This block of commented-out lines of code should be removed.(‚ëÛ
+W	java:S125‰"<This block of commented-out lines of code should be removed.(ªùşÿÿÿÿ
+i
+java:S3776Í"RRefactor this method to reduce its Cognitive Complexity from 24 to the 15 allowed.(şİŒÔ
+[
+java:S1117â"?Rename "currentLeft" which hides the field declared at line 90.(ÿˆİ·ùÿÿÿÿ
+Z
+java:S1117ã">Rename "currentTop" which hides the field declared at line 90.(Î—û´ıÿÿÿÿ
+Q	java:S125—"<This block of commented-out lines of code should be removed.(ÏÂŸY
+N
+java:S1874‹"2Remove this use of "getOpacity"; it is deprecated.(êë¤Şøÿÿÿÿ

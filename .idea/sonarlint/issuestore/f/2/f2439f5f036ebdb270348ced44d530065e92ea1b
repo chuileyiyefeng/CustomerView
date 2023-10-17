@@ -1,0 +1,34 @@
+
+J
+java:S1066t"/Merge this if statement with the enclosing one.(ß§¾ïıÿÿÿÿ
+F
+java:S1066‰"/Merge this if statement with the enclosing one.(¸Ò¹
+F
+java:S1066’"/Merge this if statement with the enclosing one.(˜ÅË
+[
+java:S2184"DCast one of the operands of this subtraction operation to a "float".(ğÌÄ
+<
+java:S1170"!Make this final field static too.(í°¨¼üÿÿÿÿ
+a
+java:S1659"FDeclare "sideWidth" and all following declarations on a separate line.(«ìÌ‘ùÿÿÿÿ
+X
+java:S1659"BDeclare "downY" and all following declarations on a separate line.(“ğáŠ
+V	java:S125Q"<This block of commented-out lines of code should be removed.(ŒØìÿÿÿÿÿ
+m
+java:S3776k"RRefactor this method to reduce its Cognitive Complexity from 36 to the 15 allowed.(§á±ùÿÿÿÿ
+<	java:S131o""Add a default case to this switch.(ãÁğ™øÿÿÿÿ
+M
+java:S2696¹"6Make the enclosing method "static" or remove this set.(Äİù
+M
+java:S2696»"6Make the enclosing method "static" or remove this set.(ÃÛïí
+R
+java:S2696Â"6Make the enclosing method "static" or remove this set.(·¿á…üÿÿÿÿ
+R
+java:S2696Å"6Make the enclosing method "static" or remove this set.(…÷âøÿÿÿÿ
+R
+java:S2696Ê"6Make the enclosing method "static" or remove this set.(·¿á…üÿÿÿÿ
+R
+java:S2696Í"6Make the enclosing method "static" or remove this set.(…÷âøÿÿÿÿ
+R	java:S125Õ"<This block of commented-out lines of code should be removed.(³Õ™¬
+H
+java:S1128"-Remove this unused import 'android.util.Log'.(Ô¦Ø²øÿÿÿÿ

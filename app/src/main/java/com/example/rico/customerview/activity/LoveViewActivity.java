@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.example.rico.customerview.R;
 import com.example.rico.customerview.view.DrawBitmapWaveView;
-import com.example.rico.customerview.view.WaveDrawable;
 import com.example.rico.customerview.view.WaveDrawable2;
 import com.example.rico.customerview.view.WaveView;
 

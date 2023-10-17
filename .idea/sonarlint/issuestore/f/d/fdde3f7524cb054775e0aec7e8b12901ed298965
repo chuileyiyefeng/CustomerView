@@ -1,0 +1,22 @@
+
+c
+java:S1192X"HDefine a constant instead of duplicating this literal "#ffffff" 3 times.(Û×Áçúÿÿÿÿ
+g
+java:S1301£"KReplace this "switch" statement by "if" statements to increase readability.(ãÁğ™øÿÿÿÿ
+^
+java:S2184…"BCast one of the operands of this addition operation to a "double".(õ‘–ûÿÿÿÿ
+\
+java:S2184™"@Cast one of the operands of this integer division to a "double".(™òß¶ùÿÿÿÿ
+7
+java:S1170"!Make this final field static too.(ØÎú7
+a
+java:S1659+"FDeclare "linePaint" and all following declarations on a separate line.(ô¬Û¼şÿÿÿÿ
+A
+java:S1659-"+Declare "detailMetrics" on a separate line.(§¢—‚
+C
+java:S16593"(Declare "baseHeadDp" on a separate line.(¼ïüüÿÿÿÿ
+?
+java:S1659›"#Declare "downY" on a separate line.(’¡æÕøÿÿÿÿ
+=	java:S131£""Add a default case to this switch.(ãÁğ™øÿÿÿÿ
+@
+java:S1659±"$Declare "startY" on a separate line.(Ûí£Èıÿÿÿÿ

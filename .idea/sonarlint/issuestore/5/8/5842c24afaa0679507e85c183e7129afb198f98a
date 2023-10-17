@@ -1,0 +1,19 @@
+
+E
+java:S1066{"/Merge this if statement with the enclosing one.(æÿ²Â
+D
+java:S1604¸"(Make this anonymous inner class a lambda(£¨üÿÿÿÿ
+X
+java:S1659!"BDeclare "downY" and all following declarations on a separate line.(ø™Şµ
+<
+java:S1659b"&Declare "tpChange" on a separate line.(×·‘
+<	java:S131@""Add a default case to this switch.(ãÁğ™øÿÿÿÿ
+g
+java:S1871O"LThis branch's code block is the same as the block for the branch on line 76.(æÿâüÿÿÿÿ
+h
+java:S3776m"RRefactor this method to reduce its Cognitive Complexity from 29 to the 15 allowed.(ñ­ªŸ
+R	java:S125"<This block of commented-out lines of code should be removed.(”Æ‹¸
+>
+java:S1659Å"'Declare "downAngle" on a separate line.(œ÷²®
+U
+java:S1155Æ">Use isEmpty() to check whether the collection is empty or not.(•Æ« 

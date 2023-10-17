@@ -1,0 +1,37 @@
+
+F
+java:S1066Ş"/Merge this if statement with the enclosing one.(Ò“›ö
+K
+java:S1066ø"/Merge this if statement with the enclosing one.( “©¤üÿÿÿÿ
+F
+java:S1066ı"/Merge this if statement with the enclosing one.(„ÈÑ
+?
+java:S1604¹"(Make this anonymous inner class a lambda(¶¶’¾
+D
+java:S1604"(Make this anonymous inner class a lambda(§Œÿüÿÿÿÿ
+[
+java:S1659"EDeclare "newPaint" and all following declarations on a separate line.(Âêá
+@
+java:S1659"%Declare "newText" on a separate line.(ÏÜ€·şÿÿÿÿ
+A
+java:S1659"+Declare "newTextLength" on a separate line.(–™Ç
+b
+java:S1659"GDeclare "lastHeight" and all following declarations on a separate line.(­ßß¥ÿÿÿÿÿ
+\
+java:S1659G"FDeclare "lastAlpha" and all following declarations on a separate line.(„µŞ¤
+?
+java:S1659"#Declare "thisP" on a separate line.(Óˆ†åÿÿÿÿÿ
+A
+java:S1659…"*Declare "newTextStart" on a separate line.(¿ˆò¸
+d
+java:S1659¦"HDeclare "newInfoList" and all following declarations on a separate line.(ÿ®ÜÖşÿÿÿÿ
+T
+java:S1155e">Use isEmpty() to check whether the collection is empty or not.(ÌÔşÅ
+?
+java:S1659z")Declare "newPosition" on a separate line.(‡í÷…
+n
+java:S3776—"RRefactor this method to reduce its Cognitive Complexity from 21 to the 15 allowed.(Õñ¸çúÿÿÿÿ
+n
+java:S3776Ï"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(î—Äğøÿÿÿÿ
+\
+java:S1659«"EDeclare "distance" and all following declarations on a separate line.(ßĞ¢

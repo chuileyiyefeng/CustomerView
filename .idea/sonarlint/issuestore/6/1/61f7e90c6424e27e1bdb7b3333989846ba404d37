@@ -1,0 +1,20 @@
+
+g
+java:S1104ñ"PMake isBg a static final constant or non-public and provide accessors if needed.(ˆšĞ¹
+`
+java:S2184±"DCast one of the operands of this subtraction operation to a "float".(¹²æ¾øÿÿÿÿ
+;
+java:S1659 "%Declare "mHeight" on a separate line.(¸÷‡Ù
+^
+java:S1659!"HDeclare "mWaveLength" and all following declarations on a separate line.(öúÜ‚
+;
+java:S1659'"%Declare "mBgMask" on a separate line.(œÍ®
+I
+java:S1874K"3Remove this use of "getDrawable"; it is deprecated.(ÔÑî
+W	java:S125±"<This block of commented-out lines of code should be removed.(µ£˜‚ûÿÿÿÿ
+H
+java:S1874º"1Remove this use of "saveLayer"; it is deprecated.(ªÉäò
+R	java:S125ß"<This block of commented-out lines of code should be removed.(ôÇıÿ
+W	java:S125ú"<This block of commented-out lines of code should be removed.(‘‰È„ÿÿÿÿÿ
+J
+java:S10680"/Remove this unused "sGrayFilter" private field.(ë¼éùûÿÿÿÿ

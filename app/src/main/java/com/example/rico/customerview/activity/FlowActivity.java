@@ -1,6 +1,5 @@
 package com.example.rico.customerview.activity;
 
-import android.graphics.Color;
 import android.view.View;
 import android.widget.TextView;
 

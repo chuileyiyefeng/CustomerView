@@ -1,0 +1,10 @@
+
+ƒ
+java:S13192"mThe type of "wheelDataList" should be an interface such as "List" rather than the implementation "ArrayList".(Ý“¤ù
+a
+java:S1659L"KDeclare "middlePosition" and all following declarations on a separate line.(Îòçª
+Z
+java:S3252¨"CUse static access with "android.view.View" for "OVER_SCROLL_NEVER".(•—Õ«
+n
+java:S3776¼"RRefactor this method to reduce its Cognitive Complexity from 25 to the 15 allowed.(Ñûí¥üÿÿÿÿ
+7	java:S131Ì""Add a default case to this switch.(“× *

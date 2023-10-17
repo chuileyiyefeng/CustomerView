@@ -35,4 +35,13 @@
         android:layout_height="30dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp" />
+
+    <com.example.rico.customerview.view.LoadView2
+        android:id="@+id/loading_view2"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp" />
+
+
 </LinearLayout>

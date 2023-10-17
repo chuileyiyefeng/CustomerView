@@ -19,7 +19,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.Toast;
 
 import com.example.rico.customerview.R;
 

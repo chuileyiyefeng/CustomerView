@@ -1,0 +1,35 @@
+
+f
+java:S1301S"KReplace this "switch" statement by "if" statements to increase readability.(ãÁğ™øÿÿÿÿ
+\
+java:S2184>"ACast one of the operands of this division operation to a "float".(Ç•å£øÿÿÿÿ
+\
+java:S2184>"ACast one of the operands of this division operation to a "float".(Ç•å£øÿÿÿÿ
+X
+java:S2184?"BCast one of the operands of this addition operation to a "double".(êƒ™
+\
+java:S2184}"ACast one of the operands of this addition operation to a "float".(§ŒÄùøÿÿÿÿ
+[
+java:S2184}"@Cast one of the operands of this integer division to a "double".(§ŒÄùøÿÿÿÿ
+\
+java:S2184~"ACast one of the operands of this addition operation to a "float".(­’éµÿÿÿÿÿ
+[
+java:S2184~"@Cast one of the operands of this integer division to a "double".(­’éµÿÿÿÿÿ
+W
+java:S2184‘"@Cast one of the operands of this integer division to a "double".(ˆÒÈ½
+W
+java:S2184‘"@Cast one of the operands of this integer division to a "double".(ˆÒÈ½
+\
+java:S2184’"@Cast one of the operands of this integer division to a "double".(ç“³Ôúÿÿÿÿ
+\
+java:S2184’"@Cast one of the operands of this integer division to a "double".(ç“³Ôúÿÿÿÿ
+:
+java:S16596"$Declare "height" on a separate line.(’¼ÊÒ
+]
+java:S1659B"BDeclare "downY" and all following declarations on a separate line.(—¬ñ¢úÿÿÿÿ
+@
+java:S1659E"%Declare "centerY" on a separate line.(ô•‡úÿÿÿÿ
+D
+java:S1172+".Remove this unused method parameter "context".(ş¢š½
+<	java:S131S""Add a default case to this switch.(ãÁğ™øÿÿÿÿ
+V	java:S125"<This block of commented-out lines of code should be removed.(×ˆİ²üÿÿÿÿ

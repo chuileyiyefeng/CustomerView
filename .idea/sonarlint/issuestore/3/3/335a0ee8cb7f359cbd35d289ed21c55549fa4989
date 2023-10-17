@@ -1,0 +1,22 @@
+
+g
+java:S1301"KReplace this "switch" statement by "if" statements to increase readability.(ãÁğ™øÿÿÿÿ
+`
+java:S2184æ"DCast one of the operands of this subtraction operation to a "float".(Şúüÿÿÿÿÿ
+d	java:S116“"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(İù½‘
+K
+java:S1659"0Declare "textBaseLineBottom" on a separate line.(××Åúÿÿÿÿ
+J
+java:S1659!"/Declare "drawStringBuilder" on a separate line.(‰‹íúùÿÿÿÿ
+?
+java:S1659˜"#Declare "downY" on a separate line.(’¡æÕøÿÿÿÿ
+=	java:S131""Add a default case to this switch.(ãÁğ™øÿÿÿÿ
+R	java:S125¿"<This block of commented-out lines of code should be removed.(ìŒÑå
+=
+java:S1659Õ"&Declare "oldIndex" on a separate line.(Û˜
+?
+java:S1905€"(Remove this unnecessary cast to "float".(ıúş
+?
+java:S1905€"(Remove this unnecessary cast to "float".(ıúş
+>
+java:S1068“"'Remove this unused "TAG" private field.(İù½‘

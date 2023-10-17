@@ -1,6 +1,5 @@
 package com.example.rico.customerview.bean;
 
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 

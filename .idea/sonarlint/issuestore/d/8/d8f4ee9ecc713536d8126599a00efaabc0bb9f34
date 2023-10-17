@@ -1,0 +1,19 @@
+
+J
+java:S1066w"/Merge this if statement with the enclosing one.(êĞ°šüÿÿÿÿ
+C
+java:S1604h"(Make this anonymous inner class a lambda(§Œÿüÿÿÿÿ
+s
+java:S1104 "WMake initPercent a static final constant or non-public and provide accessors if needed.(ÌÙ¡ªúÿÿÿÿ
+l
+java:S1104¡"UMake isAddMode a static final constant or non-public and provide accessors if needed.(œüıñ
+t
+java:S1450P"YRemove the "maxPercent" field and declare it as a local variable in the relevant methods.(Ôæé–şÿÿÿÿ
+n
+java:S1450Q"YRemove the "minPercent" field and declare it as a local variable in the relevant methods.(Ææœi
+C
+java:S1068:"-Remove this unused "lineSpace" private field.(¥âî§
+I
+java:S1068P".Remove this unused "maxPercent" private field.(Ôæé–şÿÿÿÿ
+C
+java:S1068Q".Remove this unused "minPercent" private field.(Ææœi

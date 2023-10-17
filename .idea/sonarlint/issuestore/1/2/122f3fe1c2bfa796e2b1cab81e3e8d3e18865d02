@@ -1,0 +1,19 @@
+
+Y
+java:S1659"CDeclare "rectF2" and all following declarations on a separate line.(É£–Œ
+:
+java:S1659"$Declare "height" on a separate line.(ô…ğ­
+_
+java:S1659"IDeclare "rectF1Height" and all following declarations on a separate line.(ÄÖáÃ
+^
+java:S1659"CDeclare "paint2" and all following declarations on a separate line.(ñ„ã ùÿÿÿÿ
+\
+java:S1659"FDeclare "gradient2" and all following declarations on a separate line.(ñèÊÉ
+n
+java:S1450"XRemove the "gradient1" field and declare it as a local variable in the relevant methods.(ñèÊÉ
+n
+java:S1450"XRemove the "gradient2" field and declare it as a local variable in the relevant methods.(ñèÊÉ
+n
+java:S1450"XRemove the "gradient3" field and declare it as a local variable in the relevant methods.(ñèÊÉ
+R
+java:S1128"<Remove this unused import 'android.graphics.LinearGradient'.(²¨¥

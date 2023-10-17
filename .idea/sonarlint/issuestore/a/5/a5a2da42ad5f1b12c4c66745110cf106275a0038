@@ -1,0 +1,59 @@
+
+F
+java:S1066"/Merge this if statement with the enclosing one.(’áñÛ
+f
+java:S1301h"KReplace this "switch" statement by "if" statements to increase readability.(ãÁð™øÿÿÿÿ
+Z
+java:S2184@"DCast one of the operands of this subtraction operation to a "float".(®™À
+_
+java:S2184A"DCast one of the operands of this subtraction operation to a "float".(ÀÝ½œùÿÿÿÿ
+_
+java:S2184F"DCast one of the operands of this subtraction operation to a "float".(«´›ùÿÿÿÿ
+Z
+java:S2184G"DCast one of the operands of this subtraction operation to a "float".(¿ÍºÛ
+Y
+java:S2184H"DCast one of the operands of this subtraction operation to a "float".(ûžìv
+W
+java:S2184J"ACast one of the operands of this addition operation to a "float".(éÙûú
+\
+java:S2184K"ACast one of the operands of this addition operation to a "float".(ÒüÒ¸ÿÿÿÿÿ
+W
+java:S2184L"ACast one of the operands of this addition operation to a "float".(áßÕ‹
+W
+java:S2184N"ACast one of the operands of this addition operation to a "float".(‹¨­Î
+V
+java:S2184O"ACast one of the operands of this addition operation to a "float".(£ùðe
+\
+java:S2184P"ACast one of the operands of this addition operation to a "float".(Ž×Ââþÿÿÿÿ
+_
+java:S2184R"DCast one of the operands of this subtraction operation to a "float".(õ’Ìíÿÿÿÿÿ
+Z
+java:S2184S"DCast one of the operands of this subtraction operation to a "float".(¡Ô‹“
+Z
+java:S2184T"DCast one of the operands of this subtraction operation to a "float".(Û Æ
+=
+java:S1170‡"!Make this final field static too.(›ú› ûÿÿÿÿ
+=
+java:S1170‡"!Make this final field static too.(›ú› ûÿÿÿÿ
+8
+java:S1659""Declare "endP" on a separate line.(„±ã 
+A
+java:S1659*"+Declare "originControl" on a separate line.(ÆõŸ¾
+;
+java:S16595"%Declare "centerY" on a separate line.(Ó©Á§
+9
+java:S1659["#Declare "downY" on a separate line.(…óâ•
+Z
+java:S1659‚"CDeclare "rightX" and all following declarations on a separate line.(õÓ”“
+^
+java:S1659„"BDeclare "scale" and all following declarations on a separate line.(ï®¢Þýÿÿÿÿ
+:
+java:S1659…"$Declare "isDown" on a separate line.(ŸÆñ@
+>
+java:S1659†"'Declare "lastTrend" on a separate line.(ÈßÒß
+B
+java:S1659‡"&Declare "decrease" on a separate line.(›ú› ûÿÿÿÿ
+<	java:S131h""Add a default case to this switch.(ãÁð™øÿÿÿÿ
+V	java:S125q"<This block of commented-out lines of code should be removed.(¼Å­Ñþÿÿÿÿ
+n
+java:S3776Š"RRefactor this method to reduce its Cognitive Complexity from 41 to the 15 allowed.(üªÈÀüÿÿÿÿ

@@ -1,14 +1,12 @@
 package com.example.rico.customerview.adapter;
 
 import android.content.Context;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 
 import com.example.rico.customerview.bean.ItemInfo;
 import com.example.rico.customerview.R;
 import com.example.rico.util.itemdrag.IItemHelper;
-import com.example.rico.util.itemdrag.ItemDragHelperCallback;
 
 /**
  * Created by Tmp on 2018/12/18.

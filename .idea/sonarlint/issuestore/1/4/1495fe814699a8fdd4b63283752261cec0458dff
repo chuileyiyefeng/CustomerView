@@ -1,0 +1,24 @@
+
+C
+java:S1604}"(Make this anonymous inner class a lambda(¡ßˆÄøÿÿÿÿ
+D
+java:S1604±"(Make this anonymous inner class a lambda(§Œÿüÿÿÿÿ
+b	java:S116"MRename this field "UP" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ö×ûÀ
+d	java:S116"ORename this field "DOWN" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.( œôø
+7
+java:S1170"!Make this final field static too.(ö×ûÀ
+7
+java:S1170"!Make this final field static too.( œôø
+9
+java:S1659"$Declare "paint2" on a separate line.(ÂšÜ(
+A
+java:S1659"&Declare "bgBitmap" on a separate line.(‚ÜâÛøÿÿÿÿ
+a
+java:S1659"FDeclare "wavePath2" and all following declarations on a separate line.(©è¼úÿÿÿÿ
+:
+java:S16591"$Declare "height" on a separate line.(’¼ÊÒ
+h
+java:S3776|"RRefactor this method to reduce its Cognitive Complexity from 24 to the 15 allowed.(¸²Š
+I
+java:S1128
+"3Remove this unused import 'android.graphics.RectF'.(ı‚›µ

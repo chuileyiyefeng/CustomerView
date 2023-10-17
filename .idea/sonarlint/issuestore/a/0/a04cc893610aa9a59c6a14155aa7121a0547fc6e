@@ -1,0 +1,30 @@
+
+F
+java:S1066Œ"/Merge this if statement with the enclosing one.(»Ş±
+K
+java:S1066®"/Merge this if statement with the enclosing one.(Ü´òŞúÿÿÿÿ
+F
+java:S1066Ş"/Merge this if statement with the enclosing one.(ÅšŠä
+t	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(ÍĞœÿÿÿÿÿ
+t	java:S115u"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(Ô¹®ìûÿÿÿÿ
+t	java:S115u"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(Ô¹®ìûÿÿÿÿ
+A
+java:S1659u"&Declare "halfType" on a separate line.(Ô¹®ìûÿÿÿÿ
+_
+java:S1659v"DDeclare "lastPos" and all following declarations on a separate line.(¢°—Õúÿÿÿÿ
+P
+java:S1161$":Add the "@Override" annotation above this method signature(·¼Ìå
+m
+java:S37764"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(àè…¦ûÿÿÿÿ
+i
+java:S3776›"RRefactor this method to reduce its Cognitive Complexity from 52 to the 15 allowed.(å¸áû
+U
+java:S1854ğ">Remove this useless assignment to local variable "viewCenter".(ÇÇ®
+?
+java:S1659ê"#Declare "alpha" on a separate line.(¼ÍË‚üÿÿÿÿ
+F
+java:S1481ğ"/Remove this unused "viewCenter" local variable.(ÇÇ®
+B
+java:S1068"'Remove this unused "tag" private field.(œİ÷èûÿÿÿÿ
+@
+java:S1068"+Remove this unused "context" private field.(êİç

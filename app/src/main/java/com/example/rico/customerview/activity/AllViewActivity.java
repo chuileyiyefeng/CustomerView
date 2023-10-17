@@ -26,7 +26,6 @@ import com.example.rico.customerview.view.ParallelogramView;
 import com.example.rico.customerview.view.RegionClickView;
 import com.example.rico.customerview.view.RingView;
 import com.example.rico.customerview.view.SideTextView;
-import com.example.rico.customerview.view.SpreadView;
 import com.example.rico.customerview.view.WaveBubbleView;
 
 /**
@@ -123,6 +122,8 @@ public class AllViewActivity extends BaseActivity {
                         .addColorText("<test english>",R.color.black)
                         .addColorText("以光先帝遗德，恢弘志士之气，不宜妄自菲薄，引喻失义，以塞忠谏之路也。", R.color.text_select_color, () -> Toast.makeText(context, "蓝蓝蓝", Toast.LENGTH_SHORT).show())
                         .addColorText("无点击事件。",R.color.black)
+                        .addColorText("恭喜您获得“满6减5.9元”“1”张，有效期为“2023-09-05 10:23:28”-“2023-09-12 23:59:59”",R.color.black)
+                        .addColorText("（点击本条私信可立即使用）",R.color.text_select_color)
                         .create();
                 break;
             default:

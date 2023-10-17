@@ -1,0 +1,34 @@
+
+C
+java:S1121`".Extract the assignment out of this expression.(»Ç’-
+[
+java:S2184G"@Cast one of the operands of this integer division to a "double".(€Ñ˜§ÿÿÿÿÿ
+[
+java:S2184G"@Cast one of the operands of this integer division to a "double".(€Ñ˜§ÿÿÿÿÿ
+[
+java:S2184G"@Cast one of the operands of this integer division to a "double".(€Ñ˜§ÿÿÿÿÿ
+[
+java:S2184}"@Cast one of the operands of this integer division to a "double".(íÙÓßùÿÿÿÿ
+[
+java:S2184}"@Cast one of the operands of this integer division to a "double".(íÙÓßùÿÿÿÿ
+[
+java:S2184}"@Cast one of the operands of this integer division to a "double".(íÙÓßùÿÿÿÿ
+r	java:S116"XRename this field "INVALID_VALUE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Š¿€Çþÿÿÿÿ
+<
+java:S1170"!Make this final field static too.(Š¿€Çþÿÿÿÿ
+;
+java:S1659]"%Declare "radiusY" on a separate line.(½ÐÃà
+C
+java:S1905G"(Remove this unnecessary cast to "float".(€Ñ˜§ÿÿÿÿÿ
+C
+java:S1905G"(Remove this unnecessary cast to "float".(€Ñ˜§ÿÿÿÿÿ
+C
+java:S1905G"(Remove this unnecessary cast to "float".(€Ñ˜§ÿÿÿÿÿ
+C
+java:S1905}"(Remove this unnecessary cast to "float".(íÙÓßùÿÿÿÿ
+C
+java:S1905}"(Remove this unnecessary cast to "float".(íÙÓßùÿÿÿÿ
+C
+java:S1905}"(Remove this unnecessary cast to "float".(íÙÓßùÿÿÿÿ
+L
+java:S1068"1Remove this unused "INVALID_VALUE" private field.(Š¿€Çþÿÿÿÿ

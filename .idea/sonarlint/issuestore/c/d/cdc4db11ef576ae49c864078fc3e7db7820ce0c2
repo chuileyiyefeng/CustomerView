@@ -1,0 +1,13 @@
+
+D
+java:S1121".Extract the assignment out of this expression.(ğÒğ
+
+java:S1319"iThe type of "childList" should be an interface such as "List" rather than the implementation "ArrayList".(…ÓÊÎ
+†
+java:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(£İ¸ï
+
+java:S1319"iThe type of "childList" should be an interface such as "List" rather than the implementation "ArrayList".(…¯ä
+f
+java:S1104	"PMake data a static final constant or non-public and provide accessors if needed.(¥²š‘
+k
+java:S1104"UMake childList a static final constant or non-public and provide accessors if needed.(…ÓÊÎ
