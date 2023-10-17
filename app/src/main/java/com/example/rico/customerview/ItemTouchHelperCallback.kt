@@ -6,14 +6,14 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
 
-class ItemTouchHelperCallback(private val itemMoveCallback: ItemMoveCallback) :
-    ItemTouchHelper.Callback() {
+class ItemTouchHelperCallback(private val list: ArrayList<String>, private val itemMoveCallback: ItemMoveCallback) :
+        ItemTouchHelper.Callback() {
 
     override fun getMovementFlags(
-        recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder
     ): Int {
-        if(viewHolder.adapterPosition==0){
+        if (viewHolder.adapterPosition == 0||list[viewHolder.adapterPosition].isEmpty()) {
             return makeMovementFlags(0, 0)
         }
         val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN or
@@ -23,15 +23,16 @@ class ItemTouchHelperCallback(private val itemMoveCallback: ItemMoveCallback) :
     }
 
     override fun onMove(
-        recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder,
-        target: RecyclerView.ViewHolder
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
     ): Boolean {
         if (recyclerView.layoutManager !is GridLayoutManager) {
             return false
         }
         // 如果拖拽的和目标是第一个item，不允许拖拽
-        if (viewHolder.adapterPosition == 0 || target.adapterPosition == 0) {
+        if (viewHolder.adapterPosition == 0 || target.adapterPosition == 0
+                || list[viewHolder.adapterPosition].isEmpty()) {
             return false
         }
         // 计算行和列
@@ -45,7 +46,7 @@ class ItemTouchHelperCallback(private val itemMoveCallback: ItemMoveCallback) :
         // 如果不在同一行，需要计算新位置
         if (sourceRow != targetRow) {
             // 计算新位置
-             newTargetPosition = sourcePosition + (targetRow - sourceRow) * spanCount
+            newTargetPosition = sourcePosition + (targetRow - sourceRow) * spanCount
             itemMoveCallback.onItemMoved(sourcePosition, newTargetPosition)
         } else {
             // 在同一行内，可以插入到目标位置
@@ -53,8 +54,8 @@ class ItemTouchHelperCallback(private val itemMoveCallback: ItemMoveCallback) :
             val targetColumn = targetPosition % spanCount
 
             // 计算新的位置
-           val newSourcePosition = targetRow * spanCount + sourceColumn
-             newTargetPosition = sourceRow * spanCount + targetColumn
+            val newSourcePosition = targetRow * spanCount + sourceColumn
+            newTargetPosition = sourceRow * spanCount + targetColumn
             itemMoveCallback.onItemMoved(newSourcePosition, newTargetPosition)
         }
 
@@ -77,12 +78,12 @@ class ItemTouchHelperCallback(private val itemMoveCallback: ItemMoveCallback) :
 
 
     override fun canDropOver(
-        recyclerView: RecyclerView,
-        current: RecyclerView.ViewHolder,
-        target: RecyclerView.ViewHolder
+            recyclerView: RecyclerView,
+            current: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
     ): Boolean {
         // 如果目标位置是第一个item，不允许拖拽
-        if (target.adapterPosition == 0) {
+        if (target.adapterPosition == 0 || list[target.adapterPosition].isEmpty()) {
             return false
         }
 

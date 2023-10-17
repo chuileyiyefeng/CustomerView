@@ -47,7 +47,11 @@ public class ChangePhotoAdapter extends BaseAdapter<String> {
         ImageView ivPhoto = holder.getView(R.id.iv_photo);
         TextView tvIndex = holder.getView(R.id.tv_index);
         View view = holder.getView(R.id.view_bg);
+
         tvIndex.setText(path);
+        if (path.isEmpty()) {
+            tvIndex.setText("最后一位不移动");
+        }
         ivPhoto.setOnClickListener(v -> {
             Toast.makeText(context, "当前下标 " + holder.getAdapterPosition() + " 源下标" + i, Toast.LENGTH_SHORT).show();
         });
@@ -70,9 +74,17 @@ public class ChangePhotoAdapter extends BaseAdapter<String> {
         } else {
             boolean start = (boolean) payloads.get(0);
             View view = holder.getView(R.id.view_bg);
+            View rlSelect=holder.getView(R.id.rl_select);
+            String data= getData().get(position);
             if (start) {
+                if (data.isEmpty()) {
+                    rlSelect.setVisibility(View.INVISIBLE);
+                }
                 view.setVisibility(View.VISIBLE);
             } else {
+                if (data.isEmpty()) {
+                    rlSelect.setVisibility(View.VISIBLE);
+                }
                 view.setVisibility(View.GONE);
             }
         }

@@ -33,12 +33,24 @@ class ChangePicActivity : BaseActivity2() {
                 it.layoutManager = GridLayoutManager(this, 3)
                 adapter = ChangePhotoAdapter(this, (it.measuredWidth / 3 - 100))
                 rvChangePic?.adapter = adapter
+                val list = arrayListOf<String>()
+
+                repeat(4) {
+//                    list.add("http://head.expertol.cn/android/819011689303309876.jpg")
+                    list.add("下标 $it 数据")
+                }
+                list.add("")
+                adapter?.addItem(list)
                 adapter?.run {
-                    val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(object : ItemTouchHelperCallback.ItemMoveCallback {
+                    val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(list, object : ItemTouchHelperCallback.ItemMoveCallback {
                         override fun onItemMoved(sourcePosition: Int, targetPosition: Int) {
                             var newTargetPosition = targetPosition
                             if (newTargetPosition == 0) {
                                 newTargetPosition = 1
+                            }
+                            if (data[newTargetPosition].isNullOrEmpty()
+                                    && data.size > 2) {
+                                newTargetPosition = data.size - 2
                             }
                             // 在这里更新数据源中的数据顺序
                             val sourceData = data[sourcePosition]
@@ -53,24 +65,24 @@ class ChangePicActivity : BaseActivity2() {
                         override fun dragStart() {
                             it.setBackgroundColor(resources.getColor(R.color.translucent_black_90))
                             notifyItemChanged(0, true)
+                            if (data.last().isNullOrEmpty()) {
+                                notifyItemChanged(data.size-1, true)
+                            }
                         }
 
                         override fun dragEnd() {
                             it.setBackgroundColor(resources.getColor(R.color.transparent))
                             notifyItemChanged(0, false)
+                            if (data.last().isNullOrEmpty()) {
+                                notifyItemChanged(data.size-1, false)
+                            }
                         }
 
                     }))
                     itemTouchHelper.attachToRecyclerView(it)
                 }
 
-                val list = arrayListOf<String>()
 
-                repeat(9) {
-//                    list.add("http://head.expertol.cn/android/819011689303309876.jpg")
-                    list.add("下标 $it 数据")
-                }
-                adapter?.addItem(list)
             }
         }
         findViewById<TextView>(R.id.tv_get_data).setOnClickListener {
