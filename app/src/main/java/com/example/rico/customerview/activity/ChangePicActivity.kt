@@ -35,7 +35,7 @@ class ChangePicActivity : BaseActivity2() {
                 rvChangePic?.adapter = adapter
                 val list = arrayListOf<String>()
 
-                repeat(4) {
+                repeat(8) {
 //                    list.add("http://head.expertol.cn/android/819011689303309876.jpg")
                     list.add("下标 $it 数据")
                 }
@@ -44,6 +44,7 @@ class ChangePicActivity : BaseActivity2() {
                 adapter?.run {
                     val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(list, object : ItemTouchHelperCallback.ItemMoveCallback {
                         override fun onItemMoved(sourcePosition: Int, targetPosition: Int) {
+                            Log.e("TAG", "onItemMoved: 源-$sourcePosition  去-$targetPosition")
                             var newTargetPosition = targetPosition
                             if (newTargetPosition == 0) {
                                 newTargetPosition = 1
@@ -58,7 +59,6 @@ class ChangePicActivity : BaseActivity2() {
                             data.add(newTargetPosition, sourceData)
                             // 刷新RecyclerView以反映数据变化
                             notifyItemMoved(sourcePosition, newTargetPosition)
-                            Log.e(TAG, "initView: 移动位置为 源-$sourcePosition  去-$newTargetPosition")
 
                         }
 

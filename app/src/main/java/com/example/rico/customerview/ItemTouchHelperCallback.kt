@@ -35,29 +35,10 @@ class ItemTouchHelperCallback(private val list: ArrayList<String>, private val i
                 || list[viewHolder.adapterPosition].isEmpty()) {
             return false
         }
-        // 计算行和列
-        val spanCount = (recyclerView.layoutManager as GridLayoutManager).spanCount
         val sourcePosition = viewHolder.adapterPosition
         val targetPosition = target.adapterPosition
-        val sourceRow = sourcePosition / spanCount
-        val targetRow = targetPosition / spanCount
-        var newTargetPosition = sourcePosition
+        itemMoveCallback.onItemMoved(sourcePosition, targetPosition)
 
-        // 如果不在同一行，需要计算新位置
-        if (sourceRow != targetRow) {
-            // 计算新位置
-            newTargetPosition = sourcePosition + (targetRow - sourceRow) * spanCount
-            itemMoveCallback.onItemMoved(sourcePosition, newTargetPosition)
-        } else {
-            // 在同一行内，可以插入到目标位置
-            val sourceColumn = sourcePosition % spanCount
-            val targetColumn = targetPosition % spanCount
-
-            // 计算新的位置
-            val newSourcePosition = targetRow * spanCount + sourceColumn
-            newTargetPosition = sourceRow * spanCount + targetColumn
-            itemMoveCallback.onItemMoved(newSourcePosition, newTargetPosition)
-        }
 
         return true
     }
