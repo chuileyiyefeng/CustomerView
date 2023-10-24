@@ -9,7 +9,8 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <com.example.rico.customerview.view.FlowView
+        <com.example.rico.customerview.view.FlowExpandView
+            android:background="@color/aliceblue"
             android:id="@+id/flow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
