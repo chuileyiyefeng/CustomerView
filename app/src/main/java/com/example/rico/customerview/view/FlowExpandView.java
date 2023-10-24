@@ -118,10 +118,15 @@ public class FlowExpandView extends ViewGroup {
                         nextChildClose = true;
                     }
                 }
+
+                if (isClose() && currentLine <= maxLine && child == expandView) {
+                    pos = new ChildPos(0, 0, 0, 0);
+                }
                 if (nextChildClose && child != expandView) {
                     currentWidth -= (childWidth + verticalDis);
                     pos = new ChildPos(0, 0, 0, 0);
                 }
+
                 list.add(pos);
             } else {
                 if (currentLine >= maxLine && isClose()) {
@@ -223,7 +228,6 @@ public class FlowExpandView extends ViewGroup {
         isExpand = true;
         requestLayout();
     }
-
 
 
     private boolean isClose() {
