@@ -77,6 +77,7 @@ public class FlowExpandView extends ViewGroup {
         int count = getChildCount();
         int currentLine = 1;
         boolean nextChildClose = false;
+        boolean hasChidlClose=false;
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             widthMeasureSpec = MeasureSpec.makeMeasureSpec(widthSize - 2 * horizontalDis, widthMode);
@@ -113,20 +114,21 @@ public class FlowExpandView extends ViewGroup {
                 ChildPos pos = new ChildPos(left, top, right, bottom);
                 if (isClose() && currentLine == maxLine && child != expandView) {
                     if (right + expandViewWidth + horizontalDis * 2 > widthSize && list.size() > 1) {
-                        pos = new ChildPos(0, 0, 0, 0);
-                        currentWidth -= (childWidth + verticalDis);
-                        nextChildClose = true;
+                        nextChildClose = i != count - 2 || hasChidlClose;
+
                     }
                 }
 
-                if (isClose() && currentLine <= maxLine && child == expandView) {
+                if (isClose() && currentLine <= maxLine && child == expandView&&!nextChildClose) {
                     pos = new ChildPos(0, 0, 0, 0);
                 }
                 if (nextChildClose && child != expandView) {
                     currentWidth -= (childWidth + verticalDis);
                     pos = new ChildPos(0, 0, 0, 0);
                 }
-
+                if (nextChildClose) {
+                    hasChidlClose=true;
+                }
                 list.add(pos);
             } else {
                 if (currentLine >= maxLine && isClose()) {
