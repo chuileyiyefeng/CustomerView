@@ -32,26 +32,26 @@ public class FlowActivity extends BaseActivity {
 
     private void addData() {
         for (int i = 0; i < 1; i++) {
-            orininList.add("战争女神 ");
-            orininList.add("德玛西亚皇子");
-            orininList.add("殇之木乃伊");
-            orininList.add("狂战士");
-            orininList.add("布里茨克拉克");
-            orininList.add("冰晶凤凰");
-            orininList.add("冰晶凤凰");
+//            orininList.add("战争女神 ");
+//            orininList.add("德玛西亚皇子");
+//            orininList.add("殇之木乃伊");
+//            orininList.add("狂战士");
+//            orininList.add("布里茨克拉克");
+//            orininList.add("冰晶凤凰");
+//            orininList.add("冰晶凤凰");
 
 //            orininList.add("德邦总管德邦总管德邦");
 //            orininList.add("德邦总管德邦总管德邦");
 //            orininList.add("德邦总管德邦总管德邦");
-            orininList.add("德邦总管德邦总管德邦");
-            orininList.add("德邦总管德邦总管德邦");
+//            orininList.add("德邦总管德邦总管德邦");
+//            orininList.add("德邦总管德邦总管德邦");
             orininList.add("德邦总管德邦总管德邦");
 //            orininList.add("德邦");
-            orininList.add("野兽之灵乌迪尔");
-            orininList.add("塞恩");
-            orininList.add("诡术妖姬");
-            orininList.add("永恒梦魇");
-            orininList.add("诺克萨斯之手");
+//            orininList.add("野兽之灵乌迪尔");
+//            orininList.add("塞恩");
+//            orininList.add("诡术妖姬");
+//            orininList.add("永恒梦魇");
+//            orininList.add("诺克萨斯之手");
         }
     }
 
